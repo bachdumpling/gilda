@@ -1,0 +1,72 @@
+{% comment %}
+  Renders product code with hover to show full names
+  
+  Accepts:
+  - product: product object
+  - class: additional CSS classes
+  
+  Usage:
+  {% render 'product-code', product: product, class: 'text-sm' %}
+{% endcomment %}
+
+{% liquid
+  assign product_code = product.metafields.custom.product_code.value
+  
+  if product_code == blank
+    assign product_code = product.title
+  endif
+  
+  # Parse the product code format: "F25:Female-25, J1:Jacket-1, MS:Moleskin, BK:Black"
+  assign code_parts = product_code | split: ', '
+  assign short_codes = ''
+  assign full_names = ''
+  
+  for part in code_parts
+    assign code_mapping = part | split: ':'
+    if code_mapping.size == 2
+      assign short_code = code_mapping[0] | strip
+      assign full_name = code_mapping[1] | strip
+      
+      if forloop.first == false
+        assign short_codes = short_codes | append: '–'
+        assign full_names = full_names | append: '–'
+      endif
+      
+      assign short_codes = short_codes | append: '[' | append: short_code | append: ']'
+      assign full_names = full_names | append: '[' | append: full_name | append: ']'
+    endif
+  endfor
+%}
+
+{% if short_codes != blank %}
+  <span 
+    class="product-code {{ class | default: '' }}" 
+    data-short="{{ short_codes | escape }}"
+    data-full="{{ full_names | escape }}"
+  >
+    {{ short_codes }}
+  </span>
+
+  {% unless request.design_mode %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const productCodes = document.querySelectorAll('.product-code');
+        
+        productCodes.forEach(function(element) {
+          const shortCode = element.dataset.short;
+          const fullCode = element.dataset.full;
+          
+          element.addEventListener('mouseenter', function() {
+            this.textContent = fullCode;
+          });
+          
+          element.addEventListener('mouseleave', function() {
+            this.textContent = shortCode;
+          });
+        });
+      });
+    </script>
+  {% endunless %}
+{% else %}
+  <span class="{{ class | default: '' }}">{{ product.title | escape }}</span>
+{% endif %}

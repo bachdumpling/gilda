@@ -1,27 +1,16 @@
-<footer class="p-10">
-  <div class=" mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-full">
+<footer class="px-4 py-8 md:p-8">
+  <div class="mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-end md:items-center h-full">
       <!-- Footer Menu on the left -->
       {% assign footer_menu = linklists['footer'] %}
       {% if footer_menu.links.size > 0 %}
-        <nav class="flex gap-10">
+        <nav class="flex flex-col md:flex-row sm:flex-col gap-10">
           {% for link in footer_menu.links %}
-            <a href="{{ link.url }}" class="text-base text-black hover:underline transition-all duration-200 uppercase">
+            <a href="{{ link.url }}" class="text-sm text-black hover:underline transition-all duration-200 uppercase">
               {{ link.title }}
             </a>
           {% endfor %}
         </nav>
-      {% endif %}
-
-      <!-- Payment icons below menu -->
-      {% if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 %}
-        <div class="flex flex-wrap gap-2 mt-4">
-          {% for type in shop.enabled_payment_types %}
-            <div class="text-gray-400">
-              {{ type | payment_type_svg_tag }}
-            </div>
-          {% endfor %}
-        </div>
       {% endif %}
 
       <!-- Brand logo on the right -->

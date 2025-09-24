@@ -3,47 +3,54 @@
   assign chosen_collection = section.settings.collection | default: collections['all']
 %}
 
-<section class="w-full font-sans">
-  <div class="p-4">
-    <h1 class="font-black text-4xl">DM Sans Black (900)</h1>
-    <h2 class="font-bold text-2xl">DM Sans Bold (700)</h2>
-    <p class="font-medium text-lg">DM Sans Medium (500)</p>
-    <p class="font-light text-base">DM Sans Light (300)</p>
-    <p class="font-light italic text-base">DM Sans Light Italic</p>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2">
+<section class="w-full">
+  <div class="grid grid-cols-1 sm:grid-cols-2">
     {% for product in chosen_collection.products limit: 4 %}
       {% liquid
         assign item_index = forloop.index
         assign border_classes = ''
+        # Mobile (grid-cols-1): Each product gets border-top, last gets border-bottom too
+        assign mobile_classes = 'border-t border-black'
+        if forloop.last
+          assign mobile_classes = mobile_classes | append: ' border-b'
+        endif
 
+        # Desktop (sm: grid-cols-2): 2x2 grid with shared borders
         case item_index
           when 1
-            assign border_classes = 'border-t-1 border-b-[0.5px] border-r-[0.5px] border-black'
+            assign desktop_classes = 'sm:border-t-1 sm:border-b-[0.5px] sm:border-r-[0.5px] sm:border-black'
           when 2
-            assign border_classes = 'border-t-1 border-b-[0.5px] border-l-[0.5px] border-black'
+            assign desktop_classes = 'sm:border-t-1 sm:border-b-[0.5px] sm:border-l-[0.5px] sm:border-black'
           when 3
-            assign border_classes = 'border-t-[0.5px] border-b-1 border-r-[0.5px] border-black'
+            assign desktop_classes = 'sm:border-t-[0.5px] sm:border-b-1 sm:border-r-[0.5px] sm:border-black'
           when 4
-            assign border_classes = 'border-t-[0.5px] border-b-1 border-l-[0.5px] border-black'
+            assign desktop_classes = 'sm:border-t-[0.5px] sm:border-b-1 sm:border-l-[0.5px] sm:border-black'
         endcase
+
+        assign border_classes = mobile_classes | append: ' ' | append: desktop_classes
       %}
       <div class="{{ border_classes }} flex justify-center items-center flex-col w-full">
         {% comment %} image {% endcomment %}
         <div class="w-[40%] py-6">
-          {% if product.featured_image %}
-            {% render 'image' 
-              , image: product.featured_image
-              , width: 2000 %}
-          {% else %}
-            {{ 'image' | placeholder_svg_tag }}
-          {% endif %}
+          <a href="{{ product.url }}" class="block">
+            {% if product.featured_image %}
+              {% render 'image' 
+                , image: product.featured_image
+                , width: 2000 %}
+            {% else %}
+              {{ 'image' | placeholder_svg_tag }}
+            {% endif %}
+          </a>
         </div>
         {% comment %} title {% endcomment %}
-        <div class="py-6 text-xl tracking-widest text-center">{{ product.title | escape }}</div>
+        <div class="py-6 text-sm md:text-base tracking-widest text-center">
+          <a href="{{ product.url }}" class="block hover:opacity-80 hover:underline transition-all duration-200">
+            {% render 'product-code', product: product, class: 'cursor-pointer' %}
+          </a>
+        </div>
       </div>
     {% else %}
-      <div class="col-span-2 py-12 text-center text-xs opacity-70">No products found.</div>
+      <div class="col-span-2 py-12 text-center text-xs md:text-base opacity-70">No products found.</div>
     {% endfor %}
   </div>
 </section>
