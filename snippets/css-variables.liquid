@@ -1,55 +1,151 @@
 {% style %}
-  {% # Custom Suisse Intl font faces %}
+  {% # DM Sans font faces %}
   @font-face {
-    font-family: 'Suisse Intl';
-    src: url('{{ 'fonnts.com-SuisseIntl-Light.ttf' | asset_url }}') format('truetype');
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-Thin.ttf' | asset_url }}') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-ThinItalic.ttf' | asset_url }}') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-ExtraLight.ttf' | asset_url }}') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-ExtraLightItalic.ttf' | asset_url }}') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-Light.ttf' | asset_url }}') format('truetype');
     font-weight: 300;
     font-style: normal;
     font-display: swap;
   }
 
   @font-face {
-    font-family: 'Suisse Intl';
-    src: url('{{ 'fonnts.com-Suisse_Intl_Book.ttf' | asset_url }}') format('truetype');
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-LightItalic.ttf' | asset_url }}') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-Regular.ttf' | asset_url }}') format('truetype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
   }
 
   @font-face {
-    font-family: 'Suisse Intl';
-    src: url('{{ 'fonnts.com-Suisse_Intl_Regular.ttf' | asset_url }}') format('truetype');
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-Italic.ttf' | asset_url }}') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-Medium.ttf' | asset_url }}') format('truetype');
     font-weight: 500;
     font-style: normal;
     font-display: swap;
   }
 
   @font-face {
-    font-family: 'Suisse Intl';
-    src: url('{{ 'fonnts.com-Suisse_Intl_Medium.ttf' | asset_url }}') format('truetype');
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-MediumItalic.ttf' | asset_url }}') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-SemiBold.ttf' | asset_url }}') format('truetype');
     font-weight: 600;
     font-style: normal;
     font-display: swap;
   }
 
   @font-face {
-    font-family: 'Suisse Intl';
-    src: url('{{ 'fonnts.com-Suisse_Intl_Bold.ttf' | asset_url }}') format('truetype');
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-SemiBoldItalic.ttf' | asset_url }}') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-Bold.ttf' | asset_url }}') format('truetype');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
   }
 
   @font-face {
-    font-family: 'Suisse Intl Mono';
-    src: url('{{ 'fonnts.com-Suisse_Intl_Mono.ttf' | asset_url }}') format('truetype');
-    font-weight: 400;
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-BoldItalic.ttf' | asset_url }}') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-ExtraBold.ttf' | asset_url }}') format('truetype');
+    font-weight: 800;
     font-style: normal;
     font-display: swap;
   }
 
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-ExtraBoldItalic.ttf' | asset_url }}') format('truetype');
+    font-weight: 800;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-Black.ttf' | asset_url }}') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'DM Sans';
+    src: url('{{ 'DMSans-BlackItalic.ttf' | asset_url }}') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+  }
+
   :root {
-    --font-primary--family: 'Suisse Intl', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-primary--family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --font-primary--style: normal;
     --font-primary--weight: 400;
     --page-width: {{ settings.max_page_width }};
