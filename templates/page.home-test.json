@@ -10,12 +10,9 @@
 {
   "sections": {
     "main": {
-      "type": "home-test",
+      "type": "home",
       "settings": {}
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["main"]
 }
-
