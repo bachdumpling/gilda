@@ -4,7 +4,7 @@
 %}
 
 <section class="">
-  <div class="grid grid-cols-1 md:grid-cols-2 border border-t border-l border-black">
+  <div class="grid grid-cols-1 md:grid-cols-2 border border-t border-black">
     {% for product in chosen_collection.products limit: 4 %}
       <div class=" border border-b border-black">
         {% if product.featured_image %}
