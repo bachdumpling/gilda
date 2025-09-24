@@ -1,34 +1,38 @@
-<footer class="px-4 py-8 md:p-8">
-  <div class="mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-end md:items-center h-full">
-      <!-- Footer Menu on the left -->
-      {% assign footer_menu = linklists['footer'] %}
-      {% if footer_menu.links.size > 0 %}
-        <nav class="flex flex-col md:flex-row sm:flex-col gap-10">
-          {% for link in footer_menu.links %}
-            <a href="{{ link.url }}" class="text-sm text-black hover:underline transition-all duration-200 uppercase">
-              {{ link.title }}
-            </a>
-          {% endfor %}
-        </nav>
-      {% endif %}
+<footer id="footer" class="px-4 py-10 md:px-10 md:py-8">
+  <div class="flex justify-between items-end md:items-center h-fit">
+    <!-- Footer Menu on the left -->
+    {% assign footer_menu = linklists['footer'] %}
+    {% if footer_menu.links.size > 0 %}
+      <nav class="flex flex-col md:flex-row sm:flex-col gap-10">
+        {% for link in footer_menu.links %}
+          <a href="{{ link.url }}" class="text-sm text-black hover:underline transition-all duration-200 uppercase">
+            {{ link.title }}
+          </a>
+        {% endfor %}
+      </nav>
+    {% endif %}
 
-      <!-- Brand logo on the right -->
-      <div class="flex-shrink-0">
-        <a href="{{ routes.root_url }}" class="inline-block">
-          {% if section.settings.logo %}
-            <img
-              src="{{ section.settings.logo | image_url: width: 1000 }}"
-              alt="{{ shop.name }}"
-              class="h-full w-auto"
-              loading="lazy">
-          {% else %}
-            <div class="h-full w-auto">
-              {{ 'logo.svg' | inline_asset_content }}
-            </div>
-          {% endif %}
-        </a>
-      </div>
+    <!-- Brand logo on the right -->
+    <div class="flex-shrink-0">
+      <a href="{{ routes.root_url }}" class="inline-block">
+        {% if shop.brand.logo %}
+          <img
+            src="{{ shop.brand.logo | image_url: width: 64 }}"
+            alt="{{ shop.brand.slogan | default: shop.name }}"
+            class="h-16 w-16 object-contain"
+            loading="lazy">
+        {% elsif shop.brand.square_logo %}
+          <img
+            src="{{ shop.brand.square_logo | image_url: width: 64 }}"
+            alt="{{ shop.brand.slogan | default: shop.name }}"
+            class="h-16 w-16 object-contain"
+            loading="lazy">
+        {% else %}
+          <div class="h-16 w-16">
+            {{ 'logo.svg' | inline_asset_content }}
+          </div>
+        {% endif %}
+      </a>
     </div>
   </div>
 </footer>
@@ -38,10 +42,6 @@
     "name": "t:general.footer",
     "settings": [
       {
-        "type": "image_picker",
-        "id": "logo",
-        "label": "Logo image"
-      }, {
         "type": "checkbox",
         "id": "show_payment_icons",
         "label": "t:labels.show_payment_icons",
