@@ -29,7 +29,7 @@
         {% else %}
           {{ 'image' | placeholder_svg_tag }}
         {% endif %}
-        <div class="px-4 py-3 text-[10px] md:text-xs tracking-widest text-center font-sans">{{ product.title | escape }}</div>
+        <div class="px-4 py-3 text-xl tracking-widest text-center font-sans">{{ product.title | escape }}</div>
       </div>
     {% else %}
       <div class="col-span-2 py-12 text-center text-xs opacity-70 font-sans">No products found.</div>
