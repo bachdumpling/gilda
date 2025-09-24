@@ -164,12 +164,6 @@
   }
 }
 @layer utilities {
-  .invisible {
-    visibility: hidden;
-  }
-  .visible {
-    visibility: visible;
-  }
   .fixed {
     position: fixed;
   }
