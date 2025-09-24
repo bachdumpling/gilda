@@ -1,48 +1,57 @@
-<footer>
-  <div class="footer__copyright">
-    <!-- Copyright text removed -->
-  </div>
+<footer class="p-10">
+  <div class=" mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-full">
+      <!-- Footer Menu on the left -->
+      {% assign footer_menu = linklists['footer'] %}
+      {% if footer_menu.links.size > 0 %}
+        <nav class="flex gap-10">
+          {% for link in footer_menu.links %}
+            <a href="{{ link.url }}" class="text-base text-black hover:underline transition-all duration-200 uppercase">
+              {{ link.title }}
+            </a>
+          {% endfor %}
+        </nav>
+      {% endif %}
 
-  <div class="footer__links">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
+      <!-- Payment icons below menu -->
+      {% if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 %}
+        <div class="flex flex-wrap gap-2 mt-4">
+          {% for type in shop.enabled_payment_types %}
+            <div class="text-gray-400">
+              {{ type | payment_type_svg_tag }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
 
-  <div class="footer__payment">
-    {% if section.settings.show_payment_icons %}
-      {% for type in shop.enabled_payment_types %}
-        {{ type | payment_type_svg_tag }}
-      {% endfor %}
-    {% endif %}
+      <!-- Brand logo on the right -->
+      <div class="flex-shrink-0">
+        <a href="{{ routes.root_url }}" class="inline-block">
+          {% if section.settings.logo %}
+            <img
+              src="{{ section.settings.logo | image_url: width: 1000 }}"
+              alt="{{ shop.name }}"
+              class="h-full w-auto"
+              loading="lazy">
+          {% else %}
+            <div class="h-full w-auto">
+              {{ 'logo.svg' | inline_asset_content }}
+            </div>
+          {% endif %}
+        </a>
+      </div>
+    </div>
   </div>
 </footer>
-
-{% stylesheet %}
-  footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
-  }
-  footer a {
-    text-decoration: none;
-    color: var(--color-foreground);
-  }
-  footer .footer__links,
-  footer .footer__payment {
-    display: flex;
-    gap: 1rem;
-  }
-{% endstylesheet %}
 
 {% schema %}
   {
     "name": "t:general.footer",
     "settings": [
       {
-        "type": "link_list",
-        "id": "menu",
-        "label": "t:labels.menu"
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
       }, {
         "type": "checkbox",
         "id": "show_payment_icons",

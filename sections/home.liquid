@@ -3,7 +3,7 @@
   assign chosen_collection = section.settings.collection | default: collections['all']
 %}
 
-<section class="w-full border">
+<section class="w-full">
   <div class="grid grid-cols-1 md:grid-cols-2">
     {% for product in chosen_collection.products limit: 4 %}
       {% liquid
@@ -12,24 +12,28 @@
 
         case item_index
           when 1
-            assign border_classes = 'border-t-[0.5px] border-b-[0.5px] border-r-[0.5px] border-black'
+            assign border_classes = 'border-t-1 border-b-[0.5px] border-r-[0.5px] border-black'
           when 2
-            assign border_classes = 'border-t-[0.5px] border-b-[0.5px] border-l-[0.5px] border-black'
+            assign border_classes = 'border-t-1 border-b-[0.5px] border-l-[0.5px] border-black'
           when 3
-            assign border_classes = 'border-t-[0.5px] border-b-[0.5px] border-r-[0.5px] border-black'
+            assign border_classes = 'border-t-[0.5px] border-b-1 border-r-[0.5px] border-black'
           when 4
-            assign border_classes = 'border-t-[0.5px] border-b-[0.5px] border-l-[0.5px] border-black'
+            assign border_classes = 'border-t-[0.5px] border-b-1 border-l-[0.5px] border-black'
         endcase
       %}
-      <div class="{{ border_classes }}">
-        {% if product.featured_image %}
-          {% render 'image' 
-            , image: product.featured_image
-            , width: 1200 %}
-        {% else %}
-          {{ 'image' | placeholder_svg_tag }}
-        {% endif %}
-        <div class="px-4 py-3 text-xl tracking-widest text-center font-sans">{{ product.title | escape }}</div>
+      <div class="{{ border_classes }} flex justify-center items-center flex-col w-full">
+        {% comment %} image {% endcomment %}
+        <div class="w-[40%] py-6">
+          {% if product.featured_image %}
+            {% render 'image' 
+              , image: product.featured_image
+              , width: 2000 %}
+          {% else %}
+            {{ 'image' | placeholder_svg_tag }}
+          {% endif %}
+        </div>
+        {% comment %} title {% endcomment %}
+        <div class="py-6 text-xl tracking-widest text-center font-sans">{{ product.title | escape }}</div>
       </div>
     {% else %}
       <div class="col-span-2 py-12 text-center text-xs opacity-70 font-sans">No products found.</div>
