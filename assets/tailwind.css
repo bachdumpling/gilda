@@ -3,7 +3,8 @@
 @layer theme, base, components, utilities;
 @layer theme {
   :root, :host {
-    --font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --color-gray-400: oklch(70.7% 0.022 261.325);
@@ -15,10 +16,18 @@
     --text-sm--line-height: calc(1.25 / 0.875);
     --text-base: 1rem;
     --text-base--line-height: calc(1.5 / 1);
+    --text-lg: 1.125rem;
+    --text-lg--line-height: calc(1.75 / 1.125);
     --text-xl: 1.25rem;
     --text-xl--line-height: calc(1.75 / 1.25);
+    --text-2xl: 1.5rem;
+    --text-2xl--line-height: calc(2 / 1.5);
     --text-4xl: 2.25rem;
     --text-4xl--line-height: calc(2.5 / 2.25);
+    --font-weight-light: 300;
+    --font-weight-medium: 500;
+    --font-weight-bold: 700;
+    --font-weight-black: 900;
     --tracking-widest: 0.1em;
     --default-transition-duration: 150ms;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -331,6 +340,9 @@
   .border-black {
     border-color: var(--color-black);
   }
+  .p-4 {
+    padding: calc(var(--spacing) * 4);
+  }
   .p-10 {
     padding: calc(var(--spacing) * 10);
   }
@@ -355,6 +367,10 @@
   .font-sans {
     font-family: var(--font-sans);
   }
+  .text-2xl {
+    font-size: var(--text-2xl);
+    line-height: var(--tw-leading, var(--text-2xl--line-height));
+  }
   .text-4xl {
     font-size: var(--text-4xl);
     line-height: var(--tw-leading, var(--text-4xl--line-height));
@@ -362,6 +378,10 @@
   .text-base {
     font-size: var(--text-base);
     line-height: var(--tw-leading, var(--text-base--line-height));
+  }
+  .text-lg {
+    font-size: var(--text-lg);
+    line-height: var(--tw-leading, var(--text-lg--line-height));
   }
   .text-sm {
     font-size: var(--text-sm);
@@ -375,9 +395,28 @@
     font-size: var(--text-xs);
     line-height: var(--tw-leading, var(--text-xs--line-height));
   }
+  .font-black {
+    --tw-font-weight: var(--font-weight-black);
+    font-weight: var(--font-weight-black);
+  }
+  .font-bold {
+    --tw-font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-bold);
+  }
+  .font-light {
+    --tw-font-weight: var(--font-weight-light);
+    font-weight: var(--font-weight-light);
+  }
+  .font-medium {
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+  }
   .tracking-widest {
     --tw-tracking: var(--tracking-widest);
     letter-spacing: var(--tracking-widest);
+  }
+  .text-wrap {
+    text-wrap: wrap;
   }
   .text-black {
     color: var(--color-black);
@@ -435,6 +474,53 @@
     }
   }
 }
+@layer base {
+  @font-face {
+    font-family: "DM Mono";
+    src: url("{{ 'DMMono-Light.ttf' | asset_url }}") format("truetype");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "DM Mono";
+    src: url("{{ 'DMMono-LightItalic.ttf' | asset_url }}") format("truetype");
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "DM Mono";
+    src: url("{{ 'DMMono-Regular.ttf' | asset_url }}") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "DM Mono";
+    src: url("{{ 'DMMono-Italic.ttf' | asset_url }}") format("truetype");
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "DM Mono";
+    src: url("{{ 'DMMono-Medium.ttf' | asset_url }}") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "DM Mono";
+    src: url("{{ 'DMMono-MediumItalic.ttf' | asset_url }}") format("truetype");
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+  }
+  * {
+    font-family: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  }
+}
 @property --tw-rotate-x {
   syntax: "*";
   inherits: false;
@@ -459,6 +545,10 @@
   syntax: "*";
   inherits: false;
   initial-value: solid;
+}
+@property --tw-font-weight {
+  syntax: "*";
+  inherits: false;
 }
 @property --tw-tracking {
   syntax: "*";
@@ -530,6 +620,7 @@
       --tw-skew-x: initial;
       --tw-skew-y: initial;
       --tw-border-style: solid;
+      --tw-font-weight: initial;
       --tw-tracking: initial;
       --tw-blur: initial;
       --tw-brightness: initial;

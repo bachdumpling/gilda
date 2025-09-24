@@ -1,28 +1,74 @@
 {% style %}
-  {% # DM Sans Variable Font from CDN %}
-  @font-face {
-    font-family: 'DM Sans';
-    src: url('https://cdn.shopify.com/s/files/1/0670/9051/4081/files/DMSans-VariableFont_opsz_wght.woff?v=1758746089') format('woff');
-    font-weight: 100 900;
-    font-style: normal;
-    font-display: swap;
-    font-variation-settings: "opsz" 9, "wght" 400;
-  }
-
-  @font-face {
-    font-family: 'DM Sans';
-    src: url('https://cdn.shopify.com/s/files/1/0670/9051/4081/files/DMSans-Italic-VariableFont_opsz_wght.woff?v=1758746089') format('woff');
-    font-weight: 100 900;
-    font-style: italic;
-    font-display: swap;
-    font-variation-settings: "opsz" 9, "wght" 400;
-  }
-
   :root {
-    --font-primary--family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    --font-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
     --color-background: #F2EFED;
     --color-foreground: #000000;
     --style-border-radius-inputs: 0px;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
+    overflow: hidden;
+  }
+
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  input,
+  textarea,
+  select {
+    font: inherit;
+    border-radius: var(--style-border-radius-inputs);
+  }
+
+  select {
+    background-color: var(--color-background);
+    color: currentcolor;
+  }
+
+  dialog {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    overflow-wrap: break-word;
+  }
+
+  p:empty {
+    display: none;
+  }
+
+  :is(p, h1, h2, h3, h4, h5, h6):first-child,
+  :empty:first-child + :where(p, h1, h2, h3, h4, h5, h6) {
+    margin-block-start: 0;
+  }
+
+  :is(p, h1, h2, h3, h4, h5, h6):last-child,
+  :where(p, h1, h2, h3, h4, h5, h6) + :has(+ :empty:last-child) {
+    margin-block-end: 0;
   }
 {% endstyle %}
