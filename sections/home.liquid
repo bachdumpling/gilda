@@ -3,7 +3,7 @@
   assign chosen_collection = section.settings.collection | default: collections['all']
 %}
 
-<section class="w-full border">
+<section class="w-screen border" style="margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%);">
   <div class="grid grid-cols-1 md:grid-cols-2">
     {% for product in chosen_collection.products limit: 4 %}
       {% liquid
