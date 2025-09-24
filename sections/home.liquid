@@ -4,9 +4,24 @@
 %}
 
 <section class="">
-  <div class="grid grid-cols-1 md:grid-cols-2 border-black">
+  <div class="grid grid-cols-1 md:grid-cols-2">
     {% for product in chosen_collection.products limit: 4 %}
-      <div class=" border-b border-black">
+      {% liquid
+        assign item_index = forloop.index
+        assign border_classes = ''
+
+        case item_index
+          when 1
+            assign border_classes = 'border-t-[0.5px] border-b-[0.5px] border-r-[0.5px] border-black'
+          when 2
+            assign border_classes = 'border-t-[0.5px] border-b-[0.5px] border-l-[0.5px] border-black'
+          when 3
+            assign border_classes = 'border-t-[0.5px] border-b-[0.5px] border-r-[0.5px] border-black'
+          when 4
+            assign border_classes = 'border-t-[0.5px] border-b-[0.5px] border-l-[0.5px] border-black'
+        endcase
+      %}
+      <div class="{{ border_classes }}">
         {% if product.featured_image %}
           {% render 'image' 
             , image: product.featured_image
