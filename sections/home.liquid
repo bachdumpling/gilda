@@ -6,7 +6,7 @@
 <section class="">
   <div class="grid grid-cols-1 md:grid-cols-2 border border-t border-l border-black">
     {% for product in chosen_collection.products limit: 4 %}
-      <div class=" border border-b border-r border-black">
+      <div class=" border border-b border-black">
         {% if product.featured_image %}
           {% render 'image' 
             , image: product.featured_image
@@ -14,7 +14,7 @@
         {% else %}
           {{ 'image' | placeholder_svg_tag }}
         {% endif %}
-        <div class="px-4 py-3 text-[10px] md:text-xs tracking-widest">{{ product.title | escape }}</div>
+        <div class="px-4 py-3 text-[10px] md:text-xs tracking-widest text-center">{{ product.title | escape }}</div>
       </div>
     {% else %}
       <div class="col-span-2 py-12 text-center text-xs opacity-70">No products found.</div>
