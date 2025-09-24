@@ -1,15 +1,31 @@
-{% comment %}
-  Renders product code with hover to show full names
-  
-  Accepts:
-  - product: product object
-  - class: additional CSS classes
-  
-  Usage:
-  {% render 'product-code', product: product, class: 'text-sm' %}
-{% endcomment %}
+{% doc %}
+  Product Code Display
+
+  Renders product code with smooth fade animation on hover to show full names.
+
+  @param {product} product - Product object (required)
+  @param {string} class - Additional CSS classes (default: '')
+  @param {number} animation_duration - Animation duration in ms (default: 300)
+
+  @example
+  {% render 'product-code', 
+       product: product, 
+       class: 'text-sm tracking-wide',
+       animation_duration: 250 %}
+{% enddoc %}
 
 {% liquid
+  # Parameter validation and defaults
+  assign product = product | default: empty
+  assign class = class | default: ''
+  assign animation_duration = animation_duration | default: 300
+
+  # Early return if required parameters missing
+  unless product != empty
+    echo '<!-- Error: product parameter required for product-code snippet -->'
+    break
+  endunless
+
   assign product_code = product.metafields.custom.product_code.value
   
   if product_code == blank
@@ -38,11 +54,24 @@
   endfor
 %}
 
+{% stylesheet %}
+  .product-code {
+    display: inline-block;
+    transition: opacity 300ms ease-in-out;
+    cursor: pointer;
+  }
+  
+  .product-code.fading {
+    opacity: 0;
+  }
+{% endstylesheet %}
+
 {% if short_codes != blank %}
   <span 
-    class="product-code {{ class | default: '' }}" 
+    class="product-code {{ class }}" 
     data-short="{{ short_codes | escape }}"
     data-full="{{ full_names | escape }}"
+    data-duration="{{ animation_duration }}"
   >
     {{ short_codes }}
   </span>
@@ -55,18 +84,47 @@
         productCodes.forEach(function(element) {
           const shortCode = element.dataset.short;
           const fullCode = element.dataset.full;
+          const duration = parseInt(element.dataset.duration) || 300;
+          let isAnimating = false;
+          let currentTimeout = null;
+          
+          function fadeToText(newText) {
+            if (isAnimating) return;
+            isAnimating = true;
+            
+            // Fade out
+            element.classList.add('fading');
+            
+            setTimeout(function() {
+              // Change text and fade in
+              element.textContent = newText;
+              element.classList.remove('fading');
+              
+              setTimeout(function() {
+                isAnimating = false;
+              }, duration);
+            }, duration);
+          }
           
           element.addEventListener('mouseenter', function() {
-            this.textContent = fullCode;
+            if (currentTimeout) {
+              clearTimeout(currentTimeout);
+              currentTimeout = null;
+            }
+            fadeToText(fullCode);
           });
           
           element.addEventListener('mouseleave', function() {
-            this.textContent = shortCode;
+            // Add small delay before reverting to prevent flickering
+            currentTimeout = setTimeout(function() {
+              fadeToText(shortCode);
+              currentTimeout = null;
+            }, 100);
           });
         });
       });
     </script>
   {% endunless %}
 {% else %}
-  <span class="{{ class | default: '' }}">{{ product.title | escape }}</span>
+  <span class="{{ class }}">{{ product.title | escape }}</span>
 {% endif %}
