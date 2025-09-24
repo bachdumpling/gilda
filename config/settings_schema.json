@@ -16,7 +16,7 @@
       },
       {
         "type": "paragraph",
-        "content": "This theme uses Suisse Intl as the primary font family with multiple weights (Light, Book, Regular, Medium, Bold) and includes Suisse Intl Mono for monospace text."
+        "content": "This theme uses DM Sans as the primary font family with multiple weights (Thin, ExtraLight, Light, Regular, Medium, SemiBold, Bold, ExtraBold, Black) and includes italic variants for each weight."
       }
     ]
   },

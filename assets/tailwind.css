@@ -299,6 +299,9 @@
   .uppercase {
     text-transform: uppercase;
   }
+  .italic {
+    font-style: italic;
+  }
   .opacity-70 {
     opacity: 70%;
   }
