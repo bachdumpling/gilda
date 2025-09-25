@@ -27,12 +27,18 @@
           }
         }
       },
-      "block_order": ["main_content", "returns_content"],
+      "block_order": [
+        "main_content",
+        "returns_content"
+      ],
       "settings": {
-        "title": "Orders & Shipping",
+        "title": "",
+        "image": "shopify://shop_images/3296.jpg",
         "custom_id": ""
       }
     }
   },
-  "order": ["order_shipping"]
+  "order": [
+    "order_shipping"
+  ]
 }
