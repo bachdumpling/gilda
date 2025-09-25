@@ -13,9 +13,7 @@
       "type": "About",
       "settings": {
         "page": "about-us",
-        "custom_id": "",
-        "padding_top": 0,
-        "padding_bottom": 0
+        "custom_id": ""
       }
     }
   },
