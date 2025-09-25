@@ -10,7 +10,7 @@
 {
   "sections": {
     "about": {
-      "type": "about",
+      "type": "About",
       "settings": {
         "page": "about-us",
         "custom_id": "",

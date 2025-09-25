@@ -7,10 +7,7 @@
 <section
   id="{{ section_id }}"
   class="{{ section_class }}"
-  style="
-    --section-padding-top: {{ section.settings.padding_top }}px;
-    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
-  ">
+>
   {% if page_content %}
     <div class="grid grid-cols-1 md:grid-cols-2 border-t border-b border-black h-fit">
       {% comment %} Left side - Image {% endcomment %}
@@ -63,10 +60,6 @@
 </section>
 
 {% stylesheet %}
-  .{{ section_class }} {
-    padding-top: var(--section-padding-top, 0px);
-    padding-bottom: var(--section-padding-bottom, 0px);
-  }
 
   .{{ section_class }}
   h1 {
@@ -123,28 +116,6 @@
         "label": "t:sections.about.settings.custom_id.label",
         "info": "t:sections.about.settings.custom_id.info"
       },
-      {
-        "type": "header",
-        "content": "t:sections.about.settings.spacing.header"
-      }, {
-        "type": "range",
-        "id": "padding_top",
-        "label": "t:sections.about.settings.padding_top.label",
-        "min": 0,
-        "max": 100,
-        "step": 1,
-        "default": 0,
-        "unit": "px"
-      }, {
-        "type": "range",
-        "id": "padding_bottom",
-        "label": "t:sections.about.settings.padding_bottom.label",
-        "min": 0,
-        "max": 100,
-        "step": 1,
-        "default": 0,
-        "unit": "px"
-      }
     ],
     "presets": [
       {
