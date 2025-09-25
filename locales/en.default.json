@@ -48,5 +48,44 @@
     "submit": "Search",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
+  },
+  "about": {
+    "title": "About",
+    "image_alt": "About us image",
+    "default_content": "Tell your story here. Share what makes your brand unique and connect with your customers.",
+    "no_page_selected": "Please select a page in the section settings to display content."
+  },
+  "sections": {
+    "about": {
+      "name": "About",
+      "settings": {
+        "page": {
+          "label": "About page",
+          "info": "Select the page that contains your about content"
+        },
+        "image": {
+          "label": "About image",
+          "info": "Optional: Upload a custom image to replace the default"
+        },
+        "custom_id": {
+          "label": "Custom section ID",
+          "info": "Optional: Add a custom ID for this section"
+        },
+        "spacing": {
+          "header": "Section spacing"
+        },
+        "padding_top": {
+          "label": "Top padding"
+        },
+        "padding_bottom": {
+          "label": "Bottom padding"
+        }
+      },
+      "presets": {
+        "about": {
+          "name": "About"
+        }
+      }
+    }
   }
 }

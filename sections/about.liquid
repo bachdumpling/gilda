@@ -1,0 +1,150 @@
+{% liquid
+  assign page_content = section.settings.page
+  assign section_id = section.settings.custom_id | default: section.id
+  assign section_class = 'section-about'
+%}
+
+<section
+  id="{{ section_id }}"
+  class="{{ section_class }}"
+  style="
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  ">
+  <div class="w-full">
+    <h1 class="text-2xl lg:text-3xl font-light tracking-widest mb-6 text-center lg:text-left">
+        Hello World
+    </h1>
+    {% if page_content %}
+      <div class="grid grid-cols-1 lg:grid-cols-2 border-t border-b border-black">
+        {% comment %} Left side - Image {% endcomment %}
+        <div class="flex justify-center items-center p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-black">
+          {% if section.settings.image %}
+            {% render 'image'
+              , image: section.settings.image
+              , width: 800
+              , class: 'w-full h-auto object-cover'
+            %}
+          {% else %}
+            <img
+              src="https://cdn.shopify.com/s/files/1/0670/9051/4081/files/3296.jpg?v=1758508794"
+              alt="{{ 'about.image_alt' | t }}"
+              class="w-full h-auto object-cover"
+              loading="lazy">
+          {% endif %}
+        </div>
+
+        {% comment %} Right side - Content {% endcomment %}
+        <div class="flex flex-col justify-center p-8 lg:p-12">
+          {% if page_content.title %}
+            <h1 class="text-2xl lg:text-3xl font-light tracking-widest mb-6 text-center lg:text-left">
+              {{ page_content.title }}
+            </h1>
+          {% endif %}
+
+          {% if page_content.content %}
+            <div class="prose prose-sm lg:prose-base max-w-none text-center lg:text-left">
+              {{ page_content.content }}
+            </div>
+          {% endif %}
+
+          {% comment %} Fallback content if no page is selected {% endcomment %}
+          {% unless page_content %}
+            <h1 class="text-2xl lg:text-3xl font-light tracking-widest mb-6 text-center lg:text-left">
+              {{ 'about.title' | t }}
+            </h1>
+            <div class="prose prose-sm lg:prose-base max-w-none text-center lg:text-left">
+              <p>{{ 'about.default_content' | t }}</p>
+            </div>
+          {% endunless %}
+        </div>
+      </div>
+    {% else %}
+      {% comment %} Fallback when no page is selected {% endcomment %}
+      <div class="text-center py-12">
+        <p class="text-sm opacity-70">{{ 'about.no_page_selected' | t }}</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .{{ section_class }} {
+    padding-top: var(--section-padding-top, 0px);
+    padding-bottom: var(--section-padding-bottom, 0px);
+  }
+
+  .{{ section_class }}
+  .prose p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .{{ section_class }}.prose p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 1023px) {
+    .{{ section_class }}.grid > div:first-child {
+      order: 1;
+    }
+    .{{ section_class }}.grid > div:last-child {
+      order: 2;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+  {
+    "name": "t:sections.about.name",
+    "tag": "section",
+    "class": "section-about",
+    "settings": [
+      {
+        "type": "page",
+        "id": "page",
+        "label": "t:sections.about.settings.page.label",
+        "info": "t:sections.about.settings.page.info"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "t:sections.about.settings.image.label",
+        "info": "t:sections.about.settings.image.info"
+      },
+      {
+        "type": "text",
+        "id": "custom_id",
+        "label": "t:sections.about.settings.custom_id.label",
+        "info": "t:sections.about.settings.custom_id.info"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.about.settings.spacing.header"
+      }, {
+        "type": "range",
+        "id": "padding_top",
+        "label": "t:sections.about.settings.padding_top.label",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 0,
+        "unit": "px"
+      }, {
+        "type": "range",
+        "id": "padding_bottom",
+        "label": "t:sections.about.settings.padding_bottom.label",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 0,
+        "unit": "px"
+      }
+    ],
+    "presets": [
+      {
+        "name": "t:sections.about.presets.about.name"
+      }
+    ]
+  }
+{% endschema %}
