@@ -95,6 +95,38 @@
           "name": "About"
         }
       }
+    },
+    "order_shipping": {
+      "name": "Order & Shipping",
+      "settings": {
+        "title": {
+          "label": "Page title"
+        },
+        "custom_id": {
+          "label": "Custom section ID",
+          "info": "Optional: Add a custom ID for this section"
+        }
+      },
+      "blocks": {
+        "content_block": {
+          "name": "Content block",
+          "settings": {
+            "heading": {
+              "label": "Heading",
+              "info": "Optional: Add a heading for this content block"
+            },
+            "content": {
+              "label": "Content",
+              "info": "Add the main content for this block"
+            }
+          }
+        }
+      },
+      "presets": {
+        "order_shipping": {
+          "name": "Order & Shipping"
+        }
+      }
     }
   }
 }
