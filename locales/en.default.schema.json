@@ -71,6 +71,39 @@
       "title": "Title",
       "subtitle": "Subtitle",
       "normal": "Normal text"
-    },
+    }
+  },
+  "sections": {
+    "about": {
+      "name": "About",
+      "settings": {
+        "page": {
+          "label": "About page",
+          "info": "Select the page that contains your about content"
+        },
+        "image": {
+          "label": "About image",
+          "info": "Optional: Upload a custom image to replace the default"
+        },
+        "custom_id": {
+          "label": "Custom section ID",
+          "info": "Optional: Add a custom ID for this section"
+        },
+        "spacing": {
+          "header": "Section spacing"
+        },
+        "padding_top": {
+          "label": "Top padding"
+        },
+        "padding_bottom": {
+          "label": "Bottom padding"
+        }
+      },
+      "presets": {
+        "about": {
+          "name": "About"
+        }
+      }
+    }
   }
 }
