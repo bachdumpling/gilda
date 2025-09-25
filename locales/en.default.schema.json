@@ -102,6 +102,10 @@
         "title": {
           "label": "Page title"
         },
+        "image": {
+          "label": "Order & shipping image",
+          "info": "Optional: Upload a custom image to replace the default"
+        },
         "custom_id": {
           "label": "Custom section ID",
           "info": "Optional: Add a custom ID for this section"

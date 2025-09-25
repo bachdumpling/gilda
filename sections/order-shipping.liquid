@@ -4,32 +4,51 @@
 %}
 
 <section id="{{ section_id }}" class="{{ section_class }}">
-  <div class="container mx-auto px-4 py-10 max-w-4xl">
-    {% if section.settings.title %}
-      <h1 class="text-2xl font-medium tracking-widest mb-8 text-center uppercase text-title font-mono">
-        {{ section.settings.title }}
-      </h1>
-    {% endif %}
+  <div class="grid grid-cols-1 md:grid-cols-2 border-t border-b border-black h-fit">
+    {% comment %} Left side - Image {% endcomment %}
+    <div class="h-full w-full flex justify-center items-center border-b border-t sm:border-t-0 md:border-b-0 md:border-r border-black overflow-hidden">
+      {% if section.settings.image %}
+        {% render 'image'
+          , image: section.settings.image
+          , class: 'w-full h-full object-cover'
+        %}
+      {% else %}
+        <img
+          src="https://cdn.shopify.com/s/files/1/0670/9051/4081/files/3296.jpg?v=1758508794"
+          alt="{{ 'order_shipping.image_alt' | t }}"
+          class="w-full h-full object-cover"
+          loading="lazy">
+      {% endif %}
+    </div>
 
-    <div class="prose prose-sm lg:prose-base max-w-none text-left text-subtitle font-sans space-y-6">
-      {% for block in section.blocks %}
-        {% case block.type %}
-          {% when 'content_block' %}
-            <div class="content-block" {{ block.shopify_attributes }}>
-              {% if block.settings.heading %}
-                <h2 class="text-lg font-medium tracking-wide mb-4 uppercase text-title font-mono">
-                  {{ block.settings.heading }}
-                </h2>
-              {% endif %}
+    {% comment %} Right side - Content {% endcomment %}
+    <div class="flex flex-col justify-center px-4 py-10 md:px-4 md:max-w-[30rem] xl:max-w-[40rem] mx-auto">
+      {% if section.settings.title %}
+        <h1 class="text-sm font-medium tracking-widest mb-6 text-left uppercase text-title font-mono">
+          {{ section.settings.title }}
+        </h1>
+      {% endif %}
 
-              {% if block.settings.content %}
-                <div class="content">
-                  {{ block.settings.content }}
-                </div>
-              {% endif %}
-            </div>
-        {% endcase %}
-      {% endfor %}
+      <div class="text-sm prose prose-sm lg:prose-base max-w-none text-left text-subtitle font-sans">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'content_block' %}
+              <div class="content-block mb-6" {{ block.shopify_attributes }}>
+                {% if block.settings.heading %}
+                  <h2 class="text-sm font-medium tracking-widest mb-4 text-left uppercase text-title font-mono">
+                    {{ block.settings.heading }}
+                  </h2>
+                {% endif %}
+
+                {% if block.settings.content %}
+                  <div class="content">
+                    {{ block.settings.content }}
+                  </div>
+                {% endif %}
+              </div>
+          {% endcase %}
+        {% endfor %}
+      </div>
     </div>
   </div>
 </section>
@@ -81,7 +100,14 @@
         "id": "title",
         "label": "t:sections.order_shipping.settings.title.label",
         "default": "Orders & Shipping"
-      }, {
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "t:sections.order_shipping.settings.image.label",
+        "info": "t:sections.order_shipping.settings.image.info"
+      },
+      {
         "type": "text",
         "id": "custom_id",
         "label": "t:sections.order_shipping.settings.custom_id.label",

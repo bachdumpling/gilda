@@ -64,6 +64,9 @@
     "default_content": "Tell your story here. Share what makes your brand unique and connect with your customers.",
     "no_page_selected": "Please select a page in the section settings to display content."
   },
+  "order_shipping": {
+    "image_alt": "Order and shipping image"
+  },
   "sections": {
     "about": {
       "name": "About",
