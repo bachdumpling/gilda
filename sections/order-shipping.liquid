@@ -3,10 +3,7 @@
   assign section_class = 'section-order-shipping'
 %}
 
-<section
-  id="{{ section_id }}"
-  class="{{ section_class }}"
->
+<section id="{{ section_id }}" class="{{ section_class }}">
   <div class="container mx-auto px-4 py-10 max-w-4xl">
     {% if section.settings.title %}
       <h1 class="text-2xl font-medium tracking-widest mb-8 text-center uppercase text-title font-mono">
@@ -24,7 +21,7 @@
                   {{ block.settings.heading }}
                 </h2>
               {% endif %}
-              
+
               {% if block.settings.content %}
                 <div class="content">
                   {{ block.settings.content }}
@@ -38,33 +35,37 @@
 </section>
 
 {% stylesheet %}
-  .{{ section_class }} h1 {
+  .{{ section_class }}h1 {
     font-family: var(--font-family-mono);
   }
 
-  .{{ section_class }} h2 {
+  .{{ section_class }}
+  h2 {
     font-family: var(--font-family-mono);
   }
 
-  .{{ section_class }} .prose {
+  .{{ section_class }}
+  .prose {
     font-family: var(--font-family-sans);
   }
 
-  .{{ section_class }} .prose p {
+  .{{ section_class }}
+  .prose p {
     margin-bottom: 1rem;
     line-height: 1.6;
     font-family: var(--font-family-sans);
   }
 
-  .{{ section_class }} .prose p:last-child {
+  .{{ section_class }}.prose p:last-child {
     margin-bottom: 0;
   }
 
-  .{{ section_class }} .content-block {
+  .{{ section_class }}
+  .content-block {
     margin-bottom: 2rem;
   }
 
-  .{{ section_class }} .content-block:last-child {
+  .{{ section_class }}.content-block:last-child {
     margin-bottom: 0;
   }
 {% endstylesheet %}
@@ -80,8 +81,7 @@
         "id": "title",
         "label": "t:sections.order_shipping.settings.title.label",
         "default": "Orders & Shipping"
-      },
-      {
+      }, {
         "type": "text",
         "id": "custom_id",
         "label": "t:sections.order_shipping.settings.custom_id.label",
@@ -98,8 +98,7 @@
             "id": "heading",
             "label": "t:sections.order_shipping.blocks.content_block.settings.heading.label",
             "info": "t:sections.order_shipping.blocks.content_block.settings.heading.info"
-          },
-          {
+          }, {
             "type": "richtext",
             "id": "content",
             "label": "t:sections.order_shipping.blocks.content_block.settings.content.label",
@@ -117,8 +116,7 @@
             "settings": {
               "content": "<p>Gilda products are designed to last. If you have any questions about the product or fit, you can send an email to info@gildaclothing.com.</p><p>US – We offer free shipping on all orders within the US. Orders ship with [X].</p><p>International – Orders are shipped with [X] and cost $[X].</p><p>Orders will be processed Monday through Friday, excluding holidays. Orders will be shipped within 48 hours of being received. You will receive confirmation by email when goods are shipped.</p>"
             }
-          },
-          {
+          }, {
             "type": "content_block",
             "settings": {
               "heading": "Returns",
