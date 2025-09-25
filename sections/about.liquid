@@ -1,68 +1,61 @@
 {% liquid
-  assign page_content = section.settings.page
   assign section_id = section.settings.custom_id | default: section.id
   assign section_class = 'section-about'
 %}
 
-<section
-  id="{{ section_id }}"
-  class="{{ section_class }}"
->
-  {% if page_content %}
-    <div class="grid grid-cols-1 md:grid-cols-2 border-t border-b border-black h-fit">
-      {% comment %} Left side - Image {% endcomment %}
-      <div class="h-full w-full flex justify-center items-center border-b border-t sm:border-t-0 md:border-b-0 md:border-r border-black overflow-hidden">
-        {% if section.settings.image %}
-          {% render 'image'
-            , image: section.settings.image
-            , class: 'w-full h-full object-cover'
-          %}
-        {% else %}
-          <img
-            src="https://cdn.shopify.com/s/files/1/0670/9051/4081/files/3296.jpg?v=1758508794"
-            alt="{{ 'about.image_alt' | t }}"
-            class="w-full h-full object-cover"
-            loading="lazy">
-        {% endif %}
-      </div>
+<section id="{{ section_id }}" class="{{ section_class }}">
+  <div class="grid grid-cols-1 md:grid-cols-2 border-t border-b border-black h-fit">
+    {% comment %} Left side - Image {% endcomment %}
+    <div class="h-full w-full flex justify-center items-center border-b border-t sm:border-t-0 md:border-b-0 md:border-r border-black overflow-hidden">
+      {% if section.settings.image %}
+        {% render 'image'
+          , image: section.settings.image
+          , class: 'w-full h-full object-cover'
+        %}
+      {% else %}
+        <img
+          src="https://cdn.shopify.com/s/files/1/0670/9051/4081/files/3296.jpg?v=1758508794"
+          alt="{{ 'about.image_alt' | t }}"
+          class="w-full h-full object-cover"
+          loading="lazy">
+      {% endif %}
+    </div>
 
-      {% comment %} Right side - Content {% endcomment %}
-      <div class="flex flex-col justify-center px-4 py-10 md:px-4 md:max-w-[30rem] xl:max-w-[40rem] mx-auto">
-        {% if page_content.title %}
-          <h1 class="text-sm font-medium tracking-widest mb-6 text-left uppercase text-title font-mono">
-            {{ page_content.title }}
-          </h1>
-        {% endif %}
+    {% comment %} Right side - Content {% endcomment %}
+    <div class="flex flex-col justify-center px-4 py-10 md:px-4 md:max-w-[30rem] xl:max-w-[40rem] mx-auto">
+      {% if section.settings.title %}
+        <h1 class="text-sm font-medium tracking-widest mb-6 text-left uppercase text-title font-mono">
+          {{ section.settings.title }}
+        </h1>
+      {% endif %}
 
-        {% if page_content.content %}
-          <div class="text-sm prose prose-sm lg:prose-base max-w-none text-left text-subtitle font-sans">
-            {{ page_content.content }}
-          </div>
-        {% endif %}
+      <div class="text-sm prose prose-sm lg:prose-base max-w-none text-left text-subtitle font-sans">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'content_block' %}
+              <div class="content-block mb-6" {{ block.shopify_attributes }}>
+                {% if block.settings.heading %}
+                  <h2 class="text-sm font-medium tracking-widest mb-4 text-left uppercase text-title font-mono">
+                    {{ block.settings.heading }}
+                  </h2>
+                {% endif %}
 
-        {% comment %} Fallback content if no page is selected {% endcomment %}
-        {% unless page_content %}
-          <h1 class="text-sm font-medium tracking-widest mb-6 text-left uppercase text-title font-sans">
-            {{ 'about.title' | t }}
-          </h1>
-          <div class="text-sm prose prose-sm lg:prose-base max-w-none text-left text-subtitle font-sans">
-            <p>{{ 'about.default_content' | t }}</p>
-          </div>
-        {% endunless %}
+                {% if block.settings.content %}
+                  <div class="content">
+                    {{ block.settings.content }}
+                  </div>
+                {% endif %}
+              </div>
+          {% endcase %}
+        {% endfor %}
       </div>
     </div>
-  {% else %}
-    {% comment %} Fallback when no page is selected {% endcomment %}
-    <div class="flex items-center justify-center h-[70vh]">
-      <p class="text-sm opacity-70">{{ 'about.no_page_selected' | t }}</p>
-    </div>
-  {% endif %}
+  </div>
 </section>
 
 {% stylesheet %}
 
-  .{{ section_class }}
-  h1 {
+  .{{ section_class }}h1 {
     font-family: var(--font-family-sans);
   }
 
@@ -99,27 +92,52 @@
     "class": "section-about",
     "settings": [
       {
-        "type": "page",
-        "id": "page",
-        "label": "t:sections.about.settings.page.label",
-        "info": "t:sections.about.settings.page.info"
-      },
-      {
+        "type": "text",
+        "id": "title",
+        "label": "t:sections.about.settings.title.label",
+        "default": "About"
+      }, {
         "type": "image_picker",
         "id": "image",
         "label": "t:sections.about.settings.image.label",
         "info": "t:sections.about.settings.image.info"
-      },
-      {
+      }, {
         "type": "text",
         "id": "custom_id",
         "label": "t:sections.about.settings.custom_id.label",
         "info": "t:sections.about.settings.custom_id.info"
-      },
+      }
+    ],
+    "blocks": [
+      {
+        "type": "content_block",
+        "name": "t:sections.about.blocks.content_block.name",
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "t:sections.about.blocks.content_block.settings.heading.label",
+            "info": "t:sections.about.blocks.content_block.settings.heading.info"
+          }, {
+            "type": "richtext",
+            "id": "content",
+            "label": "t:sections.about.blocks.content_block.settings.content.label",
+            "info": "t:sections.about.blocks.content_block.settings.content.info"
+          }
+        ]
+      }
     ],
     "presets": [
       {
-        "name": "t:sections.about.presets.about.name"
+        "name": "t:sections.about.presets.about.name",
+        "blocks": [
+          {
+            "type": "content_block",
+            "settings": {
+              "content": "<p>Tell your story here. Share what makes your brand unique and connect with your customers.</p>"
+            }
+          }
+        ]
       }
     ]
   }

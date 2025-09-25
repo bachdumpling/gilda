@@ -86,9 +86,8 @@
     "about": {
       "name": "About",
       "settings": {
-        "page": {
-          "label": "About page",
-          "info": "Select the page that contains your about content"
+        "title": {
+          "label": "Section title"
         },
         "image": {
           "label": "About image",
@@ -97,6 +96,21 @@
         "custom_id": {
           "label": "Custom section ID",
           "info": "Optional: Add a custom ID for this section"
+        }
+      },
+      "blocks": {
+        "content_block": {
+          "name": "Content block",
+          "settings": {
+            "heading": {
+              "label": "Heading",
+              "info": "Optional: Add a heading for this content block"
+            },
+            "content": {
+              "label": "Content",
+              "info": "Add the main content for this block"
+            }
+          }
         }
       },
       "presets": {
