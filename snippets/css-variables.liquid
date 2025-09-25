@@ -1,4 +1,21 @@
 {% style %}
+  /* DM Sans font faces */
+  @font-face {
+    font-family: "DM Sans";
+    src: url("{{ 'DMSans-VariableFont.ttf' | asset_url }}") format("truetype-variations");
+    font-weight: 100 1000;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "DM Sans";
+    src: url("{{ 'DMSans-Italic-VariableFont.ttf' | asset_url }}") format("truetype-variations");
+    font-weight: 100 1000;
+    font-style: italic;
+    font-display: swap;
+  }
+
   /* DM Mono font faces */
   @font-face {
     font-family: "DM Mono";
@@ -51,7 +68,10 @@
   :root {
     --color-background: #F2EFED;
     --color-foreground: #000000;
-    --color-text-muted: #333333;
+    --color-title: #252525;
+    --color-subtitle: #333333;
+    --font-family-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-family-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --style-border-radius-inputs: 0px;
   }
 

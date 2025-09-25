@@ -12,13 +12,12 @@
     --section-padding-bottom: {{ section.settings.padding_bottom }}px;
   ">
   {% if page_content %}
-    <div class="grid grid-cols-1 sm:grid-cols-2 border-t border-b border-black h-[70vh]">
+    <div class="grid grid-cols-1 md:grid-cols-2 border-t border-b border-black h-fit">
       {% comment %} Left side - Image {% endcomment %}
-      <div class="flex justify-center items-center border-b sm:border-b-0 sm:border-r border-black">
+      <div class="h-full w-full flex justify-center items-center border-b border-t sm:border-t-0 md:border-b-0 md:border-r border-black overflow-hidden">
         {% if section.settings.image %}
           {% render 'image'
             , image: section.settings.image
-            , width: 1000
             , class: 'w-full h-full object-cover'
           %}
         {% else %}
@@ -31,25 +30,25 @@
       </div>
 
       {% comment %} Right side - Content {% endcomment %}
-      <div class="flex flex-col justify-center px-4 py-10 sm:p-0 max-w-[26rem] mx-auto">
+      <div class="flex flex-col justify-center px-4 py-10 md:px-4 md:max-w-[30rem] xl:max-w-[40rem] mx-auto">
         {% if page_content.title %}
-          <h1 class="text-sm lg:text-base font-medium tracking-widest mb-6 text-left uppercase">
+          <h1 class="text-sm font-medium tracking-widest mb-6 text-left uppercase text-title font-mono">
             {{ page_content.title }}
           </h1>
         {% endif %}
 
         {% if page_content.content %}
-          <div class="text-sm lg:text-base prose prose-sm lg:prose-base max-w-none text-left text-muted">
+          <div class="text-sm prose prose-sm lg:prose-base max-w-none text-left text-subtitle font-sans">
             {{ page_content.content }}
           </div>
         {% endif %}
 
         {% comment %} Fallback content if no page is selected {% endcomment %}
         {% unless page_content %}
-          <h1 class="text-sm lg:text-base font-medium tracking-widest mb-6 text-left uppercase">
+          <h1 class="text-sm font-medium tracking-widest mb-6 text-left uppercase text-title font-sans">
             {{ 'about.title' | t }}
           </h1>
-          <div class="text-sm lg:text-base prose prose-sm lg:prose-base max-w-none text-left text-muted">
+          <div class="text-sm prose prose-sm lg:prose-base max-w-none text-left text-subtitle font-sans">
             <p>{{ 'about.default_content' | t }}</p>
           </div>
         {% endunless %}
@@ -70,9 +69,20 @@
   }
 
   .{{ section_class }}
+  h1 {
+    font-family: var(--font-family-sans);
+  }
+
+  .{{ section_class }}
+  .prose {
+    font-family: var(--font-family-sans);
+  }
+
+  .{{ section_class }}
   .prose p {
     margin-bottom: 1rem;
     line-height: 1.6;
+    font-family: var(--font-family-sans);
   }
 
   .{{ section_class }}.prose p:last-child {
