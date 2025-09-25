@@ -25,7 +25,8 @@
       ],
       "name": "t:sections.about.presets.about.name",
       "settings": {
-        "title": "About",
+        "title": "",
+        "image": "shopify://shop_images/3297.jpg",
         "custom_id": ""
       }
     }
