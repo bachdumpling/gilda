@@ -139,11 +139,11 @@
         </form>
       {% else %}
         <!-- Empty Cart -->
-        <div class="text-center py-12 border-t border-black flex flex-col justify-center items-center px-6 h-full">
-          <p class="">{{ 'cart.empty' | t | default: 'Your cart is empty' }}</p>
+        <div class="text-center border-t border-black flex flex-col justify-center items-center px-6 h-full gap-6">
+          <p class="text-lg font-sans">{{ 'cart.empty' | t | default: 'Your cart is empty' }}</p>
           <button 
             type="button" 
-            class="text-center block w-full py-4 px-3 text-sm uppercase font-medium border border-black cursor-pointer hover:bg-black hover:text-white transition-all duration-300"
+            class="text-center block w-full py-4 px-3 text-base uppercase font-medium border border-black cursor-pointer hover:bg-black hover:text-white transition-all duration-300"
             data-cart-close
           >
             {{ 'cart.continue_shopping' | t | default: 'Continue shopping' }}
@@ -159,11 +159,11 @@
          <div class="px-6 pt-6">
           <div class="flex justify-between text-sm">
             <span class=" text-lg uppercase">{{ 'cart.subtotal' | t | default: 'Subtotal' }}</span>
-            <span class="font-medium text-lg">{{ cart.total_price | money }} USD</span>
+            <span class="text-lg">{{ cart.total_price | money }} USD</span>
           </div>
           {% if cart.total_discount > 0 %}
             <div class="flex justify-between text-sm text-green-600">
-              <span class=" text-lg uppercase">{{ 'cart.savings' | t | default: 'Savings' }}</span>
+              <span class="text-lg uppercase">{{ 'cart.savings' | t | default: 'Savings' }}</span>
               <span>-{{ cart.total_discount | money }} USD</span>
             </div>
           {% endif %}
@@ -172,7 +172,7 @@
         <!-- Checkout Button and Free shipping banner -->
          <div class="flex flex-col gap-3 px-6 pt-6 pb-8">
          
-            <a href="{{ routes.cart_url }}" class="text-center block w-full py-4 px-3 text-sm uppercase font-medium border border-black cursor-pointer">
+            <a href="{{ routes.cart_url }}" class="text-center block w-full py-4 px-3 text-base uppercase font-medium border border-black cursor-pointer hover:bg-black hover:text-white transition-all duration-300">
             {{ 'cart.checkout' | t }} • {{ cart.total_price | money }}
             </a>
 
