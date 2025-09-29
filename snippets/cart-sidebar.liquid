@@ -1,0 +1,190 @@
+{% comment %}
+  Cart sidebar component that slides in from the right
+  Width: 420px
+  Renders cart items and checkout functionality
+{% endcomment %}
+
+<!-- Cart Sidebar Overlay -->
+<div 
+  id="cart-sidebar-overlay" 
+  class="fixed inset-0 bg-black/30 bg-opacity-20 z-40 hidden transition-opacity duration-300 ease-in-out"
+  data-cart-overlay
+>
+</div>
+
+<!-- Cart Sidebar -->
+<div 
+  id="cart-sidebar" 
+  class="fixed top-0 right-0 h-full w-[420px] bg-white z-50 transform translate-x-full transition-transform duration-300 ease-in-out shadow-lg"
+  data-cart-sidebar
+>
+  <!-- Sidebar Header -->
+  <div class="h-20 flex items-center justify-between p-6">
+    <button 
+      type="button" 
+      class="cursor-pointer text-gray-700 hover:text-black transition-colors uppercase text-base"
+      data-cart-close
+      aria-label="{{ 'general.accessibility.close' | t }}"
+    >
+       Close
+    </button>
+    <h2 class="text-base uppercase">
+        {{ 'cart.title' | t }}
+        {% if cart.item_count > 0 %}
+          ({{ cart.item_count }})
+        {% endif %}
+      </h2>
+  </div>
+
+  <!-- Sidebar Content -->
+  <div class="flex flex-col h-full">
+    <!-- Cart Items -->
+    <div class="flex-1 overflow-y-auto">
+      {% if cart.item_count > 0 %}
+        <form action="{{ routes.cart_url }}" method="post" id="cart-form">
+          <div class="">
+            {% for item in cart.items %}
+              <div class="grid grid-cols-3 gap-4 border-t border-black last:border-b-1">
+                <!-- Product Image -->
+                <div class="col-span-1 border-r border-black flex items-center justify-center">
+                  {% if item.image %}
+                    <img 
+                      src="{{ item.image | image_url: width: 1000 }}" 
+                      alt="{{ item.image.alt | escape }}"
+                      class="w-20 h-20 object-cover rounded"
+                      loading="lazy"
+                    >
+                  {% else %}
+                    <div class="w-20 h-20 bg-gray-100 rounded flex items-center justify-center">
+                      <svg class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                      </svg>
+                    </div>
+                  {% endif %}
+                </div>
+
+                <!-- Product Details -->
+                <div class="col-span-2 flex flex-col p-6 gap-5">
+                    <div class="flex flex-col gap-2">
+                    <!-- Remove Button -->
+                    <div class="flex justify-end">
+                      <button 
+                        type="button" 
+                        class="text-sm text-gray-500 hover:text-red-500 transition-colors uppercase"
+                        data-remove-item="{{ item.key }}"
+                      >
+                        {{ 'cart.remove' | t }} X
+                      </button>
+                    </div>
+
+                  {% comment %} Product Title {% endcomment %}
+                  <h3 class="text-sm text-black">
+                    {{ item.product.title }}
+                  </h3>
+
+                  {% comment %} Size {% endcomment %}
+                  <p class="text-sm text-gray-500">
+                    Size: M
+                  </p>
+                  </div>
+                  {% comment %} Quantity Controls {% endcomment %}
+                  <div class="flex items-center justify-between">
+                    <!-- Quantity Controls -->
+                    <div class="flex items-center">
+                      <button 
+                        type="button" 
+                        class="focus:outline-none"
+                        data-quantity-decrease="{{ item.key }}"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                        </svg>
+                      </button>
+                      <input 
+                        type="number" 
+                        name="updates[]" 
+                        value="{{ item.quantity }}" 
+                        min="0"
+                        class="w-12 text-center text-sm border-0 focus:ring-0 focus:outline-none"
+                        data-quantity-input="{{ item.key }}"
+                      >
+                      <button 
+                        type="button" 
+                        class="focus:outline-none"
+                        data-quantity-increase="{{ item.key }}"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                      </button>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="text-right text-sm">
+                      <p class="text-sm font-medium">{{ item.final_line_price | money }}</p>
+                      {% if item.original_line_price != item.final_line_price %}
+                        <p class="text-xs text-gray-500 line-through">{{ item.original_line_price | money }}</p>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            {% endfor %}
+            </div>
+        </form>
+      {% else %}
+        <!-- Empty Cart -->
+        <div class="text-center py-12">
+          <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13h10M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z"></path>
+          </svg>
+          <p class="text-gray-500 mb-4">{{ 'cart.empty' | t | default: 'Your cart is empty' }}</p>
+          <button 
+            type="button" 
+            class="text-sm text-black hover:underline"
+            data-cart-close
+          >
+            {{ 'cart.continue_shopping' | t | default: 'Continue shopping' }}
+          </button>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Sidebar Footer -->
+    {% if cart.item_count > 0 %}
+      <div class="border-t border-gray-200 p-6 bg-gray-50">
+        <!-- Cart Totals -->
+        <div class="space-y-2 mb-4">
+          <div class="flex justify-between text-sm">
+            <span>{{ 'cart.subtotal' | t | default: 'Subtotal' }}</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+          {% if cart.total_discount > 0 %}
+            <div class="flex justify-between text-sm text-green-600">
+              <span>{{ 'cart.savings' | t | default: 'Savings' }}</span>
+              <span>-{{ cart.total_discount | money }}</span>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Checkout Button -->
+        <a 
+          href="{{ routes.cart_url }}" 
+          class="block w-full bg-black text-white text-center py-3 px-4 text-sm uppercase font-medium hover:bg-gray-800 transition-colors"
+        >
+          {{ 'cart.checkout' | t }}
+        </a>
+
+        <!-- View Cart Link -->
+        <a 
+          href="{{ routes.cart_url }}" 
+          class="block w-full text-center py-2 text-sm text-gray-600 hover:text-black transition-colors"
+          data-cart-close
+        >
+          {{ 'cart.view_cart' | t | default: 'View cart' }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>

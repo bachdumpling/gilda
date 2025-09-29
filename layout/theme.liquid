@@ -19,5 +19,222 @@
     {{ content_for_layout }}
 
     {% sections 'footer-group' %}
+
+    <!-- Cart Sidebar JavaScript -->
+    <script>
+      class CartSidebar {
+        constructor() {
+          this.sidebar = document.querySelector('[data-cart-sidebar]');
+          this.overlay = document.querySelector('[data-cart-overlay]');
+          this.openButton = document.querySelector('[data-cart-open]');
+          this.closeButtons = document.querySelectorAll('[data-cart-close]');
+          this.form = document.getElementById('cart-form');
+          
+          this.init();
+        }
+
+        init() {
+          // Open sidebar
+          if (this.openButton) {
+            this.openButton.addEventListener('click', (e) => {
+              e.preventDefault();
+              this.open();
+            });
+          }
+
+          // Close sidebar
+          this.closeButtons.forEach(button => {
+            button.addEventListener('click', () => this.close());
+          });
+
+          // Close on overlay click
+          if (this.overlay) {
+            this.overlay.addEventListener('click', () => this.close());
+          }
+
+          // Close on escape key
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isOpen()) {
+              this.close();
+            }
+          });
+
+          // Quantity controls
+          this.initQuantityControls();
+
+          // Remove item buttons
+          this.initRemoveButtons();
+        }
+
+        open() {
+          if (this.sidebar && this.overlay) {
+            this.overlay.classList.remove('hidden');
+            this.sidebar.classList.remove('translate-x-full');
+            document.body.style.overflow = 'hidden';
+            
+            // Focus management
+            setTimeout(() => {
+              const closeButton = this.sidebar.querySelector('[data-cart-close]');
+              if (closeButton) closeButton.focus();
+            }, 300);
+          }
+        }
+
+        close() {
+          if (this.sidebar && this.overlay) {
+            this.sidebar.classList.add('translate-x-full');
+            setTimeout(() => {
+              this.overlay.classList.add('hidden');
+            }, 300);
+            document.body.style.overflow = '';
+            
+            // Return focus to cart button
+            if (this.openButton) this.openButton.focus();
+          }
+        }
+
+        isOpen() {
+          return this.overlay && !this.overlay.classList.contains('hidden');
+        }
+
+        initQuantityControls() {
+          // Quantity decrease buttons
+          document.querySelectorAll('[data-quantity-decrease]').forEach(button => {
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              const key = button.dataset.quantityDecrease;
+              const input = document.querySelector(`[data-quantity-input="${key}"]`);
+              if (input) {
+                const currentValue = parseInt(input.value);
+                if (currentValue > 1) {
+                  input.value = currentValue - 1;
+                  this.updateQuantity(key, currentValue - 1);
+                } else {
+                  this.removeItem(key);
+                }
+              }
+            });
+          });
+
+          // Quantity increase buttons
+          document.querySelectorAll('[data-quantity-increase]').forEach(button => {
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              const key = button.dataset.quantityIncrease;
+              const input = document.querySelector(`[data-quantity-input="${key}"]`);
+              if (input) {
+                const currentValue = parseInt(input.value);
+                input.value = currentValue + 1;
+                this.updateQuantity(key, currentValue + 1);
+              }
+            });
+          });
+
+          // Direct input changes
+          document.querySelectorAll('[data-quantity-input]').forEach(input => {
+            input.addEventListener('change', (e) => {
+              const key = input.dataset.quantityInput;
+              const value = parseInt(input.value);
+              if (value === 0) {
+                this.removeItem(key);
+              } else {
+                this.updateQuantity(key, value);
+              }
+            });
+          });
+        }
+
+        initRemoveButtons() {
+          document.querySelectorAll('[data-remove-item]').forEach(button => {
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              const key = button.dataset.removeItem;
+              this.removeItem(key);
+            });
+          });
+        }
+
+        async updateQuantity(key, quantity) {
+          try {
+            const response = await fetch('/cart/change.js', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: key,
+                quantity: quantity
+              })
+            });
+
+            if (response.ok) {
+              this.refreshCart();
+            }
+          } catch (error) {
+            console.error('Error updating cart:', error);
+          }
+        }
+
+        async removeItem(key) {
+          try {
+            const response = await fetch('/cart/change.js', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: key,
+                quantity: 0
+              })
+            });
+
+            if (response.ok) {
+              this.refreshCart();
+            }
+          } catch (error) {
+            console.error('Error removing item:', error);
+          }
+        }
+
+        async refreshCart() {
+          try {
+            const response = await fetch('/?section_id=header');
+            if (response.ok) {
+              const html = await response.text();
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(html, 'text/html');
+              
+              // Update cart button
+              const newCartButton = doc.querySelector('[data-cart-open]');
+              if (newCartButton && this.openButton) {
+                this.openButton.innerHTML = newCartButton.innerHTML;
+              }
+              
+              // Refresh sidebar content
+              const newSidebar = doc.querySelector('[data-cart-sidebar]');
+              if (newSidebar && this.sidebar) {
+                this.sidebar.innerHTML = newSidebar.innerHTML;
+                this.initQuantityControls();
+                this.initRemoveButtons();
+              }
+            }
+          } catch (error) {
+            console.error('Error refreshing cart:', error);
+            // Fallback: reload the page
+            window.location.reload();
+          }
+        }
+      }
+
+      // Initialize cart sidebar when DOM is loaded
+      document.addEventListener('DOMContentLoaded', () => {
+        const cartSidebar = new CartSidebar();
+        
+        // TEMPORARY: Auto-open sidebar for styling - REMOVE WHEN DONE
+        setTimeout(() => {
+          cartSidebar.open();
+        }, 100);
+      });
+    </script>
   </body>
 </html>
