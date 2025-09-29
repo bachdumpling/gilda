@@ -23,13 +23,13 @@
     "comment_form_title": "Add a comment"
   },
   "cart": {
-    "checkout": "Checkout",
+    "checkout": "Check out",
     "title": "Cart",
     "update": "Update",
     "remove": "Remove",
     "empty": "Your cart is empty",
     "continue_shopping": "Continue shopping",
-    "subtotal": "Subtotal",
+    "subtotal": "Total",
     "savings": "Savings",
     "view_cart": "View cart"
   },

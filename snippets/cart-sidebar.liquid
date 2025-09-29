@@ -13,13 +13,13 @@
 <!-- Cart Sidebar -->
 <div
   id="cart-sidebar"
-  class="fixed top-0 right-0 h-full w-[420px] bg-white z-50 transform translate-x-full transition-transform duration-300 ease-in-out shadow-lg"
+  class="fixed top-0 right-0 h-full w-[420px] bg-background z-50 transform translate-x-full transition-transform duration-300 ease-in-out shadow-lg"
   data-cart-sidebar>
   <!-- Sidebar Header -->
   <div class="h-20 flex items-center justify-between p-6">
     <button
       type="button"
-      class="cursor-pointer text-gray-700 hover:text-black transition-colors uppercase text-base"
+      class="cursor-pointer text-black uppercase text-base"
       data-cart-close
       aria-label="{{ 'general.accessibility.close' | t }}">
       Close
@@ -33,7 +33,7 @@
   </div>
 
   <!-- Sidebar Content -->
-  <div class="flex flex-col h-full">
+  <div class="flex flex-col justify-between h-full">
 
     <!-- Cart Items -->
     <div class="flex-1 overflow-y-auto">
@@ -70,7 +70,10 @@
                         class="text-sm text-gray-500 hover:text-red-500 transition-colors uppercase cursor-pointer"
                         data-remove-item="{{ item.key }}"
                       >
-                        {{ 'cart.remove' | t }} X
+                      <svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M10.895 1.49316L6.32471 6.0625L10.8306 10.5684L10.0054 11.3936L5.49951 6.8877L0.994629 11.3926L0.169434 10.5674L4.67432 6.0625L0.105957 1.49414L0.931152 0.668945L5.49951 5.2373L10.0698 0.667969L10.895 1.49316Z" fill="black"/>
+                      </svg>
+                      
                       </button>
                     </div>
 
@@ -80,9 +83,13 @@
                   </h3>
 
                   {% comment %} Size {% endcomment %}
-                  <p class="text-sm text-gray-500">
-                    Size: M
-                  </p>
+                  {% if item.variant.option1 != 'Default Title' %}
+                    <p class="text-sm text-gray-500">
+                      {% for option in item.options_with_values %}
+                        {{ option.name }}: {{ option.value }}{% unless forloop.last %}, {% endunless %}
+                      {% endfor %}
+                    </p>
+                  {% endif %}
                   </div>
                   {% comment %} Quantity Controls {% endcomment %}
                   <div class="flex items-center justify-between">
@@ -118,9 +125,9 @@
 
                     <!-- Price -->
                     <div class="text-right text-sm">
-                      <p class="text-sm font-medium">{{ item.final_line_price | money }}</p>
+                      <p class="text-sm">{{ item.final_line_price | money }}</p>
                       {% if item.original_line_price != item.final_line_price %}
-                        <p class="text-xs text-gray-500 line-through">{{ item.original_line_price | money }}</p>
+                        <p class="text-sm text-gray-500 line-through">{{ item.original_line_price | money }}</p>
                       {% endif %}
                     </div>
                   </div>
@@ -132,14 +139,11 @@
         </form>
       {% else %}
         <!-- Empty Cart -->
-        <div class="text-center py-12">
-          <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13h10M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z"></path>
-          </svg>
-          <p class="text-gray-500 mb-4">{{ 'cart.empty' | t | default: 'Your cart is empty' }}</p>
+        <div class="text-center py-12 border-t border-black flex flex-col justify-center items-center px-6 h-full">
+          <p class="">{{ 'cart.empty' | t | default: 'Your cart is empty' }}</p>
           <button 
             type="button" 
-            class="text-sm text-black hover:underline"
+            class="text-center block w-full py-4 px-3 text-sm uppercase font-medium border border-black cursor-pointer hover:bg-black hover:text-white transition-all duration-300"
             data-cart-close
           >
             {{ 'cart.continue_shopping' | t | default: 'Continue shopping' }}
@@ -150,33 +154,43 @@
 
     <!-- Sidebar Footer -->
     {% if cart.item_count > 0 %}
-      <div class="border-t border-gray-200 p-6 bg-gray-50">
+      <div class="border-t border-black mb-20">
         <!-- Cart Totals -->
-        <div class="space-y-2 mb-4">
+         <div class="px-6 pt-6">
           <div class="flex justify-between text-sm">
-            <span>{{ 'cart.subtotal' | t | default: 'Subtotal' }}</span>
-            <span>{{ cart.total_price | money }}</span>
+            <span class=" text-lg uppercase">{{ 'cart.subtotal' | t | default: 'Subtotal' }}</span>
+            <span class="font-medium text-lg">{{ cart.total_price | money }} USD</span>
           </div>
           {% if cart.total_discount > 0 %}
             <div class="flex justify-between text-sm text-green-600">
-              <span>{{ 'cart.savings' | t | default: 'Savings' }}</span>
-              <span>-{{ cart.total_discount | money }}</span>
+              <span class=" text-lg uppercase">{{ 'cart.savings' | t | default: 'Savings' }}</span>
+              <span>-{{ cart.total_discount | money }} USD</span>
             </div>
           {% endif %}
         </div>
 
-        <!-- Checkout Button -->
-        <a href="{{ routes.cart_url }}" class="block w-full bg-black text-white text-center py-3 px-4 text-sm uppercase font-medium hover:bg-gray-800 transition-colors">
-          {{ 'cart.checkout' | t }}
-        </a>
+        <!-- Checkout Button and Free shipping banner -->
+         <div class="flex flex-col gap-3 px-6 pt-6 pb-8">
+         
+            <a href="{{ routes.cart_url }}" class="text-center block w-full py-4 px-3 text-sm uppercase font-medium border border-black cursor-pointer">
+            {{ 'cart.checkout' | t }} • {{ cart.total_price | money }}
+            </a>
+
+          <div class="">
+            <div class="text-xs font-sans">
+                Free shipping offered on orders on domestic orders. See our <a href="/pages/orders-shipping" class="underline">full shipping policy here</a>.
+            </div>
+          </div>
+        </div>
+
 
         <!-- View Cart Link -->
-        <a
+        {% comment %} <a
           href="{{ routes.cart_url }}"
           class="block w-full text-center py-2 text-sm text-gray-600 hover:text-black transition-colors"
           data-cart-close>
           {{ 'cart.view_cart' | t | default: 'View cart' }}
-        </a>
+        </a> {% endcomment %}
       </div>
     {% endif %}
   </div>

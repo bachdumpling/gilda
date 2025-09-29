@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @theme {
+  --color-background: #F2EFED;
+  --color-foreground: #000000;
   --color-title: #252525;
   --color-subtitle: #333333;
   --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif,
