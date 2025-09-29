@@ -706,6 +706,9 @@
     --tw-ease: var(--ease-in-out);
     transition-timing-function: var(--ease-in-out);
   }
+  .\[-moz-appearance\:textfield\] {
+    -moz-appearance: textfield;
+  }
   .last\:border-b-1 {
     &:last-child {
       border-bottom-style: var(--tw-border-style);
@@ -922,6 +925,16 @@
   .xl\:max-w-\[40rem\] {
     @media (width >= 80rem) {
       max-width: 40rem;
+    }
+  }
+  .\[\&\:\:-webkit-inner-spin-button\]\:appearance-none {
+    &::-webkit-inner-spin-button {
+      appearance: none;
+    }
+  }
+  .\[\&\:\:-webkit-outer-spin-button\]\:appearance-none {
+    &::-webkit-outer-spin-button {
+      appearance: none;
     }
   }
 }

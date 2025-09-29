@@ -5,39 +5,36 @@
 {% endcomment %}
 
 <!-- Cart Sidebar Overlay -->
-<div 
-  id="cart-sidebar-overlay" 
+<div
+  id="cart-sidebar-overlay"
   class="fixed inset-0 bg-black/30 bg-opacity-20 z-40 hidden transition-opacity duration-300 ease-in-out"
-  data-cart-overlay
->
-</div>
+  data-cart-overlay></div>
 
 <!-- Cart Sidebar -->
-<div 
-  id="cart-sidebar" 
+<div
+  id="cart-sidebar"
   class="fixed top-0 right-0 h-full w-[420px] bg-white z-50 transform translate-x-full transition-transform duration-300 ease-in-out shadow-lg"
-  data-cart-sidebar
->
+  data-cart-sidebar>
   <!-- Sidebar Header -->
   <div class="h-20 flex items-center justify-between p-6">
-    <button 
-      type="button" 
+    <button
+      type="button"
       class="cursor-pointer text-gray-700 hover:text-black transition-colors uppercase text-base"
       data-cart-close
-      aria-label="{{ 'general.accessibility.close' | t }}"
-    >
-       Close
+      aria-label="{{ 'general.accessibility.close' | t }}">
+      Close
     </button>
     <h2 class="text-base uppercase">
-        {{ 'cart.title' | t }}
-        {% if cart.item_count > 0 %}
-          ({{ cart.item_count }})
-        {% endif %}
-      </h2>
+      {{ 'cart.title' | t }}
+      {% if cart.item_count > 0 %}
+        ({{ cart.item_count }})
+      {% endif %}
+    </h2>
   </div>
 
   <!-- Sidebar Content -->
   <div class="flex flex-col h-full">
+
     <!-- Cart Items -->
     <div class="flex-1 overflow-y-auto">
       {% if cart.item_count > 0 %}
@@ -70,7 +67,7 @@
                     <div class="flex justify-end">
                       <button 
                         type="button" 
-                        class="text-sm text-gray-500 hover:text-red-500 transition-colors uppercase"
+                        class="text-sm text-gray-500 hover:text-red-500 transition-colors uppercase cursor-pointer"
                         data-remove-item="{{ item.key }}"
                       >
                         {{ 'cart.remove' | t }} X
@@ -93,7 +90,7 @@
                     <div class="flex items-center">
                       <button 
                         type="button" 
-                        class="focus:outline-none"
+                        class="focus:outline-none cursor-pointer"
                         data-quantity-decrease="{{ item.key }}"
                       >
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,12 +102,12 @@
                         name="updates[]" 
                         value="{{ item.quantity }}" 
                         min="0"
-                        class="w-12 text-center text-sm border-0 focus:ring-0 focus:outline-none"
+                        class="w-12 text-center text-sm border-0 focus:ring-0 focus:outline-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                         data-quantity-input="{{ item.key }}"
                       >
                       <button 
                         type="button" 
-                        class="focus:outline-none"
+                        class="focus:outline-none cursor-pointer"
                         data-quantity-increase="{{ item.key }}"
                       >
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,19 +166,15 @@
         </div>
 
         <!-- Checkout Button -->
-        <a 
-          href="{{ routes.cart_url }}" 
-          class="block w-full bg-black text-white text-center py-3 px-4 text-sm uppercase font-medium hover:bg-gray-800 transition-colors"
-        >
+        <a href="{{ routes.cart_url }}" class="block w-full bg-black text-white text-center py-3 px-4 text-sm uppercase font-medium hover:bg-gray-800 transition-colors">
           {{ 'cart.checkout' | t }}
         </a>
 
         <!-- View Cart Link -->
-        <a 
-          href="{{ routes.cart_url }}" 
+        <a
+          href="{{ routes.cart_url }}"
           class="block w-full text-center py-2 text-sm text-gray-600 hover:text-black transition-colors"
-          data-cart-close
-        >
+          data-cart-close>
           {{ 'cart.view_cart' | t | default: 'View cart' }}
         </a>
       </div>
