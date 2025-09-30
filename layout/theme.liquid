@@ -27,7 +27,6 @@
           this.sidebar = document.querySelector('[data-cart-sidebar]');
           this.overlay = document.querySelector('[data-cart-overlay]');
           this.openButton = document.querySelector('[data-cart-open]');
-          this.closeButtons = document.querySelectorAll('[data-cart-close]');
           this.form = document.getElementById('cart-form');
           
           this.init();
@@ -42,11 +41,6 @@
             });
           }
 
-          // Close sidebar
-          this.closeButtons.forEach(button => {
-            button.addEventListener('click', () => this.close());
-          });
-
           // Close on overlay click
           if (this.overlay) {
             this.overlay.addEventListener('click', () => this.close());
@@ -59,11 +53,17 @@
             }
           });
 
-          // Quantity controls
+          // Initialize interactive elements
+          this.initCloseButtons();
           this.initQuantityControls();
-
-          // Remove item buttons
           this.initRemoveButtons();
+        }
+
+        initCloseButtons() {
+          // Remove old event listeners by querying fresh elements
+          document.querySelectorAll('[data-cart-close]').forEach(button => {
+            button.addEventListener('click', () => this.close());
+          });
         }
 
         open() {
@@ -214,6 +214,7 @@
               const newSidebar = doc.querySelector('[data-cart-sidebar]');
               if (newSidebar && this.sidebar) {
                 this.sidebar.innerHTML = newSidebar.innerHTML;
+                this.initCloseButtons();
                 this.initQuantityControls();
                 this.initRemoveButtons();
               }

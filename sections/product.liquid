@@ -12,8 +12,8 @@
       {% for image in product.images %}
         <div class="w-full">
           {% render 'image'
-            ,  class: 'product-image w-full h-auto'
-            ,  image: image
+            , class: 'product-image w-full h-auto'
+            , image: image
             , width: 1200 %}
         </div>
       {% endfor %}
@@ -40,30 +40,44 @@
           , product %}
           {% assign current_variant = product.selected_or_first_available_variant %}
 
+          <input
+            type="hidden"
+            name="id"
+            id="product-variant-id"
+            value="{{ current_variant.id }}">
+
           {% if product.variants.size > 1 %}
-            <div class="mb-4">
-              <label for="variant-select" class="block text-sm font-medium mb-2">
-                Variant
-              </label>
-              <select
-                name="id"
-                id="variant-select"
-                class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-transparent">
-                {% for variant in product.variants %}
-                  <option
-                    value="{{ variant.id }}"
-                    {% if variant == current_variant %}
-                    selected="selected"
-                    {% endif %}
-                    {% unless variant.available %}
-                    disabled{% endunless %}>
-                    {{ variant.title }} - {{ variant.price | money }}
-                    {% unless variant.available %}
-                      (Sold out){% endunless %}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
+            {% comment %} Variant Options {% endcomment %}
+            {% for option in product.options_with_values %}
+              <div class="mb-6">
+                <label class="block text-sm uppercase tracking-wide mb-3">
+                  {{ option.name }}
+                </label>
+                <div class="flex flex-wrap gap-2">
+                  {% for value in option.values %}
+                    {% assign option_index = option.position | minus: 1 %}
+                    {% assign variant_for_value = product.variants | where: option.name, value | first %}
+                    <button
+                      type="button"
+                      class="variant-option px-4 py-2 border border-black text-sm uppercase tracking-wide transition-all duration-200 hover:bg-black hover:text-white cursor-pointer"
+                      data-option-position="{{ option.position }}"
+                      data-option-value="{{ value | escape }}"
+                      data-variant-available="{{ variant_for_value.available }}"
+                      {% if current_variant[option.name] == value %}
+                      data-selected="true"
+                      {% endif %}
+                      {% unless variant_for_value.available %}
+                      disabled
+                      {% endunless %}>
+                      {{ value }}
+                      {% unless variant_for_value.available %}
+                        <span class="text-xs">(Sold out)</span>
+                      {% endunless %}
+                    </button>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
           {% else %}
             <input
               type="hidden"
@@ -72,7 +86,7 @@
           {% endif %}
 
           <div class="mb-6">
-            <label for="quantity" class="block text-sm font-medium mb-2">
+            <label for="quantity" class="block text-sm uppercase tracking-wide mb-3">
               Quantity
             </label>
             <input
@@ -81,13 +95,13 @@
               id="quantity"
               min="1"
               value="1"
-              class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-transparent">
+              class="w-full p-3 border border-black focus:ring-0 focus:outline-none">
           </div>
 
           <div class="space-y-3">
             <button
               type="submit"
-              class="w-full bg-black text-white py-3 px-6 rounded-md hover:bg-gray-800 transition-colors font-medium"
+              class="w-full bg-black text-white py-4 px-6 uppercase tracking-wide text-sm hover:bg-gray-800 transition-colors font-medium cursor-pointer"
               {% unless current_variant.available %}
               disabled{% endunless %}>
               {% if current_variant.available %}
@@ -104,6 +118,132 @@
     </div>
   </div>
 </div>
+
+{% stylesheet %}
+  .variant-option {
+    position: relative;
+  }
+
+  .variant-option[data-selected="true"] {
+    background-color: black;
+    color: white;
+  }
+
+  .variant-option:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+
+  .variant-option:disabled:hover {
+    background-color: transparent;
+    color: black;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class ProductVariantSelector {
+    constructor() {
+      this.product = {{ product | json }};
+      this.variantButtons = document.querySelectorAll('.variant-option');
+      this.variantInput = document.getElementById('product-variant-id');
+      this.priceElement = document.querySelector('.product-info .text-xl');
+      this.submitButton = document.querySelector('button[type="submit"]');
+      this.selectedOptions = {};
+
+      this.init();
+    }
+
+    init() {
+
+// Initialize selected options from current variant
+      this.variantButtons.forEach(button => {
+        if (button.dataset.selected === 'true') {
+          const position = button.dataset.optionPosition;
+          const value = button.dataset.optionValue;
+          this.selectedOptions[position] = value;
+        }
+
+        button.addEventListener('click', (e) => {
+          if (!button.disabled) {
+            this.handleOptionClick(button);
+          }
+        });
+      });
+    }
+
+    handleOptionClick(button) {
+      const position = button.dataset.optionPosition;
+      const value = button.dataset.optionValue;
+
+// Update selected options
+      this.selectedOptions[position] = value;
+
+// Update UI for this option group
+      document.querySelectorAll(`[data-option-position="${position}"]`).forEach(btn => {
+        btn.dataset.selected = 'false';
+      });
+      button.dataset.selected = 'true';
+
+// Find matching variant
+      this.updateVariant();
+    }
+
+    updateVariant() {
+
+// Build option array from selected options
+      const options = [];
+      for (let i = 1; i <= Object.keys(this.selectedOptions).length; i++) {
+        options.push(this.selectedOptions[i.toString()]);
+      }
+
+// Find variant that matches all selected options
+      const matchingVariant = this.product.variants.find(variant => {
+        return options.every((option, index) => {
+          return variant.options[index] === option;
+        });
+      });
+
+      if (matchingVariant) { // Update hidden input
+        this.variantInput.value = matchingVariant.id;
+
+// Update price
+        if (this.priceElement) {
+          const formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: '{{ cart.currency.iso_code }}'
+          });
+          this.priceElement.textContent = formatter.format(matchingVariant.price / 100);
+        }
+
+// Update submit button
+        if (this.submitButton) {
+          if (matchingVariant.available) {
+            this.submitButton.disabled = false;
+            this.submitButton.textContent = 'Add to cart';
+          } else {
+            this.submitButton.disabled = true;
+            this.submitButton.textContent = 'Sold out';
+          }
+        }
+
+// Update URL without page reload
+        const url = new URL(window.location);
+        url.searchParams.set('variant', matchingVariant.id);
+        window.history.replaceState({}, '', url);
+      }
+    }
+  }
+
+// Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      new ProductVariantSelector();
+    });
+  } else {
+    new ProductVariantSelector();
+  }
+{% endjavascript %}
 
 {% schema %}
   {
