@@ -20,11 +20,10 @@
 
   <!-- Cart link -->
   <div class="flex items-center">
-    <button 
-      type="button" 
+    <button
+      type="button"
       class="text-black no-underline text-sm md:text-base uppercase cursor-pointer hover:opacity-70 transition-opacity"
-      data-cart-open
-    >
+      data-cart-open>
       {% if cart.item_count > 0 %}
         Cart({{ cart.item_count }})
       {% else %}

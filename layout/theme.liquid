@@ -28,60 +28,8 @@
           this.overlay = document.querySelector('[data-cart-overlay]');
           this.openButton = document.querySelector('[data-cart-open]');
           this.form = document.getElementById('cart-form');
-          
+
           this.init();
-        }
-
-        getSectionsToRender() {
-          return [
-            {
-              id: 'header',
-              selector: '[data-cart-open]'
-            },
-            {
-              id: 'cart-sidebar',
-              selector: '[data-cart-sidebar]'
-            }
-          ];
-        }
-
-        getSectionInnerHTML(html, selector = '.shopify-section') {
-          return new DOMParser().parseFromString(html, 'text/html').querySelector(selector).innerHTML;
-        }
-
-        renderContents(parsedState, autoOpen = true) {
-          this.getSectionsToRender().forEach((section) => {
-            const sectionElement = section.selector
-              ? document.querySelector(section.selector)
-              : document.getElementById(section.id);
-
-            if (!sectionElement) return;
-            
-            if (section.id === 'header') {
-              // Update cart button
-              const newCartButton = new DOMParser()
-                .parseFromString(parsedState.sections[section.id], 'text/html')
-                .querySelector('[data-cart-open]');
-              if (newCartButton && sectionElement) {
-                sectionElement.innerHTML = newCartButton.innerHTML;
-              }
-            } else {
-              // Update cart sidebar content
-              sectionElement.innerHTML = this.getSectionInnerHTML(parsedState.sections[section.id], section.selector);
-            }
-          });
-
-          // Re-initialize event listeners after content update
-          this.initCloseButtons();
-          this.initQuantityControls();
-          this.initRemoveButtons();
-
-          // Auto-open the cart drawer only when adding items
-          if (autoOpen) {
-            setTimeout(() => {
-              this.open();
-            }, 100);
-          }
         }
 
         init() {
@@ -113,7 +61,7 @@
 
         initCloseButtons() {
           // Remove old event listeners by querying fresh elements
-          document.querySelectorAll('[data-cart-close]').forEach(button => {
+          document.querySelectorAll('[data-cart-close]').forEach((button) => {
             button.addEventListener('click', () => this.close());
           });
         }
@@ -123,7 +71,7 @@
             this.overlay.classList.remove('hidden');
             this.sidebar.classList.remove('translate-x-full');
             document.body.style.overflow = 'hidden';
-            
+
             // Focus management
             setTimeout(() => {
               const closeButton = this.sidebar.querySelector('[data-cart-close]');
@@ -139,7 +87,7 @@
               this.overlay.classList.add('hidden');
             }, 300);
             document.body.style.overflow = '';
-            
+
             // Return focus to cart button
             if (this.openButton) this.openButton.focus();
           }
@@ -151,7 +99,7 @@
 
         initQuantityControls() {
           // Quantity decrease buttons
-          document.querySelectorAll('[data-quantity-decrease]').forEach(button => {
+          document.querySelectorAll('[data-quantity-decrease]').forEach((button) => {
             button.addEventListener('click', (e) => {
               e.preventDefault();
               const key = button.dataset.quantityDecrease;
@@ -169,7 +117,7 @@
           });
 
           // Quantity increase buttons
-          document.querySelectorAll('[data-quantity-increase]').forEach(button => {
+          document.querySelectorAll('[data-quantity-increase]').forEach((button) => {
             button.addEventListener('click', (e) => {
               e.preventDefault();
               const key = button.dataset.quantityIncrease;
@@ -183,7 +131,7 @@
           });
 
           // Direct input changes
-          document.querySelectorAll('[data-quantity-input]').forEach(input => {
+          document.querySelectorAll('[data-quantity-input]').forEach((input) => {
             input.addEventListener('change', (e) => {
               const key = input.dataset.quantityInput;
               const value = parseInt(input.value);
@@ -197,7 +145,7 @@
         }
 
         initRemoveButtons() {
-          document.querySelectorAll('[data-remove-item]').forEach(button => {
+          document.querySelectorAll('[data-remove-item]').forEach((button) => {
             button.addEventListener('click', (e) => {
               e.preventDefault();
               const key = button.dataset.removeItem;
@@ -215,8 +163,8 @@
               },
               body: JSON.stringify({
                 id: key,
-                quantity: quantity
-              })
+                quantity: quantity,
+              }),
             });
 
             if (response.ok) {
@@ -236,8 +184,8 @@
               },
               body: JSON.stringify({
                 id: key,
-                quantity: 0
-              })
+                quantity: 0,
+              }),
             });
 
             if (response.ok) {
@@ -250,23 +198,64 @@
 
         async refreshCart() {
           try {
-            const promises = this.getSectionsToRender().map(section => 
-              fetch(`/?section_id=${section.id}`).then(response => response.text())
-            );
-            
-            const responses = await Promise.all(promises);
-            const sections = {};
-            
-            responses.forEach((html, index) => {
-              const sectionId = this.getSectionsToRender()[index].id;
-              sections[sectionId] = html;
-            });
+            const response = await fetch('/?section_id=header');
+            if (response.ok) {
+              const html = await response.text();
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(html, 'text/html');
 
-            this.renderContents({ sections }, false); // Don't auto-open for quantity changes
+              // Update cart button
+              const newCartButton = doc.querySelector('[data-cart-open]');
+              if (newCartButton && this.openButton) {
+                this.openButton.innerHTML = newCartButton.innerHTML;
+              }
+
+              // Refresh sidebar content
+              const newSidebar = doc.querySelector('[data-cart-sidebar]');
+              if (newSidebar && this.sidebar) {
+                this.sidebar.innerHTML = newSidebar.innerHTML;
+                this.initCloseButtons();
+                this.initQuantityControls();
+                this.initRemoveButtons();
+              }
+            }
           } catch (error) {
             console.error('Error refreshing cart:', error);
             // Fallback: reload the page
             window.location.reload();
+          }
+        }
+
+        renderContents(data) {
+          console.log('Rendering cart contents with sections:', data);
+
+          // Use the sections data if available, otherwise fetch
+          if (data && data.sections && data.sections['header']) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data.sections['header'], 'text/html');
+
+            // Update cart button
+            const newCartButton = doc.querySelector('[data-cart-open]');
+            if (newCartButton && this.openButton) {
+              this.openButton.innerHTML = newCartButton.innerHTML;
+            }
+
+            // Update sidebar content
+            const newSidebar = doc.querySelector('[data-cart-sidebar]');
+            if (newSidebar && this.sidebar) {
+              this.sidebar.innerHTML = newSidebar.innerHTML;
+              this.initCloseButtons();
+              this.initQuantityControls();
+              this.initRemoveButtons();
+            }
+
+            // Open the sidebar
+            this.open();
+          } else {
+            // Fallback to refresh
+            this.refreshCart().then(() => {
+              this.open();
+            });
           }
         }
       }
@@ -274,7 +263,7 @@
       // Initialize cart sidebar when DOM is loaded
       document.addEventListener('DOMContentLoaded', () => {
         window.cartSidebar = new CartSidebar();
-        
+
         // TEMPORARY: Auto-open sidebar for styling - REMOVE WHEN DONE
         // setTimeout(() => {
         //   window.cartSidebar.open();

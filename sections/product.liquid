@@ -11,10 +11,7 @@
     <div class="product-images space-y-4 p-6">
       {% for image in product.images %}
         <div class="w-full">
-          {% render 'image'
-            , class: 'product-image w-full h-auto'
-            , image: image
-            , width: 1200 %}
+          {% render 'image', class: 'product-image w-full h-auto', image: image, width: 1200 %}
         </div>
       {% endfor %}
     </div>
@@ -35,16 +32,22 @@
       </div>
 
       <!-- Product Form -->
-      <div class="product-form">
-        {% form 'product'
-          , product %}
+      <script id="product-json" type="application/json">
+        {{ product | json }}
+      </script>
+      <div
+        class="product-form-wrapper"
+        data-currency="{{ cart.currency.iso_code }}"
+      >
+        {% form 'product', product, id: 'product-form', class: 'space-y-6' %}
           {% assign current_variant = product.selected_or_first_available_variant %}
 
           <input
             type="hidden"
             name="id"
             id="product-variant-id"
-            value="{{ current_variant.id }}">
+            value="{{ current_variant.id }}"
+          >
 
           {% if product.variants.size > 1 %}
             {% comment %} Variant Options {% endcomment %}
@@ -64,11 +67,12 @@
                       data-option-value="{{ value | escape }}"
                       data-variant-available="{{ variant_for_value.available }}"
                       {% if current_variant[option.name] == value %}
-                      data-selected="true"
+                        data-selected="true"
                       {% endif %}
                       {% unless variant_for_value.available %}
-                      disabled
-                      {% endunless %}>
+                        disabled
+                      {% endunless %}
+                    >
                       {{ value }}
                       {% unless variant_for_value.available %}
                         <span class="text-xs">(Sold out)</span>
@@ -82,20 +86,20 @@
             <input
               type="hidden"
               name="id"
-              value="{{ current_variant.id }}">
+              value="{{ current_variant.id }}"
+            >
           {% endif %}
 
           <div class="mb-6">
-            <label for="quantity" class="block text-sm uppercase tracking-wide mb-3">
-              Quantity
-            </label>
+            <label for="quantity" class="block text-sm uppercase tracking-wide mb-3"> Quantity </label>
             <input
               type="number"
               name="quantity"
               id="quantity"
               min="1"
               value="1"
-              class="w-full p-3 border border-black focus:ring-0 focus:outline-none">
+              class="w-full p-3 border border-black focus:ring-0 focus:outline-none"
+            >
           </div>
 
           <div class="space-y-3">
@@ -103,7 +107,9 @@
               type="submit"
               class="w-full bg-black text-white py-4 px-6 uppercase tracking-wide text-sm hover:bg-gray-800 transition-colors font-medium cursor-pointer"
               {% unless current_variant.available %}
-              disabled{% endunless %}>
+                disabled
+              {% endunless %}
+            >
               <span>
                 {% if current_variant.available %}
                   Add to cart
@@ -111,7 +117,6 @@
                   Sold out
                 {% endif %}
               </span>
-              <div class="loading-spinner hidden" style="width: 16px; height: 16px; border: 2px solid transparent; border-top: 2px solid currentColor; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; margin-left: 8px;"></div>
             </button>
 
             {{ form | payment_button }}
@@ -127,7 +132,7 @@
     position: relative;
   }
 
-  .variant-option[data-selected="true"] {
+  .variant-option[data-selected='true'] {
     background-color: black;
     color: white;
   }
@@ -144,181 +149,14 @@
   }
 {% endstylesheet %}
 
-{% javascript %}
-  class ProductForm {
-    constructor() {
-      this.form = document.querySelector('.product-form form');
-      this.submitButton = this.form ?. querySelector('button[type="submit"]');
-      this.submitButtonText = this.submitButton ?. querySelector('span');
-      this.loadingSpinner = this.submitButton ?. querySelector('.loading-spinner');
-
-      this.init();
-    }
-
-    init() {
-      if (!this.form) return;
-      
-
-
-      this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
-    }
-
-    onSubmitHandler(evt) {
-      evt.preventDefault();
-
-      if (this.submitButton.getAttribute('disabled') === 'disabled') return;
-      
-
-
-      this.submitButton.setAttribute('disabled', 'disabled');
-      this.loadingSpinner ?. classList.remove('hidden');
-
-      const formData = new FormData(this.form);
-
-// Add sections to fetch for cart updates
-      formData.append('sections', 'header,cart-sidebar');
-      formData.append('sections_url', window.location.pathname);
-
-      fetch('/cart/add.js', {
-        method: 'POST',
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: formData
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          if (response.status) {
-            console.error('Add to cart error:', response);
-            return;
-          }
-
-  // If cart sidebar exists, update it
-          if (window.cartSidebar && response.sections) {
-            window.cartSidebar.renderContents({sections: response.sections});
-          }
-        })
-        .catch((error) => {
-          console.error('Error adding to cart:', error);
-        })
-        . finally(() => {
-          this.submitButton.removeAttribute('disabled');
-          this.loadingSpinner ?. classList.add('hidden');
-        });
-    }
-  }
-
-  class ProductVariantSelector {
-    constructor() {
-      this.product = {{ product | json }};
-      this.variantButtons = document.querySelectorAll('.variant-option');
-      this.variantInput = document.getElementById('product-variant-id');
-      this.priceElement = document.querySelector('.product-info .text-xl');
-      this.submitButton = document.querySelector('button[type="submit"]');
-      this.selectedOptions = {};
-
-      this.init();
-    }
-
-    init() {
-
-// Initialize selected options from current variant
-      this.variantButtons.forEach(button => {
-        if (button.dataset.selected === 'true') {
-          const position = button.dataset.optionPosition;
-          const value = button.dataset.optionValue;
-          this.selectedOptions[position] = value;
-        }
-
-        button.addEventListener('click', (e) => {
-          if (!button.disabled) {
-            this.handleOptionClick(button);
-          }
-        });
-      });
-    }
-
-    handleOptionClick(button) {
-      const position = button.dataset.optionPosition;
-      const value = button.dataset.optionValue;
-
-// Update selected options
-      this.selectedOptions[position] = value;
-
-// Update UI for this option group
-      document.querySelectorAll(`[data-option-position="${position}"]`).forEach(btn => {
-        btn.dataset.selected = 'false';
-      });
-      button.dataset.selected = 'true';
-
-// Find matching variant
-      this.updateVariant();
-    }
-
-    updateVariant() {
-
-// Build option array from selected options
-      const options = [];
-      for (let i = 1; i <= Object.keys(this.selectedOptions).length; i++) {
-        options.push(this.selectedOptions[i.toString()]);
-      }
-
-// Find variant that matches all selected options
-      const matchingVariant = this.product.variants.find(variant => {
-        return options.every((option, index) => {
-          return variant.options[index] === option;
-        });
-      });
-
-      if (matchingVariant) { // Update hidden input
-        this.variantInput.value = matchingVariant.id;
-
-// Update price
-        if (this.priceElement) {
-          const formatter = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: '{{ cart.currency.iso_code }}'
-          });
-          this.priceElement.textContent = formatter.format(matchingVariant.price / 100);
-        }
-
-// Update submit button
-        if (this.submitButton) {
-          if (matchingVariant.available) {
-            this.submitButton.disabled = false;
-            this.submitButton.textContent = 'Add to cart';
-          } else {
-            this.submitButton.disabled = true;
-            this.submitButton.textContent = 'Sold out';
-          }
-        }
-
-// Update URL without page reload
-        const url = new URL(window.location);
-        url.searchParams.set('variant', matchingVariant.id);
-        window.history.replaceState({}, '', url);
-      }
-    }
-  }
-
-// Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      new ProductVariantSelector();
-      new ProductForm();
-    });
-  } else {
-    new ProductVariantSelector();
-    new ProductForm();
-  }
-{% endjavascript %}
+<script src="{{ 'product-form.js' | asset_url }}" defer></script>
 
 {% schema %}
-  {
-    "name": "t:general.product",
-    "settings": [],
-    "disabled_on": {
-      "groups": ["header", "footer"]
-    }
+{
+  "name": "t:general.product",
+  "settings": [],
+  "disabled_on": {
+    "groups": ["header", "footer"]
   }
+}
 {% endschema %}
