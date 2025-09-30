@@ -32,6 +32,58 @@
           this.init();
         }
 
+        getSectionsToRender() {
+          return [
+            {
+              id: 'header',
+              selector: '[data-cart-open]'
+            },
+            {
+              id: 'cart-sidebar',
+              selector: '[data-cart-sidebar]'
+            }
+          ];
+        }
+
+        getSectionInnerHTML(html, selector = '.shopify-section') {
+          return new DOMParser().parseFromString(html, 'text/html').querySelector(selector).innerHTML;
+        }
+
+        renderContents(parsedState, autoOpen = true) {
+          this.getSectionsToRender().forEach((section) => {
+            const sectionElement = section.selector
+              ? document.querySelector(section.selector)
+              : document.getElementById(section.id);
+
+            if (!sectionElement) return;
+            
+            if (section.id === 'header') {
+              // Update cart button
+              const newCartButton = new DOMParser()
+                .parseFromString(parsedState.sections[section.id], 'text/html')
+                .querySelector('[data-cart-open]');
+              if (newCartButton && sectionElement) {
+                sectionElement.innerHTML = newCartButton.innerHTML;
+              }
+            } else {
+              // Update cart sidebar content
+              sectionElement.innerHTML = this.getSectionInnerHTML(parsedState.sections[section.id], section.selector);
+            }
+          });
+
+          // Re-initialize event listeners after content update
+          this.initCloseButtons();
+          this.initQuantityControls();
+          this.initRemoveButtons();
+
+          // Auto-open the cart drawer only when adding items
+          if (autoOpen) {
+            setTimeout(() => {
+              this.open();
+            }, 100);
+          }
+        }
+
         init() {
           // Open sidebar
           if (this.openButton) {
@@ -198,27 +250,19 @@
 
         async refreshCart() {
           try {
-            const response = await fetch('/?section_id=header');
-            if (response.ok) {
-              const html = await response.text();
-              const parser = new DOMParser();
-              const doc = parser.parseFromString(html, 'text/html');
-              
-              // Update cart button
-              const newCartButton = doc.querySelector('[data-cart-open]');
-              if (newCartButton && this.openButton) {
-                this.openButton.innerHTML = newCartButton.innerHTML;
-              }
-              
-              // Refresh sidebar content
-              const newSidebar = doc.querySelector('[data-cart-sidebar]');
-              if (newSidebar && this.sidebar) {
-                this.sidebar.innerHTML = newSidebar.innerHTML;
-                this.initCloseButtons();
-                this.initQuantityControls();
-                this.initRemoveButtons();
-              }
-            }
+            const promises = this.getSectionsToRender().map(section => 
+              fetch(`/?section_id=${section.id}`).then(response => response.text())
+            );
+            
+            const responses = await Promise.all(promises);
+            const sections = {};
+            
+            responses.forEach((html, index) => {
+              const sectionId = this.getSectionsToRender()[index].id;
+              sections[sectionId] = html;
+            });
+
+            this.renderContents({ sections }, false); // Don't auto-open for quantity changes
           } catch (error) {
             console.error('Error refreshing cart:', error);
             // Fallback: reload the page
@@ -229,11 +273,11 @@
 
       // Initialize cart sidebar when DOM is loaded
       document.addEventListener('DOMContentLoaded', () => {
-        const cartSidebar = new CartSidebar();
+        window.cartSidebar = new CartSidebar();
         
         // TEMPORARY: Auto-open sidebar for styling - REMOVE WHEN DONE
         // setTimeout(() => {
-        //   cartSidebar.open();
+        //   window.cartSidebar.open();
         // }, 100);
       });
     </script>

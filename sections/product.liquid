@@ -104,11 +104,14 @@
               class="w-full bg-black text-white py-4 px-6 uppercase tracking-wide text-sm hover:bg-gray-800 transition-colors font-medium cursor-pointer"
               {% unless current_variant.available %}
               disabled{% endunless %}>
-              {% if current_variant.available %}
-                Add to cart
-              {% else %}
-                Sold out
-              {% endif %}
+              <span>
+                {% if current_variant.available %}
+                  Add to cart
+                {% else %}
+                  Sold out
+                {% endif %}
+              </span>
+              <div class="loading-spinner hidden" style="width: 16px; height: 16px; border: 2px solid transparent; border-top: 2px solid currentColor; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; margin-left: 8px;"></div>
             </button>
 
             {{ form | payment_button }}
@@ -142,6 +145,69 @@
 {% endstylesheet %}
 
 {% javascript %}
+  class ProductForm {
+    constructor() {
+      this.form = document.querySelector('.product-form form');
+      this.submitButton = this.form ?. querySelector('button[type="submit"]');
+      this.submitButtonText = this.submitButton ?. querySelector('span');
+      this.loadingSpinner = this.submitButton ?. querySelector('.loading-spinner');
+
+      this.init();
+    }
+
+    init() {
+      if (!this.form) return;
+      
+
+
+      this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
+    }
+
+    onSubmitHandler(evt) {
+      evt.preventDefault();
+
+      if (this.submitButton.getAttribute('disabled') === 'disabled') return;
+      
+
+
+      this.submitButton.setAttribute('disabled', 'disabled');
+      this.loadingSpinner ?. classList.remove('hidden');
+
+      const formData = new FormData(this.form);
+
+// Add sections to fetch for cart updates
+      formData.append('sections', 'header,cart-sidebar');
+      formData.append('sections_url', window.location.pathname);
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.status) {
+            console.error('Add to cart error:', response);
+            return;
+          }
+
+  // If cart sidebar exists, update it
+          if (window.cartSidebar && response.sections) {
+            window.cartSidebar.renderContents({sections: response.sections});
+          }
+        })
+        .catch((error) => {
+          console.error('Error adding to cart:', error);
+        })
+        . finally(() => {
+          this.submitButton.removeAttribute('disabled');
+          this.loadingSpinner ?. classList.add('hidden');
+        });
+    }
+  }
+
   class ProductVariantSelector {
     constructor() {
       this.product = {{ product | json }};
@@ -239,9 +305,11 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       new ProductVariantSelector();
+      new ProductForm();
     });
   } else {
     new ProductVariantSelector();
+    new ProductForm();
   }
 {% endjavascript %}
 
