@@ -4,44 +4,58 @@
 %}
 
 <section id="{{ section_id }}" class="{{ section_class }}">
-  <div class="grid grid-cols-1 md:grid-cols-2 border-t border-b border-black h-fit">
+  <div class="flex flex-col-reverse 2xl:justify-center 2xl:items-center md:flex-row border-y border-black">
     {% comment %} Left side - Image {% endcomment %}
-    <div class="h-full w-full flex justify-center items-center border-b border-t sm:border-t-0 md:border-b-0 md:border-r border-black overflow-hidden">
-      {% if section.settings.image %}
-        {% render 'image'
-          , image: section.settings.image
-          , class: 'w-full h-full object-cover'
-        %}
-      {% else %}
-        <img
-          src="https://cdn.shopify.com/s/files/1/0670/9051/4081/files/3296.jpg?v=1758508794"
-          alt="{{ 'about.image_alt' | t }}"
-          class="w-full h-full object-cover"
-          loading="lazy">
-      {% endif %}
+    <div class="w-full md:w-1/2 overflow-hidden border-t md:border-t-0 md:border-r border-black object-center object-cover">
+      <div class="h-full w-auto aspect-square overflow-hidden object-center">
+        {% if section.settings.image %}
+          <img
+            src="{{ section.settings.image | image_url: width: 2000 }}"
+            srcset="
+              {{ section.settings.image | image_url: width: 600 }} 600w,
+              {{ section.settings.image | image_url: width: 1200 }} 1200w,
+              {{ section.settings.image | image_url: width: 2000 }} 2000w
+            "
+            alt="{{ section.settings.image.alt | escape }}"
+            loading="eager"
+            width="100%"
+            height="100%"
+            class="w-full h-full object-center"
+          >
+        {% else %}
+          <img
+            src="https://cdn.shopify.com/s/files/1/0670/9051/4081/files/3296.jpg?v=1758508794"
+            alt="{{ 'about.image_alt' | t }}"
+            class="w-full h-full object-center"
+            loading="lazy"
+            width="100%"
+            height="100%"
+          >
+        {% endif %}
+      </div>
     </div>
 
     {% comment %} Right side - Content {% endcomment %}
-    <div class="flex flex-col justify-center px-4 py-10 md:px-4 md:max-w-[30rem] xl:max-w-[40rem] mx-auto">
-      {% if section.settings.title %}
-        <h1 class="text-sm font-medium tracking-widest mb-6 text-left uppercase text-title font-mono">
-          {{ section.settings.title }}
-        </h1>
-      {% endif %}
+    <div class="w-full md:w-1/2 flex flex-col justify-center px-4 sm:px-4 md:px-9 lg:px-20 xl:px-30 2xl:px-[140px] py-10 sm:py-14 md:py-10 lg:py-20 xl:py-30 2xl:py-[100px] xl:h-[720px] 2xl:h-[800px] 3xl:h-auto">
+      <div class="space-y-10">
+        {% if section.settings.title %}
+          <h1 class="text-sm lg:text-base font-medium mb-6 uppercase font-mono">
+            {{ section.settings.title }}
+          </h1>
+        {% endif %}
 
-      <div class="text-sm prose prose-sm lg:prose-base max-w-none text-left text-subtitle font-sans">
         {% for block in section.blocks %}
           {% case block.type %}
             {% when 'content_block' %}
-              <div class="content-block mb-6" {{ block.shopify_attributes }}>
+              <div class="last:mb-0" {{ block.shopify_attributes }}>
                 {% if block.settings.heading %}
-                  <h2 class="text-sm font-medium tracking-widest mb-4 text-left uppercase text-title font-mono">
+                  <h2 class="text-sm lg:text-base font-medium mb-4 uppercase font-mono">
                     {{ block.settings.heading }}
                   </h2>
                 {% endif %}
 
                 {% if block.settings.content %}
-                  <div class="content">
+                  <div class="text-sm lg:text-base text-subtitle font-sans [&>p]:mb-4 [&>p:last-child]:mb-0 [&>p]:leading-relaxed">
                     {{ block.settings.content }}
                   </div>
                 {% endif %}
@@ -54,91 +68,82 @@
 </section>
 
 {% stylesheet %}
-
-  .{{ section_class }}h1 {
+  .{{ section_class }} h1 {
     font-family: var(--font-family-sans);
   }
 
-  .{{ section_class }}
-  .prose {
+  .{{ section_class }} .prose {
     font-family: var(--font-family-sans);
   }
 
-  .{{ section_class }}
-  .prose p {
+  .{{ section_class }} .prose p {
     margin-bottom: 1rem;
     line-height: 1.6;
     font-family: var(--font-family-sans);
   }
 
-  .{{ section_class }}.prose p:last-child {
+  .{{ section_class }} .prose p:last-child {
     margin-bottom: 0;
-  }
-
-  @media (max-width: 639px) {
-    .{{ section_class }}.grid > div:first-child {
-      order: 2;
-    }
-    .{{ section_class }}.grid > div:last-child {
-      order: 1;
-    }
   }
 {% endstylesheet %}
 
 {% schema %}
-  {
-    "name": "t:sections.about.name",
-    "tag": "section",
-    "class": "section-about",
-    "settings": [
-      {
-        "type": "text",
-        "id": "title",
-        "label": "t:sections.about.settings.title.label",
-        "default": "About"
-      }, {
-        "type": "image_picker",
-        "id": "image",
-        "label": "t:sections.about.settings.image.label",
-        "info": "t:sections.about.settings.image.info"
-      }, {
-        "type": "text",
-        "id": "custom_id",
-        "label": "t:sections.about.settings.custom_id.label",
-        "info": "t:sections.about.settings.custom_id.info"
-      }
-    ],
-    "blocks": [
-      {
-        "type": "content_block",
-        "name": "t:sections.about.blocks.content_block.name",
-        "settings": [
-          {
-            "type": "text",
-            "id": "heading",
-            "label": "t:sections.about.blocks.content_block.settings.heading.label",
-            "info": "t:sections.about.blocks.content_block.settings.heading.info"
-          }, {
-            "type": "richtext",
-            "id": "content",
-            "label": "t:sections.about.blocks.content_block.settings.content.label",
-            "info": "t:sections.about.blocks.content_block.settings.content.info"
+{
+  "name": "t:sections.about.name",
+  "tag": "section",
+  "class": "section-about",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.about.settings.title.label",
+      "default": "About"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.about.settings.image.label",
+      "info": "t:sections.about.settings.image.info"
+    },
+    {
+      "type": "text",
+      "id": "custom_id",
+      "label": "t:sections.about.settings.custom_id.label",
+      "info": "t:sections.about.settings.custom_id.info"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "content_block",
+      "name": "t:sections.about.blocks.content_block.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:sections.about.blocks.content_block.settings.heading.label",
+          "info": "t:sections.about.blocks.content_block.settings.heading.info"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "t:sections.about.blocks.content_block.settings.content.label",
+          "info": "t:sections.about.blocks.content_block.settings.content.info"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.about.presets.about.name",
+      "blocks": [
+        {
+          "type": "content_block",
+          "settings": {
+            "content": "<p>Tell your story here. Share what makes your brand unique and connect with your customers.</p>"
           }
-        ]
-      }
-    ],
-    "presets": [
-      {
-        "name": "t:sections.about.presets.about.name",
-        "blocks": [
-          {
-            "type": "content_block",
-            "settings": {
-              "content": "<p>Tell your story here. Share what makes your brand unique and connect with your customers.</p>"
-            }
-          }
-        ]
-      }
-    ]
-  }
+        }
+      ]
+    }
+  ]
+}
 {% endschema %}

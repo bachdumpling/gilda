@@ -8,20 +8,23 @@
 <div
   id="cart-sidebar-overlay"
   class="fixed inset-0 bg-black/30 bg-opacity-20 z-40 hidden transition-opacity duration-300 ease-in-out"
-  data-cart-overlay></div>
+  data-cart-overlay
+></div>
 
 <!-- Cart Sidebar -->
 <div
   id="cart-sidebar"
   class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-background z-50 transform translate-x-full transition-transform duration-300 ease-in-out shadow-lg"
-  data-cart-sidebar>
+  data-cart-sidebar
+>
   <!-- Sidebar Header -->
   <div class="h-20 flex items-center justify-between p-6">
     <button
       type="button"
       class="cursor-pointer text-black uppercase text-base"
       data-cart-close
-      aria-label="{{ 'general.accessibility.close' | t }}">
+      aria-label="{{ 'general.accessibility.close' | t }}"
+    >
       Close
     </button>
     <h2 class="text-base uppercase">
@@ -34,47 +37,45 @@
 
   <!-- Sidebar Content -->
   <div class="flex flex-col justify-between h-full">
-
     <!-- Cart Items -->
     <div class="flex-1 overflow-y-auto">
       {% if cart.item_count > 0 %}
         <form action="{{ routes.cart_url }}" method="post" id="cart-form">
-            {% for item in cart.items %}
-              <div class="flex gap-4 border-t border-black last:border-b-1">
-                <!-- Product Image -->
-                <div class="w-1/3 border-r border-black flex items-center justify-center">
-                  {% if item.image %}
-                    <img 
-                      src="{{ item.image | image_url: width: 1000 }}" 
-                      alt="{{ item.image.alt | escape }}"
-                      class="w-20 h-20 object-cover rounded"
-                      loading="lazy"
-                    >
-                  {% else %}
-                    <div class="w-20 h-20 bg-gray-100 rounded flex items-center justify-center">
-                      <svg class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                  {% endif %}
-                </div>
+          {% for item in cart.items %}
+            <div class="flex gap-4 border-t border-black last:border-b-1">
+              <!-- Product Image -->
+              <div class="w-1/3 border-r border-black flex items-center justify-center">
+                {% if item.image %}
+                  <img
+                    src="{{ item.image | image_url: width: 1000 }}"
+                    alt="{{ item.image.alt | escape }}"
+                    class="w-20 h-20 object-cover rounded"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="w-20 h-20 bg-gray-100 rounded flex items-center justify-center">
+                    <svg class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                {% endif %}
+              </div>
 
-                <!-- Product Details -->
-                <div class="w-2/3 flex flex-col p-6 gap-5">
-                    <div class="flex flex-col gap-2">
-                    <!-- Remove Button -->
-                    <div class="flex justify-end">
-                      <button 
-                        type="button" 
-                        class="text-sm text-gray-500 hover:text-red-500 transition-colors uppercase cursor-pointer"
-                        data-remove-item="{{ item.key }}"
-                      >
+              <!-- Product Details -->
+              <div class="w-2/3 flex flex-col p-6 gap-5">
+                <div class="flex flex-col gap-2">
+                  <!-- Remove Button -->
+                  <div class="flex justify-end">
+                    <button
+                      type="button"
+                      class="text-sm text-gray-500 hover:text-red-500 transition-colors uppercase cursor-pointer"
+                      data-remove-item="{{ item.key }}"
+                    >
                       <svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M10.895 1.49316L6.32471 6.0625L10.8306 10.5684L10.0054 11.3936L5.49951 6.8877L0.994629 11.3926L0.169434 10.5674L4.67432 6.0625L0.105957 1.49414L0.931152 0.668945L5.49951 5.2373L10.0698 0.667969L10.895 1.49316Z" fill="black"/>
+                        <path d="M10.895 1.49316L6.32471 6.0625L10.8306 10.5684L10.0054 11.3936L5.49951 6.8877L0.994629 11.3926L0.169434 10.5674L4.67432 6.0625L0.105957 1.49414L0.931152 0.668945L5.49951 5.2373L10.0698 0.667969L10.895 1.49316Z" fill="black"/>
                       </svg>
-                      
-                      </button>
-                    </div>
+                    </button>
+                  </div>
 
                   {% comment %} Product Title {% endcomment %}
                   <h3 class="text-sm text-black">
@@ -85,62 +86,62 @@
                   {% if item.variant.option1 != 'Default Title' %}
                     <p class="text-sm text-gray-500">
                       {% for option in item.options_with_values %}
-                        {{ option.name }}: {{ option.value }}{% unless forloop.last %}, {% endunless %}
+                        {{ option.name }}: {{ option.value -}}
+                        {%- unless forloop.last %}, {% endunless %}
                       {% endfor %}
                     </p>
                   {% endif %}
-                  </div>
-                  {% comment %} Quantity Controls {% endcomment %}
-                  <div class="flex items-center justify-between">
-                    <!-- Quantity Controls -->
-                    <div class="flex items-center">
-                      <button 
-                        type="button" 
-                        class="focus:outline-none cursor-pointer"
-                        data-quantity-decrease="{{ item.key }}"
-                      >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-                        </svg>
-                      </button>
-                      <input 
-                        type="number" 
-                        name="updates[]" 
-                        value="{{ item.quantity }}" 
-                        min="0"
-                        class="w-12 text-center text-sm border-0 focus:ring-0 focus:outline-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
-                        data-quantity-input="{{ item.key }}"
-                      >
-                      <button 
-                        type="button" 
-                        class="focus:outline-none cursor-pointer"
-                        data-quantity-increase="{{ item.key }}"
-                      >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                      </button>
-                    </div>
-
-                    <!-- Price -->
-                    <div class="text-right text-sm">
-                      <p class="text-sm">{{ item.final_line_price | money }}</p>
-                      {% if item.original_line_price != item.final_line_price %}
-                        <p class="text-sm text-gray-500 line-through">{{ item.original_line_price | money }}</p>
-                      {% endif %}
-                    </div>
+                </div>
+                {% comment %} Quantity Controls {% endcomment %}
+                <div class="flex items-center justify-between">
+                  <!-- Quantity Controls -->
+                  <div class="flex items-center">
+                    <button
+                      type="button"
+                      class="focus:outline-none cursor-pointer"
+                      data-quantity-decrease="{{ item.key }}"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                      </svg>
+                    </button>
+                    <input
+                      type="number"
+                      name="updates[]"
+                      value="{{ item.quantity }}"
+                      min="0"
+                      class="w-12 text-center text-sm border-0 focus:ring-0 focus:outline-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      data-quantity-input="{{ item.key }}"
+                    >
+                    <button
+                      type="button"
+                      class="focus:outline-none cursor-pointer"
+                      data-quantity-increase="{{ item.key }}"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                      </svg>
+                    </button>
                   </div>
 
+                  <!-- Price -->
+                  <div class="text-right text-sm">
+                    <p class="text-sm">{{ item.final_line_price | money }}</p>
+                    {% if item.original_line_price != item.final_line_price %}
+                      <p class="text-sm text-gray-500 line-through">{{ item.original_line_price | money }}</p>
+                    {% endif %}
+                  </div>
                 </div>
               </div>
-            {% endfor %}
+            </div>
+          {% endfor %}
         </form>
       {% else %}
         <!-- Empty Cart -->
         <div class="text-center border-t border-black flex flex-col justify-center items-center px-6 h-full gap-6">
           <p class="text-lg font-sans">{{ 'cart.empty' | t | default: 'Your cart is empty' }}</p>
-          <button 
-            type="button" 
+          <button
+            type="button"
             class="text-center block w-full py-4 px-3 text-base uppercase font-medium border border-black cursor-pointer hover:bg-black hover:text-white transition-all duration-300"
             data-cart-close
           >
@@ -154,7 +155,7 @@
     {% if cart.item_count > 0 %}
       <div class="border-t border-black mb-20">
         <!-- Cart Totals -->
-         <div class="px-6 pt-6">
+        <div class="px-6 pt-6">
           <div class="flex justify-between text-sm">
             <span class=" text-lg uppercase">{{ 'cart.subtotal' | t | default: 'Subtotal' }}</span>
             <span class="text-lg">{{ cart.total_price | money }} USD</span>
@@ -168,27 +169,31 @@
         </div>
 
         <!-- Checkout Button and Free shipping banner -->
-         <div class="flex flex-col gap-3 px-6 pt-6 pb-8">
-         
-            <a href="{{ routes.cart_url }}" class="text-center block w-full py-4 px-3 text-base uppercase font-medium border border-black cursor-pointer hover:bg-black hover:text-white transition-all duration-300">
+        <div class="flex flex-col gap-3 px-6 pt-6 pb-8">
+          <a
+            href="{{ routes.cart_url }}"
+            class="text-center block w-full py-4 px-3 text-base uppercase font-medium border border-black cursor-pointer hover:bg-black hover:text-white transition-all duration-300"
+          >
             {{ 'cart.checkout' | t }} • {{ cart.total_price | money }}
-            </a>
+          </a>
 
           <div class="">
             <div class="text-xs font-sans">
-                Free shipping offered on orders on domestic orders. See our <a href="/pages/orders-shipping" class="underline">full shipping policy here</a>.
+              Free shipping offered on orders on domestic orders. See our
+              <a href="/pages/orders-shipping" class="underline">full shipping policy here</a>.
             </div>
           </div>
         </div>
 
-
         <!-- View Cart Link -->
-        {% comment %} <a
-          href="{{ routes.cart_url }}"
-          class="block w-full text-center py-2 text-sm text-gray-600 hover:text-black transition-colors"
-          data-cart-close>
-          {{ 'cart.view_cart' | t | default: 'View cart' }}
-        </a> {% endcomment %}
+        {% comment %}
+          <a
+            href="{{ routes.cart_url }}"
+            class="block w-full text-center py-2 text-sm text-gray-600 hover:text-black transition-colors"
+            data-cart-close>
+            {{ 'cart.view_cart' | t | default: 'View cart' }}
+          </a>
+        {% endcomment %}
       </div>
     {% endif %}
   </div>

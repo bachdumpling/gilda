@@ -4,44 +4,43 @@
 %}
 
 <section id="{{ section_id }}" class="{{ section_class }}">
-  <div class="grid grid-cols-1 md:grid-cols-2 border-t border-b border-black h-fit">
+  <div class="flex flex-col-reverse 2xl:justify-center 2xl:items-center md:flex-row border-y border-black">
     {% comment %} Left side - Image {% endcomment %}
-    <div class="h-full w-full flex justify-center items-center border-b border-t sm:border-t-0 md:border-b-0 md:border-r border-black overflow-hidden">
-      {% if section.settings.image %}
-        {% render 'image'
-          , image: section.settings.image
-          , class: 'w-full h-full object-cover'
-        %}
-      {% else %}
-        <img
-          src="https://cdn.shopify.com/s/files/1/0670/9051/4081/files/3296.jpg?v=1758508794"
-          alt="{{ 'order_shipping.image_alt' | t }}"
-          class="w-full h-full object-cover"
-          loading="lazy">
-      {% endif %}
+    <div class="w-full md:w-1/2 overflow-hidden border-t md:border-t-0 md:border-r border-black object-center object-cover">
+      <div class="h-full w-auto aspect-square overflow-hidden object-center">
+        {% if section.settings.image != blank %}
+          <img
+            src="{{ section.settings.image | image_url: width: 2000 }}"
+            srcset="
+              {{ section.settings.image | image_url: width: 600 }} 600w,
+              {{ section.settings.image | image_url: width: 1200 }} 1200w,
+              {{ section.settings.image | image_url: width: 2000 }} 2000w
+            "
+            alt="{{ section.settings.image.alt | escape }}"
+            loading="eager"
+            width="100%"
+            height="100%"
+            class="w-full h-full object-center"
+          >
+        {% endif %}
+      </div>
     </div>
 
     {% comment %} Right side - Content {% endcomment %}
-    <div class="flex flex-col justify-center px-4 py-10 md:px-4 md:max-w-[30rem] xl:max-w-[40rem] mx-auto">
-      {% if section.settings.title %}
-        <h1 class="text-sm font-medium tracking-widest mb-6 text-left uppercase text-title font-mono">
-          {{ section.settings.title }}
-        </h1>
-      {% endif %}
-
-      <div class="text-sm prose prose-sm lg:prose-base max-w-none text-left text-subtitle font-sans">
+    <div class="w-full md:w-1/2 flex flex-col justify-center px-4 sm:px-4 md:px-9 lg:px-20 xl:px-30 2xl:px-[140px] py-10 sm:py-14 md:py-10 lg:py-20 xl:py-30 2xl:py-[100px] xl:h-[720px] 2xl:h-[800px] 3xl:h-auto">
+      <div class="space-y-10">
         {% for block in section.blocks %}
           {% case block.type %}
             {% when 'content_block' %}
-              <div class="content-block mb-6" {{ block.shopify_attributes }}>
+              <div class="last:mb-0" {{ block.shopify_attributes }}>
                 {% if block.settings.heading %}
-                  <h2 class="text-sm font-medium tracking-widest mb-4 text-left uppercase text-title font-mono">
+                  <h2 class="text-sm lg:text-base font-medium mb-4 uppercase font-mono">
                     {{ block.settings.heading }}
                   </h2>
                 {% endif %}
 
                 {% if block.settings.content %}
-                  <div class="content">
+                  <div class="text-sm lg:text-base text-subtitle font-sans [&>p]:mb-4 [&>p:last-child]:mb-0 [&>p]:leading-relaxed">
                     {{ block.settings.content }}
                   </div>
                 {% endif %}
@@ -53,104 +52,64 @@
   </div>
 </section>
 
-{% stylesheet %}
-  .{{ section_class }}h1 {
-    font-family: var(--font-family-mono);
-  }
-
-  .{{ section_class }}
-  h2 {
-    font-family: var(--font-family-mono);
-  }
-
-  .{{ section_class }}
-  .prose {
-    font-family: var(--font-family-sans);
-  }
-
-  .{{ section_class }}
-  .prose p {
-    margin-bottom: 1rem;
-    line-height: 1.6;
-    font-family: var(--font-family-sans);
-  }
-
-  .{{ section_class }}.prose p:last-child {
-    margin-bottom: 0;
-  }
-
-  .{{ section_class }}
-  .content-block {
-    margin-bottom: 2rem;
-  }
-
-  .{{ section_class }}.content-block:last-child {
-    margin-bottom: 0;
-  }
-{% endstylesheet %}
-
 {% schema %}
-  {
-    "name": "t:sections.order_shipping.name",
-    "tag": "section",
-    "class": "section-order-shipping",
-    "settings": [
-      {
-        "type": "text",
-        "id": "title",
-        "label": "t:sections.order_shipping.settings.title.label",
-        "default": "Orders & Shipping"
-      },
-      {
-        "type": "image_picker",
-        "id": "image",
-        "label": "t:sections.order_shipping.settings.image.label",
-        "info": "t:sections.order_shipping.settings.image.info"
-      },
-      {
-        "type": "text",
-        "id": "custom_id",
-        "label": "t:sections.order_shipping.settings.custom_id.label",
-        "info": "t:sections.order_shipping.settings.custom_id.info"
-      }
-    ],
-    "blocks": [
-      {
-        "type": "content_block",
-        "name": "t:sections.order_shipping.blocks.content_block.name",
-        "settings": [
-          {
-            "type": "text",
-            "id": "heading",
-            "label": "t:sections.order_shipping.blocks.content_block.settings.heading.label",
-            "info": "t:sections.order_shipping.blocks.content_block.settings.heading.info"
-          }, {
-            "type": "richtext",
-            "id": "content",
-            "label": "t:sections.order_shipping.blocks.content_block.settings.content.label",
-            "info": "t:sections.order_shipping.blocks.content_block.settings.content.info"
+{
+  "name": "t:sections.order_shipping.name",
+  "tag": "section",
+  "class": "section-order-shipping",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.order_shipping.settings.image.label",
+      "info": "t:sections.order_shipping.settings.image.info"
+    },
+    {
+      "type": "text",
+      "id": "custom_id",
+      "label": "t:sections.order_shipping.settings.custom_id.label",
+      "info": "t:sections.order_shipping.settings.custom_id.info"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "content_block",
+      "name": "t:sections.order_shipping.blocks.content_block.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:sections.order_shipping.blocks.content_block.settings.heading.label",
+          "info": "t:sections.order_shipping.blocks.content_block.settings.heading.info"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "t:sections.order_shipping.blocks.content_block.settings.content.label",
+          "info": "t:sections.order_shipping.blocks.content_block.settings.content.info"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.order_shipping.presets.order_shipping.name",
+      "blocks": [
+        {
+          "type": "content_block",
+          "settings": {
+            "content": "<p>Gilda products are designed to last. If you have any questions about the product or fit, you can send an email to info@gildaclothing.com.</p><p>US – We offer free shipping on all orders within the US. Orders ship with [X].</p><p>International – Orders are shipped with [X] and cost $[X].</p><p>Orders will be processed Monday through Friday, excluding holidays. Orders will be shipped within 48 hours of being received. You will receive confirmation by email when goods are shipped.</p>"
           }
-        ]
-      }
-    ],
-    "presets": [
-      {
-        "name": "t:sections.order_shipping.presets.order_shipping.name",
-        "blocks": [
-          {
-            "type": "content_block",
-            "settings": {
-              "content": "<p>Gilda products are designed to last. If you have any questions about the product or fit, you can send an email to info@gildaclothing.com.</p><p>US – We offer free shipping on all orders within the US. Orders ship with [X].</p><p>International – Orders are shipped with [X] and cost $[X].</p><p>Orders will be processed Monday through Friday, excluding holidays. Orders will be shipped within 48 hours of being received. You will receive confirmation by email when goods are shipped.</p>"
-            }
-          }, {
-            "type": "content_block",
-            "settings": {
-              "heading": "Returns",
-              "content": "<p>As a small, independent label, Gilda does not currently accept returns or refunds. Please review your order carefully before completing your purchase.</p><p>If you live in the NY area, you can try on the product at C'H'C'M on Bond St.</p>"
-            }
+        },
+        {
+          "type": "content_block",
+          "settings": {
+            "heading": "Returns",
+            "content": "<p>As a small, independent label, Gilda does not currently accept returns or refunds. Please review your order carefully before completing your purchase.</p><p>If you live in the NY area, you can try on the product at C'H'C'M on Bond St.</p>"
           }
-        ]
-      }
-    ]
-  }
+        }
+      ]
+    }
+  ]
+}
 {% endschema %}
