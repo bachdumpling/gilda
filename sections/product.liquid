@@ -147,7 +147,7 @@
 
           <button
             type="submit"
-            class="cursor-pointer w-full p-5 text-sm font-mono uppercase border-t border-black hover:bg-black hover:text-white transition-all duration-300 text-center"
+            class="cursor-pointer w-full pt-6 pb-8 text-sm font-mono uppercase border-t border-black hover:bg-black hover:text-white transition-all duration-300 text-center"
             {% unless current_variant.available %}
               disabled
             {% endunless %}
@@ -405,6 +405,7 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 -3px 200px rgba(0, 0, 0, 0.2);
+    transform: translateY(10px);
   }
 
   /* Safe area for notched devices */
