@@ -1,6 +1,6 @@
 class ProductForm {
-  constructor() {
-    this.form = document.getElementById("product-form");
+  constructor(formId) {
+    this.form = document.getElementById(formId);
     this.submitButton = this.form?.querySelector('button[type="submit"]');
     this.submitButtonText = this.submitButton?.querySelector("span");
     this.loadingSpinner = this.submitButton?.querySelector(".loading-spinner");
@@ -10,11 +10,10 @@ class ProductForm {
 
   init() {
     if (!this.form) {
-      console.error("Product form not found");
-      return;
+      return; // Silently return if form not found (mobile/desktop specific)
     }
 
-    console.log("Product form initialized, preventing default submission");
+    console.log(`Product form ${this.form.id} initialized`);
     this.form.addEventListener("submit", this.onSubmitHandler.bind(this));
   }
 
@@ -69,13 +68,46 @@ class ProductForm {
 class ProductVariantSelector {
   constructor() {
     const productJson = document.getElementById("product-json");
-    const container = document.querySelector(".product-form-wrapper");
+    if (!productJson) return;
+
     this.product = JSON.parse(productJson.textContent);
-    this.currency = container.dataset.currency;
-    this.variantButtons = document.querySelectorAll(".variant-option");
-    this.variantInput = document.getElementById("product-variant-id");
-    this.priceElement = document.querySelector(".product-info .text-xl");
-    this.submitButton = document.querySelector('button[type="submit"]');
+
+    // Get currency from either mobile or desktop container
+    const mobileContainer = document
+      .querySelector("#product-form-mobile")
+      ?.closest(".product-form-wrapper");
+    const desktopContainer = document
+      .querySelector("#product-form-desktop")
+      ?.closest(".product-form-wrapper");
+    const container = mobileContainer || desktopContainer;
+    this.currency = container?.dataset.currency || "USD";
+
+    // Handle both mobile and desktop variant buttons
+    this.variantButtonsMobile = document.querySelectorAll(
+      ".variant-option-mobile"
+    );
+    this.variantButtonsDesktop = document.querySelectorAll(
+      ".variant-option-desktop"
+    );
+    this.variantButtons = [
+      ...this.variantButtonsMobile,
+      ...this.variantButtonsDesktop,
+    ];
+
+    // Get both mobile and desktop elements
+    this.variantInputMobile = document.getElementById(
+      "product-variant-id-mobile"
+    );
+    this.variantInputDesktop = document.getElementById(
+      "product-variant-id-desktop"
+    );
+    this.submitButtonMobile = document.querySelector(
+      '#product-form-mobile button[type="submit"] span'
+    );
+    this.submitButtonDesktop = document.querySelector(
+      '#product-form-desktop button[type="submit"] span'
+    );
+
     this.selectedOptions = {};
 
     this.init();
@@ -105,13 +137,21 @@ class ProductVariantSelector {
     // Update selected options
     this.selectedOptions[position] = value;
 
-    // Update UI for this option group
+    // Update UI for this option group (both mobile and desktop)
     document
       .querySelectorAll(`[data-option-position="${position}"]`)
       .forEach((btn) => {
         btn.dataset.selected = "false";
       });
-    button.dataset.selected = "true";
+
+    // Set selected on both mobile and desktop buttons with this value
+    document
+      .querySelectorAll(
+        `[data-option-position="${position}"][data-option-value="${value}"]`
+      )
+      .forEach((btn) => {
+        btn.dataset.selected = "true";
+      });
 
     // Find matching variant
     this.updateVariant();
@@ -132,29 +172,33 @@ class ProductVariantSelector {
     });
 
     if (matchingVariant) {
-      // Update hidden input
-      this.variantInput.value = matchingVariant.id;
+      // Update both mobile and desktop hidden inputs
+      if (this.variantInputMobile)
+        this.variantInputMobile.value = matchingVariant.id;
+      if (this.variantInputDesktop)
+        this.variantInputDesktop.value = matchingVariant.id;
 
-      // Update price
-      if (this.priceElement) {
-        const formatter = new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: this.currency,
-        });
-        this.priceElement.textContent = formatter.format(
-          matchingVariant.price / 100
-        );
+      // Format price
+      const formatter = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: this.currency,
+      });
+      const formattedPrice = formatter.format(matchingVariant.price / 100);
+
+      // Update both mobile and desktop submit buttons with price
+      const buttonText = matchingVariant.available
+        ? `${formattedPrice} - Add to cart`
+        : "Sold out";
+
+      if (this.submitButtonMobile) {
+        this.submitButtonMobile.textContent = buttonText;
+        const mobileBtn = this.submitButtonMobile.closest("button");
+        if (mobileBtn) mobileBtn.disabled = !matchingVariant.available;
       }
-
-      // Update submit button
-      if (this.submitButton) {
-        if (matchingVariant.available) {
-          this.submitButton.disabled = false;
-          this.submitButton.textContent = "Add to cart";
-        } else {
-          this.submitButton.disabled = true;
-          this.submitButton.textContent = "Sold out";
-        }
+      if (this.submitButtonDesktop) {
+        this.submitButtonDesktop.textContent = buttonText;
+        const desktopBtn = this.submitButtonDesktop.closest("button");
+        if (desktopBtn) desktopBtn.disabled = !matchingVariant.available;
       }
 
       // Update URL without page reload
@@ -169,9 +213,13 @@ class ProductVariantSelector {
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     new ProductVariantSelector();
-    new ProductForm();
+    // Initialize both mobile and desktop forms
+    new ProductForm("product-form-mobile");
+    new ProductForm("product-form-desktop");
   });
 } else {
   new ProductVariantSelector();
-  new ProductForm();
+  // Initialize both mobile and desktop forms
+  new ProductForm("product-form-mobile");
+  new ProductForm("product-form-desktop");
 }

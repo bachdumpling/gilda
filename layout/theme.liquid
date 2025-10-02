@@ -62,7 +62,10 @@
         initCloseButtons() {
           // Remove old event listeners by querying fresh elements
           document.querySelectorAll('[data-cart-close]').forEach((button) => {
-            button.addEventListener('click', () => this.close());
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              this.close();
+            });
           });
         }
 
@@ -88,8 +91,10 @@
             }, 300);
             document.body.style.overflow = '';
 
-            // Return focus to cart button
-            if (this.openButton) this.openButton.focus();
+            // Return focus to cart button without scrolling
+            if (this.openButton) {
+              this.openButton.focus({ preventScroll: true });
+            }
           }
         }
 
