@@ -66,9 +66,9 @@
         <button
           type="button"
           class="tab-button flex-1 py-6 text-sm font-mono uppercase hover:underline transition-colors"
-          data-tab="care"
+          data-tab="sizing"
         >
-          Care
+          Sizing
         </button>
       </div>
 
@@ -95,13 +95,56 @@
           </div>
         </div>
 
-        <div class="tab-panel hidden" data-tab-content="care">
-          <div class="text-sm font-sans text-subtitle leading-relaxed prose prose-sm max-w-none">
-            {% if product.metafields.custom.care != blank %}
-              {{ product.metafields.custom.care | metafield_tag }}
-            {% else %}
-              <p>Care instructions will be displayed here.</p>
-            {% endif %}
+        <div class="tab-panel hidden" data-tab-content="sizing">
+          <div class="text-sm font-sans text-subtitle leading-relaxed">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-black">
+                  <th class="py-2 pr-4 font-mono uppercase text-xs">Size</th>
+                  <th class="py-2 pr-4 font-mono uppercase text-xs">Back Length</th>
+                  <th class="py-2 pr-4 font-mono uppercase text-xs">Shoulder</th>
+                  <th class="py-2 pr-4 font-mono uppercase text-xs">Sleeve Length</th>
+                  <th class="py-2 font-mono uppercase text-xs">Sleeve Length</th>
+                </tr>
+              </thead>
+              <tbody class="font-sans">
+                <tr class="border-b border-gray-200">
+                  <td class="py-3 pr-4">XS</td>
+                  <td class="py-3 pr-4">65.5cm</td>
+                  <td class="py-3 pr-4">43.4cm</td>
+                  <td class="py-3 pr-4">110cm</td>
+                  <td class="py-3">69cm</td>
+                </tr>
+                <tr class="border-b border-gray-200">
+                  <td class="py-3 pr-4">S</td>
+                  <td class="py-3 pr-4">67.5cm</td>
+                  <td class="py-3 pr-4">45.2cm</td>
+                  <td class="py-3 pr-4">115cm</td>
+                  <td class="py-3">69.5cm</td>
+                </tr>
+                <tr class="border-b border-gray-200">
+                  <td class="py-3 pr-4">M</td>
+                  <td class="py-3 pr-4">69.5cm</td>
+                  <td class="py-3 pr-4">47cm</td>
+                  <td class="py-3 pr-4">120cm</td>
+                  <td class="py-3">71cm</td>
+                </tr>
+                <tr class="border-b border-gray-200">
+                  <td class="py-3 pr-4">L</td>
+                  <td class="py-3 pr-4">71.5cm</td>
+                  <td class="py-3 pr-4">48.8cm</td>
+                  <td class="py-3 pr-4">125cm</td>
+                  <td class="py-3">72.5cm</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4">XL</td>
+                  <td class="py-3 pr-4">73.5cm</td>
+                  <td class="py-3 pr-4">50.6cm</td>
+                  <td class="py-3 pr-4">130cm</td>
+                  <td class="py-3">73cm</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -157,7 +200,7 @@
 
           <button
             type="submit"
-            class="cursor-pointer w-full pt-6 pb-8 text-sm font-mono uppercase border-t border-black hover:bg-black hover:text-white transition-all duration-300 text-center"
+            class="cursor-pointer w-full pt-6 pb-6 text-sm font-mono uppercase border-t border-black hover:bg-black hover:text-white transition-all duration-300 text-center"
             {% unless current_variant.available %}
               disabled
             {% endunless %}
@@ -266,9 +309,9 @@
           <button
             type="button"
             class="tab-button cursor-pointer flex-1 py-6 px-auto text-xs md:text-base font-mono uppercase hover:underline transition-colors"
-            data-tab="care"
+            data-tab="sizing"
           >
-            Care
+            Sizing
           </button>
         </div>
 
@@ -298,13 +341,56 @@
                 </div>
               </div>
 
-              <div class="tab-panel hidden" data-tab-content="care">
-                <div class="text-xs md:text-base font-sans text-subtitle leading-relaxed prose prose-sm max-w-none">
-                  {% if product.metafields.custom.care != blank %}
-                    {{ product.metafields.custom.care | metafield_tag }}
-                  {% else %}
-                    <p>Care instructions will be displayed here.</p>
-                  {% endif %}
+              <div class="tab-panel hidden" data-tab-content="sizing">
+                <div class="text-xs md:text-base font-sans text-subtitle leading-relaxed overflow-x-auto">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr class="border-b border-black">
+                        <th class="py-2 pr-4 font-mono uppercase text-xs">Size</th>
+                        <th class="py-2 pr-4 font-mono uppercase text-xs">Back Length</th>
+                        <th class="py-2 pr-4 font-mono uppercase text-xs">Shoulder</th>
+                        <th class="py-2 pr-4 font-mono uppercase text-xs">Sleeve Length</th>
+                        <th class="py-2 font-mono uppercase text-xs">Sleeve Length</th>
+                      </tr>
+                    </thead>
+                    <tbody class="font-sans">
+                      <tr class="border-b border-gray-200">
+                        <td class="py-3 pr-4">XS</td>
+                        <td class="py-3 pr-4">65.5cm</td>
+                        <td class="py-3 pr-4">43.4cm</td>
+                        <td class="py-3 pr-4">110cm</td>
+                        <td class="py-3">69cm</td>
+                      </tr>
+                      <tr class="border-b border-gray-200">
+                        <td class="py-3 pr-4">S</td>
+                        <td class="py-3 pr-4">67.5cm</td>
+                        <td class="py-3 pr-4">45.2cm</td>
+                        <td class="py-3 pr-4">115cm</td>
+                        <td class="py-3">69.5cm</td>
+                      </tr>
+                      <tr class="border-b border-gray-200">
+                        <td class="py-3 pr-4">M</td>
+                        <td class="py-3 pr-4">69.5cm</td>
+                        <td class="py-3 pr-4">47cm</td>
+                        <td class="py-3 pr-4">120cm</td>
+                        <td class="py-3">71cm</td>
+                      </tr>
+                      <tr class="border-b border-gray-200">
+                        <td class="py-3 pr-4">L</td>
+                        <td class="py-3 pr-4">71.5cm</td>
+                        <td class="py-3 pr-4">48.8cm</td>
+                        <td class="py-3 pr-4">125cm</td>
+                        <td class="py-3">72.5cm</td>
+                      </tr>
+                      <tr>
+                        <td class="py-3 pr-4">XL</td>
+                        <td class="py-3 pr-4">73.5cm</td>
+                        <td class="py-3 pr-4">50.6cm</td>
+                        <td class="py-3 pr-4">130cm</td>
+                        <td class="py-3">73cm</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -434,7 +520,6 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 -3px 200px rgba(0, 0, 0, 0.2);
-    transform: translateY(10px);
   }
 
   /* Safe area for notched devices */
