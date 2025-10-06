@@ -1,7 +1,7 @@
 <footer id="footer" class="px-4 py-10 md:px-10 md:py-8">
   <div class="flex justify-between items-end md:items-center h-fit">
     <!-- Footer Menu on the left -->
-    {% assign footer_menu = linklists['footer'] %}
+    {% assign footer_menu = linklists.footer %}
     {% if footer_menu.links.size > 0 %}
       <nav class="flex flex-col md:flex-row sm:flex-col gap-10">
         {% for link in footer_menu.links %}
@@ -17,16 +17,22 @@
       <a href="{{ routes.root_url }}" class="inline-block">
         {% if shop.brand.logo %}
           <img
-            src="{{ shop.brand.logo | image_url: width: 64 }}"
+            src="{{ shop.brand.logo | image_url: width: 1000 }}"
             alt="{{ shop.brand.slogan | default: shop.name }}"
             class="h-16 w-16 object-contain"
-            loading="lazy">
+            width="1000"
+            height="1000"
+            loading="lazy"
+          >
         {% elsif shop.brand.square_logo %}
           <img
-            src="{{ shop.brand.square_logo | image_url: width: 64 }}"
+            src="{{ shop.brand.square_logo | image_url: width: 1000 }}"
             alt="{{ shop.brand.slogan | default: shop.name }}"
             class="h-16 w-16 object-contain"
-            loading="lazy">
+            width="1000"
+            height="1000"
+            loading="lazy"
+          >
         {% else %}
           <div class="h-16 w-16">
             {{ 'logo.svg' | inline_asset_content }}
@@ -38,15 +44,15 @@
 </footer>
 
 {% schema %}
-  {
-    "name": "t:general.footer",
-    "settings": [
-      {
-        "type": "checkbox",
-        "id": "show_payment_icons",
-        "label": "t:labels.show_payment_icons",
-        "default": true
-      }
-    ]
-  }
+{
+  "name": "t:general.footer",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "t:labels.show_payment_icons",
+      "default": true
+    }
+  ]
+}
 {% endschema %}
