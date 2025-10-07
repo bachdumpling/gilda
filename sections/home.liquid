@@ -6,18 +6,33 @@
 <section class="home-grid w-full">
   <div class="product-grid border-y border-black divide-y divide-black sm:divide-y-0 sm:grid sm:grid-cols-2">
     {% for product in chosen_collection.products limit: 4 %}
-      <div class="product-card flex justify-center items-center flex-col w-full">
+      {% liquid
+        assign second_image = product.images[1]
+      %}
+      <div class="product-card-wrapper flex justify-center items-center flex-col w-full">
         {% comment %} image {% endcomment %}
-        <div class="w-[100%] sm:w-[60%] py-6">
+        <div class="product-card-images w-[100%] sm:w-[60%] py-6">
           {% if product.featured_image %}
-            {% render 'image',
-              image: product.featured_image,
-              url: product.url,
-              class: 'aspect-square',
-              width: 2000,
-              height: 2000,
-              crop: 'center'
-            %}
+            <a href="{{ product.url }}" class="image-container block relative aspect-square overflow-hidden">
+              <img
+                class="product-image product-image-primary"
+                src="{{ product.featured_image | image_url: width: 2000, height: 2000, crop: 'center' }}"
+                alt="{{ product.featured_image.alt | escape }}"
+                loading="lazy"
+                width="2000"
+                height="2000"
+              >
+              {% if second_image %}
+                <img
+                  class="product-image product-image-secondary"
+                  src="{{ second_image | image_url: width: 2000, height: 2000, crop: 'center' }}"
+                  alt="{{ second_image.alt | escape }}"
+                  loading="lazy"
+                  width="2000"
+                  height="2000"
+                >
+              {% endif %}
+            </a>
           {% else %}
             <a href="{{ product.url }}" class="block aspect-square">
               {{ 'image' | placeholder_svg_tag }}
@@ -26,8 +41,12 @@
         </div>
         {% comment %} title {% endcomment %}
         <div class="pb-10 pt-4 text-sm md:text-sm lg:text-[15px] xl:text-base 2xl:text-xl text-center">
-          <a href="{{ product.url }}" class="block transition-all duration-200">
-            {% render 'product-code', product: product, class: 'cursor-pointer', animation_duration: 100 %}
+          <a href="{{ product.url }}" class="product-title-link block">
+            {% render 'product-code',
+              product: product,
+              class: 'product-code-text cursor-pointer',
+              animation_duration: 0
+            %}
           </a>
         </div>
       </div>
@@ -37,36 +56,110 @@
   </div>
 </section>
 
+{% unless request.design_mode %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const productCards = document.querySelectorAll('.product-card-wrapper');
+
+      productCards.forEach(function (card) {
+        const productCodeElement = card.querySelector('.product-code');
+
+        if (!productCodeElement) return;
+
+        const shortCode = productCodeElement.dataset.short;
+        const fullCode = productCodeElement.dataset.full;
+
+        card.addEventListener('mouseenter', function () {
+          if (fullCode) {
+            productCodeElement.textContent = fullCode;
+            productCodeElement.classList.add('showing-full');
+          }
+        });
+
+        card.addEventListener('mouseleave', function () {
+          if (shortCode) {
+            productCodeElement.textContent = shortCode;
+            productCodeElement.classList.remove('showing-full');
+          }
+        });
+      });
+    });
+  </script>
+{% endunless %}
+
 {% stylesheet %}
+  /* Product card image hover effect */
+  .image-container {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-image-primary {
+    position: relative;
+    z-index: 2;
+  }
+
+  .product-image-secondary {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 0;
+  }
+
+  .product-card-wrapper:hover .product-image-primary {
+    opacity: 0;
+  }
+
+  .product-card-wrapper:hover .product-image-secondary {
+    opacity: 1;
+  }
+
+  /* Disable individual hover on product-code within card */
+  .product-card-wrapper .product-code {
+    pointer-events: none;
+  }
+
+  .product-card-wrapper .product-title-link {
+    pointer-events: all;
+  }
+
   /* Desktop 2x2 grid borders */
   @media (min-width: 640px) {
-    .product-grid .product-card {
+    .product-grid .product-card-wrapper {
       border-color: black;
       border-style: solid;
     }
 
     /* Top row */
-    .product-grid .product-card:nth-child(1),
-    .product-grid .product-card:nth-child(2) {
+    .product-grid .product-card-wrapper:nth-child(1),
+    .product-grid .product-card-wrapper:nth-child(2) {
       border-top-width: 0;
       border-bottom-width: 0.5px;
     }
 
     /* Bottom row */
-    .product-grid .product-card:nth-child(3),
-    .product-grid .product-card:nth-child(4) {
+    .product-grid .product-card-wrapper:nth-child(3),
+    .product-grid .product-card-wrapper:nth-child(4) {
       border-top-width: 0.5px;
       border-bottom-width: 0;
     }
 
     /* Left column */
-    .product-grid .product-card:nth-child(odd) {
+    .product-grid .product-card-wrapper:nth-child(odd) {
       border-right-width: 0;
       border-left-width: 0;
     }
 
     /* Right column */
-    .product-grid .product-card:nth-child(even) {
+    .product-grid .product-card-wrapper:nth-child(even) {
       border-left-width: 1px;
       border-right-width: 0;
     }
