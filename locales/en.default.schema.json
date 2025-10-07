@@ -154,6 +154,31 @@
           "name": "Order & Shipping"
         }
       }
+    },
+    "contact": {
+      "name": "Contact",
+      "settings": {
+        "title": {
+          "label": "Section title"
+        },
+        "description": {
+          "label": "Description",
+          "info": "Optional description text above the contact form"
+        },
+        "image": {
+          "label": "Contact image",
+          "info": "Optional: Upload a custom image to replace the default"
+        },
+        "custom_id": {
+          "label": "Custom section ID",
+          "info": "Optional: Add a custom ID for this section"
+        }
+      },
+      "presets": {
+        "contact": {
+          "name": "Contact"
+        }
+      }
     }
   }
 }

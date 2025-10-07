@@ -74,6 +74,18 @@
     "default_content": "Tell your story here. Share what makes your brand unique and connect with your customers.",
     "no_page_selected": "Please select a page in the section settings to display content."
   },
+  "contact": {
+    "image_alt": "Contact us image",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "message": "Message",
+      "submit": "Send message",
+      "post_success": "Thank you for contacting us. We'll get back to you as soon as possible.",
+      "error_heading": "Please correct the following errors:"
+    }
+  },
   "order_shipping": {
     "image_alt": "Order and shipping image"
   },
@@ -81,6 +93,9 @@
     "about": {
       "name": "About",
       "settings": {
+        "title": {
+          "label": "Section title"
+        },
         "page": {
           "label": "About page",
           "info": "Select the page that contains your about content"
@@ -103,9 +118,49 @@
           "label": "Bottom padding"
         }
       },
+      "blocks": {
+        "content_block": {
+          "name": "Content block",
+          "settings": {
+            "heading": {
+              "label": "Heading",
+              "info": "Optional heading for this content block"
+            },
+            "content": {
+              "label": "Content",
+              "info": "Rich text content for this block"
+            }
+          }
+        }
+      },
       "presets": {
         "about": {
           "name": "About"
+        }
+      }
+    },
+    "contact": {
+      "name": "Contact",
+      "settings": {
+        "title": {
+          "label": "Section title"
+        },
+        "description": {
+          "label": "Description",
+          "info": "Optional description text above the contact form"
+        },
+        "image": {
+          "label": "Contact image",
+          "info": "Optional: Upload a custom image to replace the default"
+        },
+        "custom_id": {
+          "label": "Custom section ID",
+          "info": "Optional: Add a custom ID for this section"
+        }
+      },
+      "presets": {
+        "contact": {
+          "name": "Contact"
         }
       }
     }
