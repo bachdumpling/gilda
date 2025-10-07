@@ -1,6 +1,6 @@
 {% # Home section: pulls products from a collection and shows a 2x2 grid %}
 {% liquid
-  assign chosen_collection = section.settings.collection | default: collections['all']
+  assign chosen_collection = section.settings.collection | default: collections.all
 %}
 
 <section class="home-grid w-full">
@@ -8,15 +8,16 @@
     {% for product in chosen_collection.products limit: 4 %}
       <div class="product-card flex justify-center items-center flex-col w-full">
         {% comment %} image {% endcomment %}
-        <div class="w-[60%] sm:w-[40%] py-6">
+        <div class="w-[100%] sm:w-[60%] py-6">
           {% if product.featured_image %}
-            {% render 'image' 
-              , image: product.featured_image
-              , url: product.url
-              , class: 'aspect-square'
-              , width: 2000
-              , height: 2000
-              , crop: 'center' %}
+            {% render 'image',
+              image: product.featured_image,
+              url: product.url,
+              class: 'aspect-square',
+              width: 2000,
+              height: 2000,
+              crop: 'center'
+            %}
           {% else %}
             <a href="{{ product.url }}" class="block aspect-square">
               {{ 'image' | placeholder_svg_tag }}
@@ -24,12 +25,9 @@
           {% endif %}
         </div>
         {% comment %} title {% endcomment %}
-        <div class="py-6 text-sm md:text-sm lg:text-[15px] xl:text-base 2xl:text-xl text-center">
+        <div class="pb-10 pt-4 text-sm md:text-sm lg:text-[15px] xl:text-base 2xl:text-xl text-center">
           <a href="{{ product.url }}" class="block transition-all duration-200">
-            {% render 'product-code'
-              , product: product
-              , class: 'cursor-pointer'
-              , animation_duration: 100 %}
+            {% render 'product-code', product: product, class: 'cursor-pointer', animation_duration: 100 %}
           </a>
         </div>
       </div>
@@ -76,19 +74,19 @@
 {% endstylesheet %}
 
 {% schema %}
-  {
-    "name": "Home",
-    "settings": [
-      {
-        "type": "collection",
-        "id": "collection",
-        "label": "Collection"
-      }
-    ],
-    "presets": [
-      {
-        "name": "Home"
-      }
-    ]
-  }
+{
+  "name": "Home",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home"
+    }
+  ]
+}
 {% endschema %}

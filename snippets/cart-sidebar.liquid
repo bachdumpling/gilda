@@ -50,6 +50,8 @@
                     src="{{ item.image | image_url: width: 1000 }}"
                     alt="{{ item.image.alt | escape }}"
                     class="w-20 h-20 object-cover rounded"
+                    width="1000"
+                    height="1000"
                     loading="lazy"
                   >
                 {% else %}
@@ -84,7 +86,7 @@
 
                   {% comment %} Size {% endcomment %}
                   {% if item.variant.option1 != 'Default Title' %}
-                    <p class="text-sm text-gray-500">
+                    <p class="text-sm text-subtitle">
                       {% for option in item.options_with_values %}
                         {{ option.name }}: {{ option.value -}}
                         {%- unless forloop.last %}, {% endunless %}
@@ -158,12 +160,12 @@
         <div class="px-6 pt-6">
           <div class="flex justify-between text-sm">
             <span class=" text-lg uppercase">{{ 'cart.subtotal' | t | default: 'Subtotal' }}</span>
-            <span class="text-lg">{{ cart.total_price | money }} USD</span>
+            <span class="text-lg">{{ cart.total_price | money }} (USD)</span>
           </div>
           {% if cart.total_discount > 0 %}
             <div class="flex justify-between text-sm text-green-600">
               <span class="text-lg uppercase">{{ 'cart.savings' | t | default: 'Savings' }}</span>
-              <span>-{{ cart.total_discount | money }} USD</span>
+              <span>-{{ cart.total_discount | money }} (USD)</span>
             </div>
           {% endif %}
         </div>
@@ -180,7 +182,7 @@
           <div class="">
             <div class="text-xs font-sans">
               Free shipping offered on orders on domestic orders. See our
-              <a href="/pages/orders-shipping" class="underline">full shipping policy here</a>.
+              <a href="/pages/orders-shipping" class="underline text-subtitle">full shipping policy here</a>.
             </div>
           </div>
         </div>
