@@ -3,7 +3,14 @@
   Desktop: Split layout with scrolling images and fixed sidebar
 {% endcomment %}
 
-{% assign current_variant = product.selected_or_first_available_variant %}
+{% liquid
+  # Only use selected variant from URL, don't default to first variant
+  assign current_variant = product.selected_variant
+  if current_variant == blank and product.variants.size == 1
+    # If only one variant, select it by default
+    assign current_variant = product.variants.first
+  endif
+%}
 
 {% comment %} MOBILE LAYOUT {% endcomment %}
 <div class="md:hidden border-t border-b border-black">
@@ -181,7 +188,7 @@
                     %}
                     <button
                       type="button"
-                      class="p-3 w-10 h-10 variant-option-mobile font-medium cursor-pointer flex items-center justify-center text-sm font-mono uppercase rounded-full border border-transparent hover:border-black transition-all duration-200"
+                      class="p-3 w-10 h-10 variant-option-mobile font-medium cursor-pointer flex items-center justify-center text-sm font-mono uppercase rounded-full border border-transparent hover:border-black hover:bg-black hover:text-white transition-all duration-200"
                       data-option-position="{{ option.position }}"
                       data-option-value="{{ value | escape }}"
                       data-variant-available="{{ is_available }}"
@@ -202,13 +209,15 @@
 
           <button
             type="submit"
-            class="cursor-pointer w-full pt-6 pb-6 text-sm font-mono uppercase border-t border-black hover:bg-black hover:text-white transition-all duration-300 text-center"
-            {% unless current_variant.available %}
+            class="cursor-pointer w-full pt-6 pb-6 text-sm font-mono uppercase border-t border-black hover:bg-black hover:text-white disabled:hover:bg-transparent disabled:hover:text-black transition-all duration-300 text-center disabled:opacity-50 disabled:cursor-not-allowed"
+            {% if current_variant == blank or current_variant.available == false %}
               disabled
-            {% endunless %}
+            {% endif %}
           >
             <span id="add-to-cart-text-mobile">
-              {% if current_variant.available %}
+              {% if current_variant == blank %}
+                Add to cart • {{ product.price_min | money }}
+              {% elsif current_variant.available %}
                 Add to cart • {{ current_variant.price | money }}
               {% else %}
                 Sold out
@@ -426,7 +435,7 @@
                         %}
                         <button
                           type="button"
-                          class="variant-option-desktop cursor-pointer w-12 h-12 flex items-center justify-center text-base font-mono uppercase rounded-full border border-transparent hover:border-black transition-all duration-200"
+                          class="variant-option-desktop cursor-pointer w-12 h-12 flex items-center justify-center text-base font-mono uppercase rounded-full border border-transparent hover:border-black hover:bg-black hover:text-white transition-all duration-200"
                           data-option-position="{{ option.position }}"
                           data-option-value="{{ value | escape }}"
                           data-variant-available="{{ is_available }}"
@@ -447,13 +456,15 @@
 
               <button
                 type="submit"
-                class="cursor-pointer w-full py-5 px-3 text-base font-mono uppercase border-b border-black hover:bg-black hover:text-white transition-all duration-300 text-center"
-                {% unless current_variant.available %}
+                class="cursor-pointer w-full py-5 px-3 text-base font-mono uppercase border-b border-black hover:bg-black hover:text-white disabled:hover:bg-transparent disabled:hover:text-black transition-all duration-300 text-center disabled:opacity-50 disabled:cursor-not-allowed"
+                {% if current_variant == blank or current_variant.available == false %}
                   disabled
-                {% endunless %}
+                {% endif %}
               >
                 <span id="add-to-cart-text-desktop">
-                  {% if current_variant.available %}
+                  {% if current_variant == blank %}
+                    {{ product.price_min | money }} - Add to cart
+                  {% elsif current_variant.available %}
                     {{ current_variant.price | money }} - Add to cart
                   {% else %}
                     Sold out

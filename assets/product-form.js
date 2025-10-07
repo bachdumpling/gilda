@@ -23,6 +23,13 @@ class ProductForm {
 
     if (this.submitButton.getAttribute("disabled") === "disabled") return;
 
+    // Check if variant is selected
+    const variantInput = this.form.querySelector('input[name="id"]');
+    if (!variantInput || !variantInput.value) {
+      console.warn("No variant selected");
+      return;
+    }
+
     this.submitButton.setAttribute("disabled", "disabled");
     this.loadingSpinner?.classList.remove("hidden");
 
@@ -128,6 +135,43 @@ class ProductVariantSelector {
         }
       });
     });
+
+    // Check initial state and disable button if needed
+    this.checkAndUpdateButtonState();
+  }
+
+  checkAndUpdateButtonState() {
+    // Count how many option positions exist
+    const totalOptions = this.product.options.length;
+    const selectedCount = Object.keys(this.selectedOptions).length;
+
+    // If not all options are selected, disable the button
+    const allOptionsSelected = selectedCount === totalOptions;
+
+    if (!allOptionsSelected) {
+      // Format the minimum price
+      const formatter = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: this.currency,
+      });
+      const formattedPrice = formatter.format(this.product.price_min / 100);
+
+      // Disable both buttons with price shown
+      if (this.submitButtonMobile) {
+        const mobileBtn = this.submitButtonMobile.closest("button");
+        if (mobileBtn) {
+          mobileBtn.disabled = true;
+          this.submitButtonMobile.textContent = `Add to cart • ${formattedPrice}`;
+        }
+      }
+      if (this.submitButtonDesktop) {
+        const desktopBtn = this.submitButtonDesktop.closest("button");
+        if (desktopBtn) {
+          desktopBtn.disabled = true;
+          this.submitButtonDesktop.textContent = `${formattedPrice} - Add to cart`;
+        }
+      }
+    }
   }
 
   handleOptionClick(button) {
@@ -158,6 +202,16 @@ class ProductVariantSelector {
   }
 
   updateVariant() {
+    // Check if all options are selected
+    const totalOptions = this.product.options.length;
+    const selectedCount = Object.keys(this.selectedOptions).length;
+
+    if (selectedCount < totalOptions) {
+      // Not all options selected, disable button
+      this.checkAndUpdateButtonState();
+      return;
+    }
+
     // Build option array from selected options
     const options = [];
     for (let i = 1; i <= Object.keys(this.selectedOptions).length; i++) {
