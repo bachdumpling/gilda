@@ -530,19 +530,24 @@
     bottom: 0;
     left: 0;
     right: 0;
-    width: 100%;
     z-index: 30;
     background-color: rgba(242, 239, 237, 0.8);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 -3px 200px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* Add padding for safe area on the inner content */
+  #mobile-add-to-cart.is-sticky > div {
     padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
   /* Hide when reaching footer */
   #mobile-add-to-cart.is-hidden {
-    transform: translateY(100%);
+    transform: translateY(100%) translateZ(0);
     opacity: 0;
     pointer-events: none;
   }
@@ -601,30 +606,27 @@
       // Store original position
       this.updateOriginalPosition();
 
-      // Handle scroll
+      // Handle scroll with optimized performance
       let ticking = false;
-      window.addEventListener('scroll', () => {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            this.handleScroll();
-            ticking = false;
-          });
-          ticking = true;
-        }
-      });
+      window.addEventListener(
+        'scroll',
+        () => {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              this.handleScroll();
+              ticking = false;
+            });
+            ticking = true;
+          }
+        },
+        { passive: true }
+      );
 
       // Update position on resize
       window.addEventListener('resize', () => {
         this.updateOriginalPosition();
         this.handleScroll();
       });
-
-      // Handle visual viewport changes (for mobile browser UI)
-      if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', () => {
-          this.handleScroll();
-        });
-      }
     }
 
     updateOriginalPosition() {
