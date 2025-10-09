@@ -527,7 +527,7 @@
   /* Mobile Sticky Bar - when scrolled past */
   #mobile-add-to-cart.is-sticky {
     position: fixed;
-    bottom: env(safe-area-inset-bottom, 0);
+    bottom: 0;
     left: 0;
     right: 0;
     width: 100%;
@@ -537,6 +537,7 @@
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 -3px 200px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
   /* Hide when reaching footer */
@@ -617,6 +618,13 @@
         this.updateOriginalPosition();
         this.handleScroll();
       });
+
+      // Handle visual viewport changes (for mobile browser UI)
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+          this.handleScroll();
+        });
+      }
     }
 
     updateOriginalPosition() {
