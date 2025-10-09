@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #F2EFED;
+  --color-background: #f2efed;
   --color-foreground: #000000;
   --color-title: #252525;
   --color-subtitle: #333333;
@@ -19,5 +19,10 @@
 
   .font-sans {
     font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif !important;
+  }
+
+  .font-mono {
+    font-family: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+      Consolas, "Liberation Mono", "Courier New", monospace !important;
   }
 }

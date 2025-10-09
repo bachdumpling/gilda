@@ -43,7 +43,7 @@
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
-    --color-background: #F2EFED;
+    --color-background: #f2efed;
     --color-foreground: #000000;
     --color-title: #252525;
     --color-subtitle: #333333;
@@ -690,10 +690,6 @@
     font-size: var(--text-sm);
     line-height: var(--tw-leading, var(--text-sm--line-height));
   }
-  .text-xl {
-    font-size: var(--text-xl);
-    line-height: var(--tw-leading, var(--text-xl--line-height));
-  }
   .text-xs {
     font-size: var(--text-xs);
     line-height: var(--tw-leading, var(--text-xs--line-height));
@@ -1178,6 +1174,9 @@
   }
   .font-sans {
     font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif !important;
+  }
+  .font-mono {
+    font-family: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
   }
 }
 @property --tw-translate-x {
