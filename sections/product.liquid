@@ -158,14 +158,14 @@
     </div>
 
     {% comment %} Form in Normal Flow - Mobile {% endcomment %}
-    <div id="mobile-add-to-cart" class="border-t bg-background border-black">
+    <div id="mobile-add-to-cart" class="bg-background border-black">
       <div class="">
         {% form 'product', product, id: 'product-form-mobile' %}
           <input type="hidden" name="id" id="product-variant-id-mobile" value="{{ current_variant.id }}">
 
           {% if product.variants.size > 1 %}
             {% for option in product.options_with_values %}
-              <div class=" border-black flex items-center justify-center">
+              <div class="border-t border-b border-black flex items-center justify-center">
                 <div class="flex w-full justify-between py-4 px-6">
                   {% for value in option.values %}
                     {% liquid
@@ -207,7 +207,7 @@
 
           <button
             type="submit"
-            class="cursor-pointer w-full pt-6 pb-6 text-sm font-mono uppercase border-t border-black hover:bg-black hover:text-white disabled:hover:bg-transparent disabled:hover:text-black transition-all duration-300 text-center disabled:opacity-50 disabled:cursor-not-allowed"
+            class="cursor-pointer w-full pt-6 pb-6 text-sm font-mono uppercase hover:bg-black hover:text-white disabled:hover:bg-transparent disabled:hover:text-black transition-all duration-300 text-center disabled:opacity-50 disabled:cursor-not-allowed"
             {% if current_variant == blank or current_variant.available == false %}
               disabled
             {% endif %}
@@ -522,32 +522,27 @@
     display: block;
   }
 
-  /* Mobile Sticky Bar - when scrolled past */
-  #mobile-add-to-cart.is-sticky {
+  /* Mobile Add to Cart - Always Sticky */
+  #mobile-add-to-cart {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     z-index: 30;
-    background-color: rgba(242, 239, 237, 0.8);
+    background-color: rgba(242, 239, 237, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 -3px 200px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-  }
-
-  /* Add padding for safe area on the inner content */
-  #mobile-add-to-cart.is-sticky > div {
+    box-shadow: 0 -3px 20px rgba(0, 0, 0, 0.1);
+    /* Fix Safari gap with safe area */
     padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
   /* Hide when reaching footer */
   #mobile-add-to-cart.is-hidden {
-    transform: translateY(100%) translateZ(0);
+    transform: translateY(100%);
     opacity: 0;
     pointer-events: none;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
   }
 {% endstylesheet %}
 
@@ -594,16 +589,11 @@
       this.stickyBar = document.getElementById('mobile-add-to-cart');
       if (!this.stickyBar) return;
 
-      this.originalPosition = null;
-      this.isSticky = false;
       this.isHidden = false;
       this.init();
     }
 
     init() {
-      // Store original position
-      this.updateOriginalPosition();
-
       // Handle scroll with optimized performance
       let ticking = false;
       window.addEventListener(
@@ -619,39 +609,13 @@
         },
         { passive: true }
       );
-
-      // Update position on resize
-      window.addEventListener('resize', () => {
-        this.updateOriginalPosition();
-        this.handleScroll();
-      });
-    }
-
-    updateOriginalPosition() {
-      if (!this.stickyBar) return;
-
-      // Temporarily remove sticky class to get true position
-      this.stickyBar.classList.remove('is-sticky');
-      const rect = this.stickyBar.getBoundingClientRect();
-      this.originalPosition = rect.top + window.scrollY;
-
-      // Restore sticky if it was sticky
-      if (this.isSticky) {
-        this.stickyBar.classList.add('is-sticky');
-      }
     }
 
     handleScroll() {
-      if (!this.stickyBar || this.originalPosition === null) return;
+      if (!this.stickyBar) return;
 
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
-      const barHeight = this.stickyBar.offsetHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-
-      // Check if the bar would be below the viewport
-      const barBottomPosition = this.originalPosition + barHeight;
-      const shouldBeSticky = scrollY + windowHeight > barBottomPosition;
 
       // Get footer element (assuming it's rendered via sections 'footer-group')
       const footer = document.querySelector('[id*="shopify-section-footer"]');
@@ -665,16 +629,8 @@
         shouldHide = stickyBarBottom >= footerTop;
       } else {
         // Fallback: hide when near bottom of page
+        const documentHeight = document.documentElement.scrollHeight;
         shouldHide = scrollY + windowHeight >= documentHeight - 50;
-      }
-
-      // Update sticky state
-      if (shouldBeSticky && !this.isSticky) {
-        this.stickyBar.classList.add('is-sticky');
-        this.isSticky = true;
-      } else if (!shouldBeSticky && this.isSticky) {
-        this.stickyBar.classList.remove('is-sticky');
-        this.isSticky = false;
       }
 
       // Update hidden state
