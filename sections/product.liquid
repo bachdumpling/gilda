@@ -216,11 +216,11 @@
           >
             <span id="add-to-cart-text-mobile">
               {% if current_variant == blank %}
-                Add to cart • {{ product.price_min | money }}
+                {{ product.price_min | money }} - Add to cart
               {% elsif current_variant.available %}
-                Add to cart • {{ current_variant.price | money }}
+                {{ current_variant.price | money }} - Add to cart
               {% else %}
-                Sold out
+                {{ current_variant.price | money }} - Sold out
               {% endif %}
             </span>
           </button>
@@ -467,7 +467,7 @@
                   {% elsif current_variant.available %}
                     {{ current_variant.price | money }} - Add to cart
                   {% else %}
-                    Sold out
+                    {{ current_variant.price | money }} - Sold out
                   {% endif %}
                 </span>
               </button>
@@ -527,9 +527,10 @@
   /* Mobile Sticky Bar - when scrolled past */
   #mobile-add-to-cart.is-sticky {
     position: fixed;
-    bottom: 0;
+    bottom: env(safe-area-inset-bottom, 0);
     left: 0;
     right: 0;
+    width: 100%;
     z-index: 30;
     background-color: rgba(242, 239, 237, 0.8);
     backdrop-filter: blur(10px);
@@ -543,13 +544,6 @@
     transform: translateY(100%);
     opacity: 0;
     pointer-events: none;
-  }
-
-  /* Safe area for notched devices */
-  @media (max-width: 767px) {
-    #mobile-add-to-cart.is-sticky {
-      padding-bottom: env(safe-area-inset-bottom);
-    }
   }
 {% endstylesheet %}
 

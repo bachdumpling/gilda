@@ -161,7 +161,7 @@ class ProductVariantSelector {
         const mobileBtn = this.submitButtonMobile.closest("button");
         if (mobileBtn) {
           mobileBtn.disabled = true;
-          this.submitButtonMobile.textContent = `Add to cart • ${formattedPrice}`;
+          this.submitButtonMobile.textContent = `${formattedPrice} - Add to cart`;
         }
       }
       if (this.submitButtonDesktop) {
@@ -242,7 +242,7 @@ class ProductVariantSelector {
       // Update both mobile and desktop submit buttons with price
       const buttonText = matchingVariant.available
         ? `${formattedPrice} - Add to cart`
-        : "Sold out";
+        : `${formattedPrice} - Sold out`;
 
       if (this.submitButtonMobile) {
         this.submitButtonMobile.textContent = buttonText;
