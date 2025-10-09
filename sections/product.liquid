@@ -13,245 +13,242 @@
 %}
 
 {% comment %} MOBILE LAYOUT {% endcomment %}
-<div class="md:hidden flex flex-col min-h-[100dvh]">
-  {% comment %} Scrollable content area {% endcomment %}
-  <div class="flex-1 overflow-auto border-t border-black">
-    {% comment %} First Image {% endcomment %}
-    {% if product.images.size > 0 %}
-      <div class="w-full relative">
-        <a
-          href="{{ routes.root_url }}"
-          class="back-button-link absolute top-6 left-4 z-20 flex items-center justify-center gap-2 transition-all duration-200 text-sm font-mono uppercase"
-          aria-label="Back to home"
+<div class="md:hidden border-t border-b border-black">
+  {% comment %} First Image {% endcomment %}
+  {% if product.images.size > 0 %}
+    <div class="w-full relative">
+      <a
+        href="{{ routes.root_url }}"
+        class="back-button-link absolute top-6 left-4 z-20 flex items-center justify-center gap-2 transition-all duration-200 text-sm font-mono uppercase"
+        aria-label="Back to home"
+      >
+        <svg width="18" height="8" viewBox="0 0 18 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.646446 4.35355C0.451185 4.15829 0.451185 3.84171 0.646446 3.64645L3.82843 0.464466C4.02369 0.269204 4.34027 0.269204 4.53553 0.464466C4.7308 0.659728 4.7308 0.976311 4.53553 1.17157L1.70711 4L4.53553 6.82843C4.7308 7.02369 4.7308 7.34027 4.53553 7.53553C4.34027 7.7308 4.02369 7.7308 3.82843 7.53553L0.646446 4.35355ZM18 4V4.5H1V4V3.5H18V4Z" fill="black"/>
+        </svg>
+        Back
+      </a>
+      <div class="w-full aspect-square overflow-hidden flex items-center justify-center">
+        <img
+          src="{{ product.images.first | image_url: width: 1200 }}"
+          srcset="
+            {{ product.images.first | image_url: width: 600 }} 600w,
+            {{ product.images.first | image_url: width: 1200 }} 1200w
+          "
+          sizes="100vw"
+          alt="{{ product.images.first.alt | escape }}"
+          loading="eager"
+          width="{{ product.images.first.width }}"
+          height="{{ product.images.first.height }}"
+          class="max-w-full max-h-full object-cover"
         >
-          <svg width="18" height="8" viewBox="0 0 18 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0.646446 4.35355C0.451185 4.15829 0.451185 3.84171 0.646446 3.64645L3.82843 0.464466C4.02369 0.269204 4.34027 0.269204 4.53553 0.464466C4.7308 0.659728 4.7308 0.976311 4.53553 1.17157L1.70711 4L4.53553 6.82843C4.7308 7.02369 4.7308 7.34027 4.53553 7.53553C4.34027 7.7308 4.02369 7.7308 3.82843 7.53553L0.646446 4.35355ZM18 4V4.5H1V4V3.5H18V4Z" fill="black"/>
-          </svg>
-          Back
-        </a>
+      </div>
+    </div>
+  {% endif %}
+
+  {% comment %} Product Info Section {% endcomment %}
+  <div>
+    {% comment %} Product Title {% endcomment %}
+    <div class="flex items-center justify-center product-title border-b border-black py-10">
+      <h1 class="text-base font-mono uppercase text-center">{{ product.title }}</h1>
+    </div>
+
+    {% comment %} Tabs {% endcomment %}
+    <div class="product-tabs">
+      <div class="flex border-b border-black">
+        <button
+          type="button"
+          class="tab-button flex-1 py-6 text-sm font-mono uppercase border-r border-black hover:underline transition-colors"
+          data-tab="info"
+          data-active="true"
+        >
+          Info
+        </button>
+        <button
+          type="button"
+          class="tab-button flex-1 py-6 text-sm font-mono uppercase border-r border-black hover:underline transition-colors"
+          data-tab="materials"
+        >
+          Materials
+        </button>
+        <button
+          type="button"
+          class="tab-button flex-1 py-6 text-sm font-mono uppercase hover:underline transition-colors"
+          data-tab="sizing"
+        >
+          Sizing
+        </button>
+      </div>
+
+      <div class="tab-content p-8 min-h-fit">
+        <div class="tab-panel" data-tab-content="info" data-active="true">
+          <div class="text-sm font-sans text-subtitle leading-relaxed prose prose-sm max-w-none">
+            {% if product.description != blank %}
+              {{ product.description }}
+            {% elsif product.metafields.custom.info != blank %}
+              {{ product.metafields.custom.info | metafield_tag }}
+            {% else %}
+              <p>Product information will be displayed here.</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="tab-panel hidden" data-tab-content="materials">
+          <div class="text-sm font-sans text-subtitle leading-relaxed prose prose-sm max-w-none">
+            {% if product.metafields.custom.materials != blank %}
+              {{ product.metafields.custom.materials | metafield_tag }}
+            {% else %}
+              <p>Material information will be displayed here.</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="tab-panel hidden" data-tab-content="sizing">
+          <div class="text-sm font-sans text-subtitle">
+            <table class="w-full text-left table-auto">
+              <thead>
+                <tr class="">
+                  <th class="py-2 w-fit font-normal">Size</th>
+                  <th class="py-2 w-fit font-normal">Back Length</th>
+                  <th class="py-2 w-fit font-normal">Shoulder</th>
+                  <th class="py-2 w-fit font-normal">Sleeve Length</th>
+                  <th class="py-2 w-fit font-normal">Sleeve Length</th>
+                </tr>
+              </thead>
+              <tbody class="font-sans">
+                <tr class="">
+                  <td class="py-3">XS</td>
+                  <td class="py-3">65.5cm</td>
+                  <td class="py-3">43.4cm</td>
+                  <td class="py-3">110cm</td>
+                  <td class="py-3">69cm</td>
+                </tr>
+                <tr class="">
+                  <td class="py-3">S</td>
+                  <td class="py-3">67.5cm</td>
+                  <td class="py-3">45.2cm</td>
+                  <td class="py-3">115cm</td>
+                  <td class="py-3">69.5cm</td>
+                </tr>
+                <tr class="">
+                  <td class="py-3">M</td>
+                  <td class="py-3">69.5cm</td>
+                  <td class="py-3">47cm</td>
+                  <td class="py-3">120cm</td>
+                  <td class="py-3">71cm</td>
+                </tr>
+                <tr class="">
+                  <td class="py-3">L</td>
+                  <td class="py-3">71.5cm</td>
+                  <td class="py-3">48.8cm</td>
+                  <td class="py-3">125cm</td>
+                  <td class="py-3">72.5cm</td>
+                </tr>
+                <tr>
+                  <td class="py-3">XL</td>
+                  <td class="py-3">73.5cm</td>
+                  <td class="py-3">50.6cm</td>
+                  <td class="py-3">130cm</td>
+                  <td class="py-3">73cm</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% comment %} Form in Normal Flow - Mobile {% endcomment %}
+    <div id="mobile-add-to-cart" class="bg-background">
+      <div class="">
+        {% form 'product', product, id: 'product-form-mobile' %}
+          <input type="hidden" name="id" id="product-variant-id-mobile" value="{{ current_variant.id }}">
+
+          {% if product.variants.size > 1 %}
+            {% for option in product.options_with_values %}
+              <div class="border-t border-b border-black flex items-center justify-center">
+                <div class="flex w-full justify-between py-4 px-6">
+                  {% for value in option.values %}
+                    {% liquid
+                      # Check availability based on option position
+                      assign is_available = false
+                      for variant in product.variants
+                        if option.position == 1 and variant.option1 == value and variant.available
+                          assign is_available = true
+                          break
+                        elsif option.position == 2 and variant.option2 == value and variant.available
+                          assign is_available = true
+                          break
+                        elsif option.position == 3 and variant.option3 == value and variant.available
+                          assign is_available = true
+                          break
+                        endif
+                      endfor
+                    %}
+                    <button
+                      type="button"
+                      class="p-3 w-10 h-10 variant-option-mobile font-medium cursor-pointer flex items-center justify-center text-sm font-mono uppercase rounded-full border border-transparent hover:border-black hover:bg-black hover:text-white transition-all duration-200"
+                      data-option-position="{{ option.position }}"
+                      data-option-value="{{ value | escape }}"
+                      data-variant-available="{{ is_available }}"
+                      {% if current_variant[option.name] == value %}
+                        data-selected="true"
+                      {% endif %}
+                      {% unless is_available %}
+                        disabled
+                      {% endunless %}
+                    >
+                      {{ value }}
+                    </button>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <button
+            type="submit"
+            class="cursor-pointer w-full pt-6 pb-6 text-sm font-mono uppercase hover:bg-black hover:text-white disabled:hover:bg-transparent disabled:hover:text-black transition-all duration-300 text-center disabled:opacity-50 disabled:cursor-not-allowed"
+            {% if current_variant == blank or current_variant.available == false %}
+              disabled
+            {% endif %}
+          >
+            <span id="add-to-cart-text-mobile">
+              {% if current_variant == blank %}
+                {{ product.price_min | money }} - Add to cart
+              {% elsif current_variant.available %}
+                {{ current_variant.price | money }} - Add to cart
+              {% else %}
+                {{ current_variant.price | money }} - Sold out
+              {% endif %}
+            </span>
+          </button>
+        {% endform %}
+      </div>
+    </div>
+  </div>
+
+  {% comment %} Remaining Images {% endcomment %}
+  {% if product.images.size > 1 %}
+    <div class="flex flex-col gap-2">
+      {% for image in product.images offset: 1 %}
         <div class="w-full aspect-square overflow-hidden flex items-center justify-center">
           <img
-            src="{{ product.images.first | image_url: width: 1200 }}"
+            src="{{ image | image_url: width: 1200 }}"
             srcset="
-              {{ product.images.first | image_url: width: 600 }} 600w,
-              {{ product.images.first | image_url: width: 1200 }} 1200w
+              {{ image | image_url: width: 600 }} 600w,
+              {{ image | image_url: width: 1200 }} 1200w
             "
             sizes="100vw"
-            alt="{{ product.images.first.alt | escape }}"
-            loading="eager"
-            width="{{ product.images.first.width }}"
-            height="{{ product.images.first.height }}"
+            alt="{{ image.alt | escape }}"
+            loading="lazy"
+            width="{{ image.width }}"
+            height="{{ image.height }}"
             class="max-w-full max-h-full object-cover"
           >
         </div>
-      </div>
-    {% endif %}
-
-    {% comment %} Product Info Section {% endcomment %}
-    <div>
-      {% comment %} Product Title {% endcomment %}
-      <div class="flex items-center justify-center product-title border-b border-black py-10">
-        <h1 class="text-base font-mono uppercase text-center">{{ product.title }}</h1>
-      </div>
-
-      {% comment %} Tabs {% endcomment %}
-      <div class="product-tabs">
-        <div class="flex border-b border-black">
-          <button
-            type="button"
-            class="tab-button flex-1 py-6 text-sm font-mono uppercase border-r border-black hover:underline transition-colors"
-            data-tab="info"
-            data-active="true"
-          >
-            Info
-          </button>
-          <button
-            type="button"
-            class="tab-button flex-1 py-6 text-sm font-mono uppercase border-r border-black hover:underline transition-colors"
-            data-tab="materials"
-          >
-            Materials
-          </button>
-          <button
-            type="button"
-            class="tab-button flex-1 py-6 text-sm font-mono uppercase hover:underline transition-colors"
-            data-tab="sizing"
-          >
-            Sizing
-          </button>
-        </div>
-
-        <div class="tab-content p-8 min-h-fit">
-          <div class="tab-panel" data-tab-content="info" data-active="true">
-            <div class="text-sm font-sans text-subtitle leading-relaxed prose prose-sm max-w-none">
-              {% if product.description != blank %}
-                {{ product.description }}
-              {% elsif product.metafields.custom.info != blank %}
-                {{ product.metafields.custom.info | metafield_tag }}
-              {% else %}
-                <p>Product information will be displayed here.</p>
-              {% endif %}
-            </div>
-          </div>
-
-          <div class="tab-panel hidden" data-tab-content="materials">
-            <div class="text-sm font-sans text-subtitle leading-relaxed prose prose-sm max-w-none">
-              {% if product.metafields.custom.materials != blank %}
-                {{ product.metafields.custom.materials | metafield_tag }}
-              {% else %}
-                <p>Material information will be displayed here.</p>
-              {% endif %}
-            </div>
-          </div>
-
-          <div class="tab-panel hidden" data-tab-content="sizing">
-            <div class="text-sm font-sans text-subtitle">
-              <table class="w-full text-left table-auto">
-                <thead>
-                  <tr class="">
-                    <th class="py-2 w-fit font-normal">Size</th>
-                    <th class="py-2 w-fit font-normal">Back Length</th>
-                    <th class="py-2 w-fit font-normal">Shoulder</th>
-                    <th class="py-2 w-fit font-normal">Sleeve Length</th>
-                    <th class="py-2 w-fit font-normal">Sleeve Length</th>
-                  </tr>
-                </thead>
-                <tbody class="font-sans">
-                  <tr class="">
-                    <td class="py-3">XS</td>
-                    <td class="py-3">65.5cm</td>
-                    <td class="py-3">43.4cm</td>
-                    <td class="py-3">110cm</td>
-                    <td class="py-3">69cm</td>
-                  </tr>
-                  <tr class="">
-                    <td class="py-3">S</td>
-                    <td class="py-3">67.5cm</td>
-                    <td class="py-3">45.2cm</td>
-                    <td class="py-3">115cm</td>
-                    <td class="py-3">69.5cm</td>
-                  </tr>
-                  <tr class="">
-                    <td class="py-3">M</td>
-                    <td class="py-3">69.5cm</td>
-                    <td class="py-3">47cm</td>
-                    <td class="py-3">120cm</td>
-                    <td class="py-3">71cm</td>
-                  </tr>
-                  <tr class="">
-                    <td class="py-3">L</td>
-                    <td class="py-3">71.5cm</td>
-                    <td class="py-3">48.8cm</td>
-                    <td class="py-3">125cm</td>
-                    <td class="py-3">72.5cm</td>
-                  </tr>
-                  <tr>
-                    <td class="py-3">XL</td>
-                    <td class="py-3">73.5cm</td>
-                    <td class="py-3">50.6cm</td>
-                    <td class="py-3">130cm</td>
-                    <td class="py-3">73cm</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
+      {% endfor %}
     </div>
-
-    {% comment %} Remaining Images {% endcomment %}
-    {% if product.images.size > 1 %}
-      <div class="flex flex-col gap-2">
-        {% for image in product.images offset: 1 %}
-          <div class="w-full aspect-square overflow-hidden flex items-center justify-center">
-            <img
-              src="{{ image | image_url: width: 1200 }}"
-              srcset="
-                {{ image | image_url: width: 600 }} 600w,
-                {{ image | image_url: width: 1200 }} 1200w
-              "
-              sizes="100vw"
-              alt="{{ image.alt | escape }}"
-              loading="lazy"
-              width="{{ image.width }}"
-              height="{{ image.height }}"
-              class="max-w-full max-h-full object-cover"
-            >
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
-  </div>
-
-  {% comment %} Sticky bottom form {% endcomment %}
-  <div id="mobile-add-to-cart" class="flex-shrink-0 bg-background border-t border-b border-black">
-    <div class="">
-      {% form 'product', product, id: 'product-form-mobile' %}
-        <input type="hidden" name="id" id="product-variant-id-mobile" value="{{ current_variant.id }}">
-
-        {% if product.variants.size > 1 %}
-          {% for option in product.options_with_values %}
-            <div class="border-t border-b border-black flex items-center justify-center">
-              <div class="flex w-full justify-between py-4 px-6">
-                {% for value in option.values %}
-                  {% liquid
-                    # Check availability based on option position
-                    assign is_available = false
-                    for variant in product.variants
-                      if option.position == 1 and variant.option1 == value and variant.available
-                        assign is_available = true
-                        break
-                      elsif option.position == 2 and variant.option2 == value and variant.available
-                        assign is_available = true
-                        break
-                      elsif option.position == 3 and variant.option3 == value and variant.available
-                        assign is_available = true
-                        break
-                      endif
-                    endfor
-                  %}
-                  <button
-                    type="button"
-                    class="p-3 w-10 h-10 variant-option-mobile font-medium cursor-pointer flex items-center justify-center text-sm font-mono uppercase rounded-full border border-transparent hover:border-black hover:bg-black hover:text-white transition-all duration-200"
-                    data-option-position="{{ option.position }}"
-                    data-option-value="{{ value | escape }}"
-                    data-variant-available="{{ is_available }}"
-                    {% if current_variant[option.name] == value %}
-                      data-selected="true"
-                    {% endif %}
-                    {% unless is_available %}
-                      disabled
-                    {% endunless %}
-                  >
-                    {{ value }}
-                  </button>
-                {% endfor %}
-              </div>
-            </div>
-          {% endfor %}
-        {% endif %}
-
-        <button
-          type="submit"
-          class="cursor-pointer w-full pt-6 pb-6 text-sm font-mono uppercase hover:bg-black hover:text-white disabled:hover:bg-transparent disabled:hover:text-black transition-all duration-300 text-center disabled:opacity-50 disabled:cursor-not-allowed"
-          {% if current_variant == blank or current_variant.available == false %}
-            disabled
-          {% endif %}
-        >
-          <span id="add-to-cart-text-mobile">
-            {% if current_variant == blank %}
-              {{ product.price_min | money }} - Add to cart
-            {% elsif current_variant.available %}
-              {{ current_variant.price | money }} - Add to cart
-            {% else %}
-              {{ current_variant.price | money }} - Sold out
-            {% endif %}
-          </span>
-        </button>
-      {% endform %}
-    </div>
-  </div>
+  {% endif %}
 </div>
 
 {% comment %} DESKTOP LAYOUT {% endcomment %}
@@ -525,19 +522,32 @@
     display: block;
   }
 
-  /* Mobile Add to Cart - Flexbox Bottom */
-  #mobile-add-to-cart {
-    position: sticky;
+  /* Mobile Sticky Bar - when scrolled past */
+  #mobile-add-to-cart.is-sticky {
+    position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     z-index: 30;
-    background-color: rgba(242, 239, 237, 0.95);
+    background-color: rgba(242, 239, 237, 0.8);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 -3px 20px rgba(0, 0, 0, 0.1);
-    /* Safari safe area for home indicator */
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-shadow: 0 -3px 200px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* Add padding for safe area on the inner content */
+  #mobile-add-to-cart.is-sticky > div {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  /* Hide when reaching footer */
+  #mobile-add-to-cart.is-hidden {
+    transform: translateY(100%) translateZ(0);
+    opacity: 0;
+    pointer-events: none;
   }
 {% endstylesheet %}
 
@@ -579,13 +589,114 @@
     }
   }
 
+  class MobileStickyBar {
+    constructor() {
+      this.stickyBar = document.getElementById('mobile-add-to-cart');
+      if (!this.stickyBar) return;
+
+      this.originalPosition = null;
+      this.isSticky = false;
+      this.isHidden = false;
+      this.init();
+    }
+
+    init() {
+      // Store original position
+      this.updateOriginalPosition();
+
+      // Handle scroll with optimized performance
+      let ticking = false;
+      window.addEventListener(
+        'scroll',
+        () => {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              this.handleScroll();
+              ticking = false;
+            });
+            ticking = true;
+          }
+        },
+        { passive: true }
+      );
+
+      // Update position on resize
+      window.addEventListener('resize', () => {
+        this.updateOriginalPosition();
+        this.handleScroll();
+      });
+    }
+
+    updateOriginalPosition() {
+      if (!this.stickyBar) return;
+
+      // Temporarily remove sticky class to get true position
+      this.stickyBar.classList.remove('is-sticky');
+      const rect = this.stickyBar.getBoundingClientRect();
+      this.originalPosition = rect.top + window.scrollY;
+
+      // Restore sticky if it was sticky
+      if (this.isSticky) {
+        this.stickyBar.classList.add('is-sticky');
+      }
+    }
+
+    handleScroll() {
+      if (!this.stickyBar || this.originalPosition === null) return;
+
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const barHeight = this.stickyBar.offsetHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      // Check if the bar would be below the viewport
+      const barBottomPosition = this.originalPosition + barHeight;
+      const shouldBeSticky = scrollY + windowHeight > barBottomPosition;
+
+      // Get footer element (assuming it's rendered via sections 'footer-group')
+      const footer = document.querySelector('[id*="shopify-section-footer"]');
+
+      // Check if we've scrolled to the footer
+      let shouldHide = false;
+      if (footer) {
+        const footerTop = footer.getBoundingClientRect().top + scrollY;
+        const stickyBarBottom = scrollY + windowHeight;
+        // Hide if sticky bar would overlap with footer
+        shouldHide = stickyBarBottom >= footerTop;
+      } else {
+        // Fallback: hide when near bottom of page
+        shouldHide = scrollY + windowHeight >= documentHeight - 50;
+      }
+
+      // Update sticky state
+      if (shouldBeSticky && !this.isSticky) {
+        this.stickyBar.classList.add('is-sticky');
+        this.isSticky = true;
+      } else if (!shouldBeSticky && this.isSticky) {
+        this.stickyBar.classList.remove('is-sticky');
+        this.isSticky = false;
+      }
+
+      // Update hidden state
+      if (shouldHide && !this.isHidden) {
+        this.stickyBar.classList.add('is-hidden');
+        this.isHidden = true;
+      } else if (!shouldHide && this.isHidden) {
+        this.stickyBar.classList.remove('is-hidden');
+        this.isHidden = false;
+      }
+    }
+  }
+
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       new ProductTabs();
+      new MobileStickyBar();
     });
   } else {
     new ProductTabs();
+    new MobileStickyBar();
   }
 {% endjavascript %}
 
