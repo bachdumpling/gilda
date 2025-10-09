@@ -339,9 +339,6 @@
   .max-h-full {
     max-height: 100%;
   }
-  .min-h-\[100dvh\] {
-    min-height: 100dvh;
-  }
   .min-h-fit {
     min-height: fit-content;
   }
@@ -527,9 +524,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .overflow-auto {
-    overflow: auto;
-  }
   .overflow-hidden {
     overflow: hidden;
   }
@@ -664,9 +658,6 @@
   }
   .pb-10 {
     padding-bottom: calc(var(--spacing) * 10);
-  }
-  .pb-24 {
-    padding-bottom: calc(var(--spacing) * 24);
   }
   .text-center {
     text-align: center;
