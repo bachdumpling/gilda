@@ -7,32 +7,35 @@
   id="{{ section_id }}"
   class="{{ section_class }} bg-[#f2efed]"
 >
-  <div class="grid grid-cols-1 lg:grid-cols-2 relative">
+  <div class="flex flex-col-reverse 2xl:justify-center 2xl:items-center md:flex-row border-y border-black xl:h-[720px] 2xl:h-[800px] overflow-hidden">
     {%- comment -%} Left Column - Image {%- endcomment -%}
-    <div class="relative h-[400px] lg:h-[800px] w-full">
-      {%- if section.settings.image != blank -%}
-        {{
-          section.settings.image
-          | image_url: width: 1440
-          | image_tag:
-            loading: 'lazy',
-            class: 'absolute inset-0 w-full h-full object-cover',
-            widths: '360, 720, 1080, 1440',
-            sizes: '(min-width: 1024px) 50vw, 100vw'
-        }}
-      {%- else -%}
-        <div class="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center">
-          <span class="text-gray-400 font-mono text-sm">{{ 'sections.contact.image_placeholder' | t }}</span>
-        </div>
-      {%- endif -%}
+    <div class="w-full md:w-1/2 overflow-hidden border-t md:border-t-0 md:border-r border-black object-center object-cover relative">
+      <div class="h-full w-auto overflow-hidden object-center object-cover aspect-square md:aspect-auto">
+        {%- if section.settings.image != blank -%}
+          <img
+            src="{{ section.settings.image | image_url: width: 2000 }}"
+            srcset="
+              {{ section.settings.image | image_url: width: 600 }} 600w,
+              {{ section.settings.image | image_url: width: 1200 }} 1200w,
+              {{ section.settings.image | image_url: width: 2000 }} 2000w
+            "
+            alt="{{ section.settings.image.alt | escape }}"
+            loading="eager"
+            width="100%"
+            height="100%"
+            class="w-full h-full object-center object-cover"
+          >
+        {%- else -%}
+          <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+            <span class="text-gray-400 font-mono text-sm">{{ 'sections.contact.image_placeholder' | t }}</span>
+          </div>
+        {%- endif -%}
+      </div>
     </div>
 
-    {%- comment -%} Vertical Divider {%- endcomment -%}
-    <div class="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-black/10 -translate-x-1/2"></div>
-
     {%- comment -%} Right Column - Content {%- endcomment -%}
-    <div class="relative h-[400px] lg:h-[800px] w-full flex items-center justify-center px-6 py-12 lg:px-[140px] lg:py-[103px]">
-      <div class="flex flex-col gap-10 w-full max-w-[432px]">
+    <div class="w-full md:w-1/2 flex flex-col items-center justify-center px-4 sm:px-4 md:px-9 lg:px-20 xl:px-30 2xl:px-[140px] py-10 sm:py-14 md:py-10 lg:py-20 xl:py-30 2xl:py-[100px]">
+      <div class="flex flex-col gap-10 w-full max-w-md">
         {%- comment -%} Contact Section {%- endcomment -%}
         <div class="flex flex-col gap-3">
           <h2 class="font-mono font-medium text-base text-black uppercase">
