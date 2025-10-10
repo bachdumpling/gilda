@@ -158,16 +158,35 @@
     "contact": {
       "name": "Contact",
       "settings": {
-        "title": {
-          "label": "Section title"
-        },
-        "description": {
-          "label": "Description",
-          "info": "Optional description text above the contact form"
-        },
         "image": {
+          "header": "Image",
           "label": "Contact image",
-          "info": "Optional: Upload a custom image to replace the default"
+          "info": "Upload an image for the left side of the contact page"
+        },
+        "contact_section": {
+          "header": "Contact section"
+        },
+        "contact_text": {
+          "label": "Contact text",
+          "info": "Custom text for the contact section. Leave blank to use default text with email link."
+        },
+        "contact_email": {
+          "label": "Contact email",
+          "info": "Email address for general inquiries"
+        },
+        "wholesale_section": {
+          "header": "Wholesale section"
+        },
+        "wholesale_text": {
+          "label": "Wholesale text",
+          "info": "Custom text for the wholesale section. Leave blank to use default text with email link."
+        },
+        "wholesale_email": {
+          "label": "Wholesale email",
+          "info": "Email address for wholesale inquiries"
+        },
+        "section_settings": {
+          "header": "Section settings"
         },
         "custom_id": {
           "label": "Custom section ID",

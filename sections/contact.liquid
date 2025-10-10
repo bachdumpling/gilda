@@ -77,65 +77,68 @@
 
 {% schema %}
 {
-  "name": "Contact",
+  "name": "t:sections.contact.name",
   "tag": "section",
   "class": "section-contact",
   "settings": [
     {
       "type": "header",
-      "content": "Image"
+      "content": "t:sections.contact.settings.image.header"
     },
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Contact image"
+      "label": "t:sections.contact.settings.image.label",
+      "info": "t:sections.contact.settings.image.info"
     },
     {
       "type": "header",
-      "content": "Contact section"
+      "content": "t:sections.contact.settings.contact_section.header"
     },
     {
       "type": "html",
       "id": "contact_text",
-      "label": "Contact text",
-      "info": "Leave blank to use default text with email link"
+      "label": "t:sections.contact.settings.contact_text.label",
+      "info": "t:sections.contact.settings.contact_text.info"
     },
     {
       "type": "text",
       "id": "contact_email",
-      "label": "Contact email",
+      "label": "t:sections.contact.settings.contact_email.label",
+      "info": "t:sections.contact.settings.contact_email.info",
       "default": "info@gildaclothing.com"
     },
     {
       "type": "header",
-      "content": "Wholesale section"
+      "content": "t:sections.contact.settings.wholesale_section.header"
     },
     {
       "type": "html",
       "id": "wholesale_text",
-      "label": "Wholesale text",
-      "info": "Leave blank to use default text with email link"
+      "label": "t:sections.contact.settings.wholesale_text.label",
+      "info": "t:sections.contact.settings.wholesale_text.info"
     },
     {
       "type": "text",
       "id": "wholesale_email",
-      "label": "Wholesale email",
+      "label": "t:sections.contact.settings.wholesale_email.label",
+      "info": "t:sections.contact.settings.wholesale_email.info",
       "default": "wholesale@gildaclothing.com"
     },
     {
       "type": "header",
-      "content": "Section settings"
+      "content": "t:sections.contact.settings.section_settings.header"
     },
     {
       "type": "text",
       "id": "custom_id",
-      "label": "Custom ID",
-      "info": "Optional custom section ID"
+      "label": "t:sections.contact.settings.custom_id.label",
+      "info": "t:sections.contact.settings.custom_id.info"
     }
   ],
   "presets": [
     {
-      "name": "Contact",
+      "name": "t:sections.contact.presets.contact.name",
       "settings": {
         "contact_email": "info@gildaclothing.com",
         "wholesale_email": "wholesale@gildaclothing.com"
