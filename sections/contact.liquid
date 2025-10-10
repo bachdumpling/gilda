@@ -1,195 +1,145 @@
 {% liquid
   assign section_id = section.settings.custom_id | default: section.id
-  assign section_class = 'section-contact'
+  assign section_class = 'section-' | append: section.type
 %}
 
-<section id="{{ section_id }}" class="{{ section_class }}">
-  <div class="flex flex-col-reverse 2xl:justify-center 2xl:items-center md:flex-row border-y border-black">
-    {% comment %} Left side - Image {% endcomment %}
-    <div class="w-full md:w-1/2 overflow-hidden border-t md:border-t-0 md:border-r border-black object-center object-cover">
-      <div class="h-full w-auto aspect-square overflow-hidden object-center">
-        {% if section.settings.image %}
-          <img
-            src="{{ section.settings.image | image_url: width: 2000 }}"
-            srcset="
-              {{ section.settings.image | image_url: width: 600 }} 600w,
-              {{ section.settings.image | image_url: width: 1200 }} 1200w,
-              {{ section.settings.image | image_url: width: 2000 }} 2000w
-            "
-            alt="{{ section.settings.image.alt | escape }}"
-            loading="eager"
-            width="100%"
-            height="100%"
-            class="w-full h-full object-center"
-          >
-        {% else %}
-          <img
-            src="https://cdn.shopify.com/s/files/1/0670/9051/4081/files/3296.jpg?v=1758508794"
-            alt="{{ 'contact.image_alt' | t }}"
-            class="w-full h-full object-center"
-            loading="lazy"
-            width="100%"
-            height="100%"
-          >
-        {% endif %}
-      </div>
+<section
+  id="{{ section_id }}"
+  class="{{ section_class }} bg-[#f2efed]"
+>
+  <div class="grid grid-cols-1 lg:grid-cols-2 relative">
+    {%- comment -%} Left Column - Image {%- endcomment -%}
+    <div class="relative h-[400px] lg:h-[800px] w-full">
+      {%- if section.settings.image != blank -%}
+        {{
+          section.settings.image
+          | image_url: width: 1440
+          | image_tag:
+            loading: 'lazy',
+            class: 'absolute inset-0 w-full h-full object-cover',
+            widths: '360, 720, 1080, 1440',
+            sizes: '(min-width: 1024px) 50vw, 100vw'
+        }}
+      {%- else -%}
+        <div class="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center">
+          <span class="text-gray-400 font-mono text-sm">{{ 'sections.contact.image_placeholder' | t }}</span>
+        </div>
+      {%- endif -%}
     </div>
 
-    {% comment %} Right side - Contact Form {% endcomment %}
-    <div class="w-full md:w-1/2 flex flex-col justify-center px-4 sm:px-4 md:px-9 lg:px-20 xl:px-30 2xl:px-[140px] py-10 sm:py-14 md:py-10 lg:py-20 xl:py-30 2xl:py-[100px] xl:h-[720px] 2xl:h-[800px] 3xl:h-auto">
-      <div class="space-y-10">
-        {% if section.settings.title %}
-          <h1 class="text-sm lg:text-base font-medium mb-6 uppercase font-mono">
-            {{ section.settings.title }}
-          </h1>
-        {% endif %}
+    {%- comment -%} Vertical Divider {%- endcomment -%}
+    <div class="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-black/10 -translate-x-1/2"></div>
 
-        {% if section.settings.description %}
-          <div class="text-sm lg:text-base text-subtitle font-sans mb-8">
-            {{ section.settings.description }}
+    {%- comment -%} Right Column - Content {%- endcomment -%}
+    <div class="relative h-[400px] lg:h-[800px] w-full flex items-center justify-center px-6 py-12 lg:px-[140px] lg:py-[103px]">
+      <div class="flex flex-col gap-10 w-full max-w-[432px]">
+        {%- comment -%} Contact Section {%- endcomment -%}
+        <div class="flex flex-col gap-3">
+          <h2 class="font-mono font-medium text-base text-black uppercase">
+            {{ 'sections.contact.contact_heading' | t }}
+          </h2>
+          <div class="text-sm leading-relaxed text-[#333333]">
+            {%- if section.settings.contact_text != blank -%}
+              {{ section.settings.contact_text }}
+            {%- else -%}
+              <p>
+                {{ 'sections.contact.contact_description' | t }}
+                <a href="mailto:{{ section.settings.contact_email }}" class="underline decoration-solid">
+                  {{- section.settings.contact_email -}}</a
+                >.
+              </p>
+            {%- endif -%}
           </div>
-        {% endif %}
+        </div>
 
-        {% form 'contact' %}
-          {% if form.posted_successfully? %}
-            <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 text-sm rounded">
-              {{ 'contact.form.post_success' | t }}
-            </div>
-          {% endif %}
-
-          {% if form.errors %}
-            <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 text-sm rounded">
-              <p class="font-medium mb-2">{{ 'contact.form.error_heading' | t }}</p>
-              <ul class="list-disc list-inside space-y-1">
-                {% for field in form.errors %}
-                  <li>
-                    {{ field | capitalize }}
-                    {{ form.errors.messages[field] }}
-                  </li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% endif %}
-
-          <div class="space-y-6">
-            <div>
-              <label for="ContactForm-name" class="block text-sm font-medium mb-2 uppercase font-mono">
-                {{ 'contact.form.name' | t }}
-              </label>
-              <input
-                type="text"
-                id="ContactForm-name"
-                name="contact[{{ 'contact.form.name' | t }}]"
-                value="{% if form.name %}{{ form.name }}{% endif %}"
-                class="w-full px-4 py-3 border border-black focus:outline-none focus:ring-2 focus:ring-black"
-                required
-              >
-            </div>
-
-            <div>
-              <label for="ContactForm-email" class="block text-sm font-medium mb-2 uppercase font-mono">
-                {{ 'contact.form.email' | t }}
-              </label>
-              <input
-                type="email"
-                id="ContactForm-email"
-                name="contact[email]"
-                value="{% if form.email %}{{ form.email }}{% endif %}"
-                class="w-full px-4 py-3 border border-black focus:outline-none focus:ring-2 focus:ring-black"
-                required
-              >
-            </div>
-
-            <div>
-              <label for="ContactForm-phone" class="block text-sm font-medium mb-2 uppercase font-mono">
-                {{ 'contact.form.phone' | t }}
-              </label>
-              <input
-                type="tel"
-                id="ContactForm-phone"
-                name="contact[{{ 'contact.form.phone' | t }}]"
-                value="{% if form.phone %}{{ form.phone }}{% endif %}"
-                class="w-full px-4 py-3 border border-black focus:outline-none focus:ring-2 focus:ring-black"
-              >
-            </div>
-
-            <div>
-              <label for="ContactForm-message" class="block text-sm font-medium mb-2 uppercase font-mono">
-                {{ 'contact.form.message' | t }}
-              </label>
-              <textarea
-                id="ContactForm-message"
-                name="contact[body]"
-                rows="6"
-                class="w-full px-4 py-3 border border-black focus:outline-none focus:ring-2 focus:ring-black resize-none"
-                required
-              >{% if form.body %}{{ form.body }}{% endif %}</textarea>
-            </div>
-
-            <button
-              type="submit"
-              class="w-full bg-black text-white py-4 px-6 uppercase font-mono text-sm font-medium hover:bg-gray-800 transition-colors"
-            >
-              {{ 'contact.form.submit' | t }}
-            </button>
+        {%- comment -%} Wholesale Inquiries Section {%- endcomment -%}
+        <div class="flex flex-col gap-3">
+          <h2 class="font-mono font-medium text-base text-black uppercase">
+            {{ 'sections.contact.wholesale_heading' | t }}
+          </h2>
+          <div class="text-sm leading-relaxed text-[#333333]">
+            {%- if section.settings.wholesale_text != blank -%}
+              {{ section.settings.wholesale_text }}
+            {%- else -%}
+              <p>
+                {{ 'sections.contact.wholesale_description' | t }}
+                <a href="mailto:{{ section.settings.wholesale_email }}" class="underline decoration-solid">
+                  {{- section.settings.wholesale_email -}}
+                </a>
+              </p>
+            {%- endif -%}
           </div>
-        {% endform %}
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-{% stylesheet %}
-  .section-contact h1 {
-    font-family: var(--font-family-sans);
-  }
-
-  .section-contact input,
-  .section-contact textarea {
-    font-family: var(--font-family-sans);
-  }
-
-  .section-contact input:focus,
-  .section-contact textarea:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
-  }
-{% endstylesheet %}
-
 {% schema %}
 {
-  "name": "t:sections.contact.name",
+  "name": "Contact",
   "tag": "section",
   "class": "section-contact",
   "settings": [
     {
-      "type": "text",
-      "id": "title",
-      "label": "t:sections.contact.settings.title.label",
-      "default": "Contact"
-    },
-    {
-      "type": "richtext",
-      "id": "description",
-      "label": "t:sections.contact.settings.description.label",
-      "info": "t:sections.contact.settings.description.info"
+      "type": "header",
+      "content": "Image"
     },
     {
       "type": "image_picker",
       "id": "image",
-      "label": "t:sections.contact.settings.image.label",
-      "info": "t:sections.contact.settings.image.info"
+      "label": "Contact image"
+    },
+    {
+      "type": "header",
+      "content": "Contact section"
+    },
+    {
+      "type": "html",
+      "id": "contact_text",
+      "label": "Contact text",
+      "info": "Leave blank to use default text with email link"
+    },
+    {
+      "type": "text",
+      "id": "contact_email",
+      "label": "Contact email",
+      "default": "info@gildaclothing.com"
+    },
+    {
+      "type": "header",
+      "content": "Wholesale section"
+    },
+    {
+      "type": "html",
+      "id": "wholesale_text",
+      "label": "Wholesale text",
+      "info": "Leave blank to use default text with email link"
+    },
+    {
+      "type": "text",
+      "id": "wholesale_email",
+      "label": "Wholesale email",
+      "default": "wholesale@gildaclothing.com"
+    },
+    {
+      "type": "header",
+      "content": "Section settings"
     },
     {
       "type": "text",
       "id": "custom_id",
-      "label": "t:sections.contact.settings.custom_id.label",
-      "info": "t:sections.contact.settings.custom_id.info"
+      "label": "Custom ID",
+      "info": "Optional custom section ID"
     }
   ],
   "presets": [
     {
-      "name": "t:sections.contact.presets.contact.name"
+      "name": "Contact",
+      "settings": {
+        "contact_email": "info@gildaclothing.com",
+        "wholesale_email": "wholesale@gildaclothing.com"
+      }
     }
   ]
 }

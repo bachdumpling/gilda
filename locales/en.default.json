@@ -141,6 +141,11 @@
     },
     "contact": {
       "name": "Contact",
+      "contact_heading": "CONTACT",
+      "contact_description": "Gilda products are designed to last. If you have any questions about the product or fit, you can send an email to",
+      "wholesale_heading": "WHOLESALE INQUIRIES",
+      "wholesale_description": "Reach out to",
+      "image_placeholder": "Add an image",
       "settings": {
         "title": {
           "label": "Section title"
