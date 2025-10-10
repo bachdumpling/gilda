@@ -7,6 +7,12 @@
     {% # Load and preload the Tailwind CSS %}
     {{ 'tailwind.css' | asset_url | stylesheet_tag: preload: true }}
 
+    {% # Favicon %}
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32 }}">
+      <link rel="apple-touch-icon" sizes="180x180" href="{{ settings.favicon | image_url: width: 180 }}">
+    {%- endif -%}
+
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
 

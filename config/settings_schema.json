@@ -77,5 +77,55 @@
         "default": 4
       }
     ]
+  },
+  {
+    "name": "Favicon & SEO",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Favicon"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image",
+        "info": "Recommended: 32x32px or 180x180px PNG file"
+      },
+      {
+        "type": "header",
+        "content": "Social sharing image"
+      },
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "Default social sharing image",
+        "info": "Recommended: 1200x630px JPG or PNG for Facebook/Twitter sharing. Used when pages don't have their own image."
+      },
+      {
+        "type": "header",
+        "content": "SEO defaults"
+      },
+      {
+        "type": "text",
+        "id": "seo_site_name",
+        "label": "Site name",
+        "info": "Override the shop name for SEO purposes",
+        "placeholder": "Leave blank to use shop name"
+      },
+      {
+        "type": "textarea",
+        "id": "seo_default_description",
+        "label": "Default meta description",
+        "info": "Used when pages don't have their own description. Max 155 characters recommended.",
+        "placeholder": "Describe your store..."
+      },
+      {
+        "type": "text",
+        "id": "twitter_handle",
+        "label": "Twitter handle",
+        "info": "Include the @ symbol (e.g., @yourbrand)",
+        "placeholder": "@yourbrand"
+      }
+    ]
   }
 ]

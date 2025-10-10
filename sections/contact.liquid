@@ -42,16 +42,18 @@
             {{ 'sections.contact.contact_heading' | t }}
           </h2>
           <div class="text-sm leading-relaxed text-[#333333]">
-            {%- if section.settings.contact_text != blank -%}
-              {{ section.settings.contact_text }}
-            {%- else -%}
-              <p>
+            <p>
+              {%- if section.settings.contact_text != blank -%}
+                {{ section.settings.contact_text }}
+              {%- else -%}
                 {{ 'sections.contact.contact_description' | t }}
+              {%- endif -%}
+              {%- if section.settings.contact_email != blank %}
                 <a href="mailto:{{ section.settings.contact_email }}" class="underline decoration-solid">
                   {{- section.settings.contact_email -}}</a
                 >.
-              </p>
-            {%- endif -%}
+              {%- endif -%}
+            </p>
           </div>
         </div>
 
@@ -61,16 +63,18 @@
             {{ 'sections.contact.wholesale_heading' | t }}
           </h2>
           <div class="text-sm leading-relaxed text-[#333333]">
-            {%- if section.settings.wholesale_text != blank -%}
-              {{ section.settings.wholesale_text }}
-            {%- else -%}
-              <p>
+            <p>
+              {%- if section.settings.wholesale_text != blank -%}
+                {{ section.settings.wholesale_text }}
+              {%- else -%}
                 {{ 'sections.contact.wholesale_description' | t }}
+              {%- endif -%}
+              {%- if section.settings.wholesale_email != blank %}
                 <a href="mailto:{{ section.settings.wholesale_email }}" class="underline decoration-solid">
                   {{- section.settings.wholesale_email -}}
                 </a>
-              </p>
-            {%- endif -%}
+              {%- endif -%}
+            </p>
           </div>
         </div>
       </div>
