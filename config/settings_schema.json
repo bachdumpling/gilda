@@ -118,13 +118,6 @@
         "label": "Default meta description",
         "info": "Used when pages don't have their own description. Max 155 characters recommended.",
         "placeholder": "Describe your store..."
-      },
-      {
-        "type": "text",
-        "id": "twitter_handle",
-        "label": "Twitter handle",
-        "info": "Include the @ symbol (e.g., @yourbrand)",
-        "placeholder": "@yourbrand"
       }
     ]
   }

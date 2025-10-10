@@ -103,12 +103,6 @@
     content="{{ share_image.alt | escape }}"
   >
 {%- endif -%}
-{%- if settings.twitter_handle != blank -%}
-  <meta
-    name="twitter:site"
-    content="{{ settings.twitter_handle }}"
-  >
-{%- endif -%}
 
 <title>
   {{ page_title }}
