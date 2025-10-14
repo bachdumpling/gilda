@@ -103,7 +103,7 @@
         </div>
 
         <div class="tab-panel hidden" data-tab-content="sizing">
-          <div class="text-sm font-sans text-subtitle">
+          <div class="text-sm font-sans text-subtitle flex justify-center">
             {% if product.metafields.custom.size_chart != blank %}
               {% assign size_chart = product.metafields.custom.size_chart.value %}
               <table class="size-chart">
@@ -398,7 +398,7 @@
               </div>
 
               <div class="tab-panel hidden" data-tab-content="sizing">
-                <div class="text-sm font-sans text-subtitle">
+                <div class="text-sm font-sans text-subtitle flex justify-center">
                   {% if product.metafields.custom.size_chart != blank %}
                     {% assign size_chart = product.metafields.custom.size_chart.value %}
                     <table class="size-chart">
@@ -615,16 +615,19 @@
   /* Size Chart */
   .size-chart {
     border-collapse: separate;
-    border-spacing: 16px 0;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
+    border-spacing: 30px 8px;
   }
 
   .size-chart th,
   .size-chart td {
-    min-width: 64px;
     text-align: center;
+  }
+
+  @media (min-width: 1024px) {
+    .size-chart th,
+    .size-chart td {
+      min-width: 64px;
+    }
   }
 
   /* Mobile Sticky Bar - when scrolled past */
