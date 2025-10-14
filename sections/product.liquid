@@ -104,54 +104,99 @@
 
         <div class="tab-panel hidden" data-tab-content="sizing">
           <div class="text-sm font-sans text-subtitle">
-            <table class="size-chart text-left">
-              <thead>
-                <tr>
-                  <th class="py-2 font-normal">Size</th>
-                  <th class="py-2 font-normal">Back</th>
-                  <th class="py-2 font-normal">Shoulder</th>
-                  <th class="py-2 font-normal">Sleeve</th>
-                  <th class="py-2 font-normal">Sleeve</th>
-                </tr>
-              </thead>
-              <tbody class="font-sans">
-                <tr>
-                  <td class="py-3">XS</td>
-                  <td class="py-3">65.5cm</td>
-                  <td class="py-3">43.4cm</td>
-                  <td class="py-3">110cm</td>
-                  <td class="py-3">69cm</td>
-                </tr>
-                <tr>
-                  <td class="py-3">S</td>
-                  <td class="py-3">67.5cm</td>
-                  <td class="py-3">45.2cm</td>
-                  <td class="py-3">115cm</td>
-                  <td class="py-3">69.5cm</td>
-                </tr>
-                <tr>
-                  <td class="py-3">M</td>
-                  <td class="py-3">69.5cm</td>
-                  <td class="py-3">47cm</td>
-                  <td class="py-3">120cm</td>
-                  <td class="py-3">71cm</td>
-                </tr>
-                <tr>
-                  <td class="py-3">L</td>
-                  <td class="py-3">71.5cm</td>
-                  <td class="py-3">48.8cm</td>
-                  <td class="py-3">125cm</td>
-                  <td class="py-3">72.5cm</td>
-                </tr>
-                <tr>
-                  <td class="py-3">XL</td>
-                  <td class="py-3">73.5cm</td>
-                  <td class="py-3">50.6cm</td>
-                  <td class="py-3">130cm</td>
-                  <td class="py-3">73cm</td>
-                </tr>
-              </tbody>
-            </table>
+            {% if product.metafields.custom.size_chart != blank %}
+              {% assign size_chart = product.metafields.custom.size_chart.value %}
+              <table class="size-chart">
+                <thead>
+                  <tr>
+                    <th class="py-2 font-normal">Size</th>
+                    {% if size_chart.back != blank %}
+                      <th class="py-2 font-normal">Back</th>
+                    {% endif %}
+                    {% if size_chart.shoulder != blank %}
+                      <th class="py-2 font-normal">Shoulder</th>
+                    {% endif %}
+                    {% if size_chart.sleeve != blank %}
+                      <th class="py-2 font-normal">Sleeve</th>
+                    {% endif %}
+                    {% if size_chart.chest != blank %}
+                      <th class="py-2 font-normal">Chest</th>
+                    {% endif %}
+                    {% if size_chart.waist != blank %}
+                      <th class="py-2 font-normal">Waist</th>
+                    {% endif %}
+                    {% if size_chart.hip != blank %}
+                      <th class="py-2 font-normal">Hip</th>
+                    {% endif %}
+                    {% if size_chart.inseam != blank %}
+                      <th class="py-2 font-normal">Inseam</th>
+                    {% endif %}
+                    {% if size_chart.rise != blank %}
+                      <th class="py-2 font-normal">Rise</th>
+                    {% endif %}
+                  </tr>
+                </thead>
+                <tbody class="font-sans">
+                  {% for size in size_chart.sizes.value %}
+                    <tr>
+                      <td class="py-3">{{ size }}</td>
+                      {% if size_chart.back != blank %}
+                        <td class="py-3">
+                          {{ size_chart.back.value[forloop.index0] -}}
+                          {{- size_chart.unit }}
+                        </td>
+                      {% endif %}
+                      {% if size_chart.shoulder != blank %}
+                        <td class="py-3">
+                          {{ size_chart.shoulder.value[forloop.index0] -}}
+                          {{- size_chart.unit }}
+                        </td>
+                      {% endif %}
+                      {% if size_chart.sleeve != blank %}
+                        <td class="py-3">
+                          {{ size_chart.sleeve.value[forloop.index0] -}}
+                          {{- size_chart.unit }}
+                        </td>
+                      {% endif %}
+                      {% if size_chart.chest != blank %}
+                        <td class="py-3">
+                          {{ size_chart.chest.value[forloop.index0] -}}
+                          {{- size_chart.unit }}
+                        </td>
+                      {% endif %}
+                      {% if size_chart.waist != blank %}
+                        <td class="py-3">
+                          {{ size_chart.waist.value[forloop.index0] -}}
+                          {{- size_chart.unit }}
+                        </td>
+                      {% endif %}
+                      {% if size_chart.hip != blank %}
+                        <td class="py-3">
+                          {{ size_chart.hip.value[forloop.index0] -}}
+                          {{- size_chart.unit }}
+                        </td>
+                      {% endif %}
+                      {% if size_chart.inseam != blank %}
+                        <td class="py-3">
+                          {{ size_chart.inseam.value[forloop.index0] -}}
+                          {{- size_chart.unit }}
+                        </td>
+                      {% endif %}
+                      {% if size_chart.rise != blank %}
+                        <td class="py-3">
+                          {{ size_chart.rise.value[forloop.index0] -}}
+                          {{- size_chart.unit }}
+                        </td>
+                      {% endif %}
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% elsif product.metafields.custom.sizing_table != blank %}
+              {{ product.metafields.custom.sizing_table }}
+            {% else %}
+              <p>Sizing information will be displayed here.</p>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -254,7 +299,7 @@
 {% comment %} DESKTOP LAYOUT {% endcomment %}
 <div class="hidden md:flex min-h-screen border-t border-b border-black">
   {% comment %} Left side: All Images {% endcomment %}
-  <div class="w-1/2 lg:w-2/3 overflow-y-auto border-r border-black relative">
+  <div class="w-1/2 xl:w-2/3 overflow-y-auto border-r border-black relative">
     <div class="product-images relative flex flex-col gap-2">
       <a
         href="{{ routes.root_url }}"
@@ -276,7 +321,7 @@
                 {{ image | image_url: width: 1200 }} 1200w,
                 {{ image | image_url: width: 1800 }} 1800w
               "
-              sizes="(min-width: 1024px) 66vw, 50vw"
+              sizes="(min-width: 1280px) 66vw, 50vw"
               alt="{{ image.alt | escape }}"
               loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
               width="{{ image.width }}"
@@ -290,7 +335,7 @@
   </div>
 
   {% comment %} Right side: Sticky Sidebar {% endcomment %}
-  <div class="w-1/2 lg:w-1/3 sticky top-0 h-screen overflow-y-auto">
+  <div class="w-1/2 xl:w-1/3 sticky top-0 h-screen overflow-y-auto">
     <div class="flex flex-col h-full">
       {% comment %} Product Title {% endcomment %}
       <div class="flex items-center justify-center product-title border-b border-black py-10 flex-shrink-0">
@@ -354,54 +399,99 @@
 
               <div class="tab-panel hidden" data-tab-content="sizing">
                 <div class="text-sm font-sans text-subtitle">
-                  <table class="size-chart text-left">
-                    <thead>
-                      <tr>
-                        <th class="py-2 font-normal">Size</th>
-                        <th class="py-2 font-normal">Back</th>
-                        <th class="py-2 font-normal">Shoulder</th>
-                        <th class="py-2 font-normal">Sleeve</th>
-                        <th class="py-2 font-normal">Sleeve</th>
-                      </tr>
-                    </thead>
-                    <tbody class="font-sans">
-                      <tr>
-                        <td class="py-3">XS</td>
-                        <td class="py-3">65.5cm</td>
-                        <td class="py-3">43.4cm</td>
-                        <td class="py-3">110cm</td>
-                        <td class="py-3">69cm</td>
-                      </tr>
-                      <tr>
-                        <td class="py-3">S</td>
-                        <td class="py-3">67.5cm</td>
-                        <td class="py-3">45.2cm</td>
-                        <td class="py-3">115cm</td>
-                        <td class="py-3">69.5cm</td>
-                      </tr>
-                      <tr>
-                        <td class="py-3">M</td>
-                        <td class="py-3">69.5cm</td>
-                        <td class="py-3">47cm</td>
-                        <td class="py-3">120cm</td>
-                        <td class="py-3">71cm</td>
-                      </tr>
-                      <tr>
-                        <td class="py-3">L</td>
-                        <td class="py-3">71.5cm</td>
-                        <td class="py-3">48.8cm</td>
-                        <td class="py-3">125cm</td>
-                        <td class="py-3">72.5cm</td>
-                      </tr>
-                      <tr>
-                        <td class="py-3">XL</td>
-                        <td class="py-3">73.5cm</td>
-                        <td class="py-3">50.6cm</td>
-                        <td class="py-3">130cm</td>
-                        <td class="py-3">73cm</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  {% if product.metafields.custom.size_chart != blank %}
+                    {% assign size_chart = product.metafields.custom.size_chart.value %}
+                    <table class="size-chart">
+                      <thead>
+                        <tr>
+                          <th class="py-2 font-normal">Size</th>
+                          {% if size_chart.back != blank %}
+                            <th class="py-2 font-normal">Back</th>
+                          {% endif %}
+                          {% if size_chart.shoulder != blank %}
+                            <th class="py-2 font-normal">Shoulder</th>
+                          {% endif %}
+                          {% if size_chart.sleeve != blank %}
+                            <th class="py-2 font-normal">Sleeve</th>
+                          {% endif %}
+                          {% if size_chart.chest != blank %}
+                            <th class="py-2 font-normal">Chest</th>
+                          {% endif %}
+                          {% if size_chart.waist != blank %}
+                            <th class="py-2 font-normal">Waist</th>
+                          {% endif %}
+                          {% if size_chart.hip != blank %}
+                            <th class="py-2 font-normal">Hip</th>
+                          {% endif %}
+                          {% if size_chart.inseam != blank %}
+                            <th class="py-2 font-normal">Inseam</th>
+                          {% endif %}
+                          {% if size_chart.rise != blank %}
+                            <th class="py-2 font-normal">Rise</th>
+                          {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody class="font-sans">
+                        {% for size in size_chart.sizes.value %}
+                          <tr>
+                            <td class="py-3">{{ size }}</td>
+                            {% if size_chart.back != blank %}
+                              <td class="py-3">
+                                {{ size_chart.back.value[forloop.index0] -}}
+                                {{- size_chart.unit }}
+                              </td>
+                            {% endif %}
+                            {% if size_chart.shoulder != blank %}
+                              <td class="py-3">
+                                {{ size_chart.shoulder.value[forloop.index0] -}}
+                                {{- size_chart.unit }}
+                              </td>
+                            {% endif %}
+                            {% if size_chart.sleeve != blank %}
+                              <td class="py-3">
+                                {{ size_chart.sleeve.value[forloop.index0] -}}
+                                {{- size_chart.unit }}
+                              </td>
+                            {% endif %}
+                            {% if size_chart.chest != blank %}
+                              <td class="py-3">
+                                {{ size_chart.chest.value[forloop.index0] -}}
+                                {{- size_chart.unit }}
+                              </td>
+                            {% endif %}
+                            {% if size_chart.waist != blank %}
+                              <td class="py-3">
+                                {{ size_chart.waist.value[forloop.index0] -}}
+                                {{- size_chart.unit }}
+                              </td>
+                            {% endif %}
+                            {% if size_chart.hip != blank %}
+                              <td class="py-3">
+                                {{ size_chart.hip.value[forloop.index0] -}}
+                                {{- size_chart.unit }}
+                              </td>
+                            {% endif %}
+                            {% if size_chart.inseam != blank %}
+                              <td class="py-3">
+                                {{ size_chart.inseam.value[forloop.index0] -}}
+                                {{- size_chart.unit }}
+                              </td>
+                            {% endif %}
+                            {% if size_chart.rise != blank %}
+                              <td class="py-3">
+                                {{ size_chart.rise.value[forloop.index0] -}}
+                                {{- size_chart.unit }}
+                              </td>
+                            {% endif %}
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  {% elsif product.metafields.custom.sizing_table != blank %}
+                    {{ product.metafields.custom.sizing_table }}
+                  {% else %}
+                    <p>Sizing information will be displayed here.</p>
+                  {% endif %}
                 </div>
               </div>
             </div>
@@ -528,11 +618,13 @@
     border-spacing: 16px 0;
     margin-left: auto;
     margin-right: auto;
+    width: 100%;
   }
 
   .size-chart th,
   .size-chart td {
     min-width: 64px;
+    text-align: center;
   }
 
   /* Mobile Sticky Bar - when scrolled past */
