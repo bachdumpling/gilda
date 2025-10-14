@@ -37,13 +37,7 @@
 
     {% comment %} Right side - Content {% endcomment %}
     <div class="w-full md:w-1/2 flex flex-col items-center justify-center px-4 sm:px-4 md:px-9 lg:px-20 xl:px-30 2xl:px-[140px] py-10 sm:py-14 md:py-10 lg:py-20 xl:py-30 2xl:py-[100px]">
-      <div class="space-y-10 max-w-md">
-        {% if section.settings.title %}
-          <h1 class="text-sm lg:text-base font-medium mb-6 uppercase font-mono">
-            {{ section.settings.title }}
-          </h1>
-        {% endif %}
-
+      <div class="max-w-md">
         {% for block in section.blocks %}
           {% case block.type %}
             {% when 'content_block' %}
@@ -93,12 +87,6 @@
   "tag": "section",
   "class": "section-about",
   "settings": [
-    {
-      "type": "text",
-      "id": "title",
-      "label": "t:sections.about.settings.title.label",
-      "default": "About"
-    },
     {
       "type": "image_picker",
       "id": "image",
