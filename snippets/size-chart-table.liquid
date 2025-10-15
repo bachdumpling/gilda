@@ -1,0 +1,97 @@
+{% comment %}
+  Renders a size chart table with configurable column order
+
+  Accepts:
+  - size_chart: {object} The size_chart metaobject
+  - column_order: {string} Comma-separated list of fields (optional)
+                  If not provided, will auto-detect based on product type/tags
+
+  Usage:
+  {% render 'size-chart-table', size_chart: size_chart, column_order: 'chest,shoulder,back,sleeve' %}
+{% endcomment %}
+
+{% liquid
+  # Column display names mapping (metafield_name:Display Name)
+  assign column_labels = 'chest:Chest,shoulder:Shoulder,back:Back,sleeve:Arm,waist:Waist,rise:Rise,inside_leg:Inside Leg,leg_opening:Leg Opening' | split: ','
+
+  # Define default column orders for different garment types
+  assign jacket_order = 'chest,shoulder,back,sleeve'
+  assign pants_order = 'waist,rise,inside_leg,leg_opening'
+  assign default_order = 'chest,shoulder,back,sleeve,waist,rise,inside_leg,leg_opening'
+
+  # Determine column order
+  if column_order != blank
+    # Use provided order
+    assign columns = column_order | split: ','
+  elsif size_chart.product_type != blank
+    # Use product_type from the metaobject itself
+    assign product_type_lower = size_chart.product_type | downcase
+    if product_type_lower contains 'jacket'
+      assign columns = jacket_order | split: ','
+    elsif product_type_lower contains 'pant'
+      assign columns = pants_order | split: ','
+    else
+      assign columns = default_order | split: ','
+    endif
+  elsif product.tags contains 'jacket' or product.tags contains 'Jacket' or product.type contains 'Jacket' or product.title contains 'Jacket'
+    # Use jacket order based on product info
+    assign columns = jacket_order | split: ','
+  elsif product.tags contains 'pants' or product.tags contains 'Pants' or product.type contains 'Pants' or product.title contains 'Pant'
+    # Use pants order based on product info
+    assign columns = pants_order | split: ','
+  else
+    # Use default order but only show fields that have data
+    assign columns = default_order | split: ','
+  endif
+%}
+
+<table class="size-chart">
+  <thead>
+    <tr>
+      <th class="py-2 font-normal">Size</th>
+      {% for column in columns %}
+        {% assign field_name = column | strip %}
+        {% assign field_value = size_chart[field_name] %}
+
+        {% if field_value != blank %}
+          <th class="py-2 font-normal">
+            {%- comment -%} Find the display label for this field {%- endcomment -%}
+            {% assign display_label = '' %}
+            {% for label_pair in column_labels %}
+              {% assign pair_parts = label_pair | split: ':' %}
+              {% if pair_parts[0] == field_name %}
+                {% assign display_label = pair_parts[1] %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+
+            {%- comment -%} Fallback to capitalized field name if no label found {%- endcomment -%}
+            {% if display_label == '' %}
+              {% assign display_label = field_name | capitalize %}
+            {% endif %}
+
+            {{ display_label }}
+          </th>
+        {% endif %}
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody class="font-sans">
+    {% for size in size_chart.sizes.value %}
+      <tr>
+        <td class="py-3">{{ size }}</td>
+        {% for column in columns %}
+          {% assign field_name = column | strip %}
+          {% assign field_value = size_chart[field_name] %}
+
+          {% if field_value != blank %}
+            <td class="py-3">
+              {{- field_value.value[forloop.index0] -}}
+              {{- size_chart.unit -}}
+            </td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
