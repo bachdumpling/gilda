@@ -45,53 +45,61 @@
   endif
 %}
 
-<table class="size-chart">
-  <thead>
-    <tr>
-      <th class="py-2 font-normal">Size</th>
-      {% for column in columns %}
-        {% assign field_name = column | strip %}
-        {% assign field_value = size_chart[field_name] %}
-
-        {% if field_value != blank %}
-          <th class="py-2 font-normal">
-            {%- comment -%} Find the display label for this field {%- endcomment -%}
-            {% assign display_label = '' %}
-            {% for label_pair in column_labels %}
-              {% assign pair_parts = label_pair | split: ':' %}
-              {% if pair_parts[0] == field_name %}
-                {% assign display_label = pair_parts[1] %}
-                {% break %}
-              {% endif %}
-            {% endfor %}
-
-            {%- comment -%} Fallback to capitalized field name if no label found {%- endcomment -%}
-            {% if display_label == '' %}
-              {% assign display_label = field_name | capitalize %}
-            {% endif %}
-
-            {{ display_label }}
-          </th>
-        {% endif %}
-      {% endfor %}
-    </tr>
-  </thead>
-  <tbody class="font-sans">
-    {% for size in size_chart.sizes.value %}
+<div class="flex flex-col">
+  <table class="size-chart">
+    <thead>
       <tr>
-        <td class="py-3">{{ size }}</td>
+        <th class="py-2 font-normal w-16 text-center align-bottom">Size</th>
         {% for column in columns %}
           {% assign field_name = column | strip %}
           {% assign field_value = size_chart[field_name] %}
 
           {% if field_value != blank %}
-            <td class="py-3">
-              {{- field_value.value[forloop.index0] -}}
-              {{- size_chart.unit -}}
-            </td>
+            <th class="py-2 font-normal w-16 text-center align-bottom">
+              {%- comment -%} Find the display label for this field {%- endcomment -%}
+              {% assign display_label = '' %}
+              {% for label_pair in column_labels %}
+                {% assign pair_parts = label_pair | split: ':' %}
+                {% if pair_parts[0] == field_name %}
+                  {% assign display_label = pair_parts[1] %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+
+              {%- comment -%} Fallback to capitalized field name if no label found {%- endcomment -%}
+              {% if display_label == '' %}
+                {% assign display_label = field_name | capitalize %}
+              {% endif %}
+
+              {{ display_label }}
+            </th>
           {% endif %}
         {% endfor %}
       </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    </thead>
+    <tbody class="font-sans">
+      {% for size in size_chart.sizes.value %}
+        <tr>
+          <td class="py-3 w-16 text-center">{{ size }}</td>
+          {% for column in columns %}
+            {% assign field_name = column | strip %}
+            {% assign field_value = size_chart[field_name] %}
+
+            {% if field_value != blank %}
+              <td class="py-3 w-16 text-center">
+                {{- field_value.value[forloop.index0] -}}
+                {{- size_chart.unit -}}
+              </td>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p class="text-center text-sm md:text-base font-sans font-normal text-subtitle leading-[1.4] p-4 md:p-8">
+    If you have any questions about sizing, please
+    <a href="/pages/contact-us" class="text-subtitle underline hover:no-underline transition-all">contact us</a> before
+    purchasing. Model details here.
+  </p>
+</div>
