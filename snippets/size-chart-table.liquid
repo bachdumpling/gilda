@@ -30,10 +30,14 @@
   # Parameter defaults
   assign footer_prefix = footer_prefix | default: 'If you have any questions about sizing, please'
   assign contact_link_text = contact_link_text | default: 'contact us'
-  assign contact_link_url = contact_link_url | default: '/pages/contact-us'
+  if contact_link_url == blank
+    assign contact_link_url = '/pages/contact-us'
+  endif
   assign footer_middle = footer_middle | default: 'before purchasing. Model details'
   assign model_link_text = model_link_text | default: 'here'
-  assign model_link_url = model_link_url | default: ''
+  if model_link_url == blank
+    assign model_link_url = ''
+  endif
 
   # Column display names mapping (metafield_name:Display Name)
   assign column_labels = 'chest:Chest,shoulder:Shoulder,back:Back,sleeve:Arm,waist:Waist,rise:Rise,inside_leg:Inside Leg,leg_opening:Leg Opening' | split: ','
