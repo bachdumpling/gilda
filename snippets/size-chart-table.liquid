@@ -1,16 +1,40 @@
-{% comment %}
-  Renders a size chart table with configurable column order
+{% doc %}
+  Renders a size chart table with configurable column order and footer
 
-  Accepts:
-  - size_chart: {object} The size_chart metaobject
-  - column_order: {string} Comma-separated list of fields (optional)
-                  If not provided, will auto-detect based on product type/tags
+  @param {object} size_chart - The size_chart metaobject (required)
+  @param {string} [column_order] - Comma-separated list of fields
 
-  Usage:
-  {% render 'size-chart-table', size_chart: size_chart, column_order: 'chest,shoulder,back,sleeve' %}
-{% endcomment %}
+  If not provided, will auto-detect based on product type/tags
+
+  @param {string} [footer_prefix] - Text before the first link (default: 'If you have any questions about sizing, please')
+  @param {string} [contact_link_text] - Text for the contact link (default: 'contact us')
+  @param {string} [contact_link_url] - URL for the contact link (default: '/pages/contact-us')
+  @param {string} [footer_middle] - Text between links (default: 'before purchasing. Model details')
+  @param {string} [model_link_text] - Text for the model details link (default: 'here')
+  @param {string} [model_link_url] - URL for the model details link (optional, if blank, text won't be a link)
+
+  @example
+  {% render 'size-chart-table',
+      size_chart: size_chart,
+      column_order: 'chest,shoulder,back,sleeve',
+      footer_prefix: 'Questions about sizing?',
+      contact_link_text: 'Get in touch',
+      contact_link_url: '/pages/contact',
+      footer_middle: 'before ordering. See model info',
+      model_link_text: 'here',
+      model_link_url: '/pages/model-details'
+  %}
+{% enddoc %}
 
 {% liquid
+  # Parameter defaults
+  assign footer_prefix = footer_prefix | default: 'If you have any questions about sizing, please'
+  assign contact_link_text = contact_link_text | default: 'contact us'
+  assign contact_link_url = contact_link_url | default: '/pages/contact-us'
+  assign footer_middle = footer_middle | default: 'before purchasing. Model details'
+  assign model_link_text = model_link_text | default: 'here'
+  assign model_link_url = model_link_url | default: ''
+
   # Column display names mapping (metafield_name:Display Name)
   assign column_labels = 'chest:Chest,shoulder:Shoulder,back:Back,sleeve:Arm,waist:Waist,rise:Rise,inside_leg:Inside Leg,leg_opening:Leg Opening' | split: ','
 
@@ -98,8 +122,25 @@
   </table>
 
   <p class="text-center text-sm md:text-base font-sans font-normal text-subtitle leading-[1.4] p-4 md:p-8">
-    If you have any questions about sizing, please
-    <a href="/pages/contact-us" class="text-subtitle underline hover:no-underline transition-all">contact us</a> before
-    purchasing. Model details here.
+    {%- if footer_prefix != blank -%}
+      {{ footer_prefix }}
+    {%- endif %}
+    {%- if contact_link_text != blank and contact_link_url != blank %}
+      <a href="{{ contact_link_url }}" class="text-subtitle underline hover:no-underline transition-all">
+        {{- contact_link_text -}}
+      </a>
+    {%- endif %}
+    {%- if footer_middle != blank %}
+      {{ footer_middle }}
+    {%- endif %}
+    {%- if model_link_text != blank %}
+      {%- if model_link_url != blank %}
+        <a href="{{ model_link_url }}" class="text-subtitle underline hover:no-underline transition-all">
+          {{- model_link_text -}}</a
+        >.
+      {%- else %}
+        {{ model_link_text }}.
+      {%- endif %}
+    {%- endif -%}
   </p>
 </div>
