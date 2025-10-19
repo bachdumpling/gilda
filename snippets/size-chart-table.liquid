@@ -29,23 +29,23 @@
 {% liquid
   # Parameter handling - no defaults, all parts are optional
   # Only use defaults if parameters were not passed at all (nil vs blank)
-  if footer_prefix == nil
+  if footer_prefix == null
     assign footer_prefix = 'If you have any questions about sizing, please'
   endif
-  
-  if contact_link_text == nil
+
+  if contact_link_text == null
     assign contact_link_text = 'contact us'
   endif
-  
-  if contact_link_url == nil
+
+  if contact_link_url == null
     assign contact_link_url = '/pages/contact-us'
   endif
-  
-  if footer_middle == nil
+
+  if footer_middle == null
     assign footer_middle = 'before purchasing. Model details'
   endif
-  
-  if model_link_text == nil
+
+  if model_link_text == null
     assign model_link_text = 'here'
   endif
 
@@ -141,23 +141,23 @@
     assign has_contact_link = false
     assign has_footer_middle = false
     assign has_model_content = false
-    
+
     if footer_prefix != blank
       assign has_footer_prefix = true
     endif
-    
+
     if contact_link_text != blank and contact_link_url != blank
       assign has_contact_link = true
     endif
-    
+
     if footer_middle != blank
       assign has_footer_middle = true
     endif
-    
+
     if model_link_text != blank
       assign has_model_content = true
     endif
-    
+
     assign has_any_footer = false
     if has_footer_prefix or has_contact_link or has_footer_middle or has_model_content
       assign has_any_footer = true
@@ -170,24 +170,24 @@
         {{ footer_prefix }}
         {%- if has_contact_link or has_footer_middle or has_model_content %} {% endif -%}
       {%- endif -%}
-      
+
       {%- if has_contact_link -%}
         <a href="{{ contact_link_url }}" class="text-subtitle underline hover:no-underline transition-all">
           {{- contact_link_text -}}
         </a>
         {%- if has_footer_middle or has_model_content %} {% endif -%}
       {%- endif -%}
-      
+
       {%- if has_footer_middle -%}
         {{ footer_middle }}
         {%- if has_model_content %} {% endif -%}
       {%- endif -%}
-      
+
       {%- if has_model_content -%}
         {%- if model_link_url != blank -%}
           <a href="{{ model_link_url }}" class="text-subtitle underline hover:no-underline transition-all">
-            {{- model_link_text -}}
-          </a>.
+            {{- model_link_text -}}</a
+          >.
         {%- else -%}
           {{ model_link_text }}.
         {%- endif -%}
