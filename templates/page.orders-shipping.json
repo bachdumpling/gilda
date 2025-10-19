@@ -16,14 +16,14 @@
           "type": "content_block",
           "settings": {
             "heading": "Orders & Shipping",
-            "content": "<p>Gilda products are designed to last. If you have any questions about the product or fit, you can send an email to info@gildaclothing.com.</p><p>US – We offer free shipping on all orders within the US. Orders ship with [X].</p><p>International – Orders are shipped with [X] and cost $[X].</p><p>Orders will be processed Monday through Friday, excluding holidays. Orders will be shipped within 48 hours of being received. You will receive confirmation by email when goods are shipped.</p>"
+            "content": "<p>Gilda products are designed to last. If you have any questions about the product or fit, you can send an email to info@gildaclothing.com.</p><p>We offer free shipping on all orders within the US. </p><p>Orders will be processed Monday through Friday, excluding holidays. Orders will be shipped within 48 hours of being received. You will receive confirmation by email when goods are shipped.</p>"
           }
         },
         "returns_content": {
           "type": "content_block",
           "settings": {
             "heading": "Returns",
-            "content": "<p>As a small, independent label, Gilda does not currently accept returns or refunds. Please review your order carefully before completing your purchase.</p><p>If you live in the NY area, you can try on the product at C'H'C'M on Bond St.</p>"
+            "content": "<p>As a small, independent label, Gilda does not currently accept returns or refunds. If you'd like to exchange for a different size, please email us.</p><p>Please review your order carefully before completing your purchase.</p><p>If you live in the NY area, you can try on the product at C'H'C'M on Bond St.</p>"
           }
         }
       },
@@ -32,7 +32,6 @@
         "returns_content"
       ],
       "settings": {
-        "title": "",
         "image": "shopify://shop_images/3296.jpg",
         "custom_id": ""
       }
