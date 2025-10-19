@@ -106,7 +106,15 @@
           <div class="text-sm font-sans text-subtitle flex justify-center">
             {% if product.metafields.custom.size_chart != blank %}
               {% assign size_chart = product.metafields.custom.size_chart.value %}
-              {% render 'size-chart-table', size_chart: size_chart %}
+              {% render 'size-chart-table',
+                size_chart: size_chart,
+                footer_prefix: section.settings.size_chart_footer_prefix,
+                contact_link_text: section.settings.size_chart_contact_link_text,
+                contact_link_url: section.settings.size_chart_contact_link_url,
+                footer_middle: section.settings.size_chart_footer_middle,
+                model_link_text: section.settings.size_chart_model_link_text,
+                model_link_url: section.settings.size_chart_model_link_url
+              %}
             {% elsif product.metafields.custom.sizing_table != blank %}
               {{ product.metafields.custom.sizing_table }}
             {% else %}
@@ -316,7 +324,15 @@
                 <div class="text-sm font-sans text-subtitle flex justify-center">
                   {% if product.metafields.custom.size_chart != blank %}
                     {% assign size_chart = product.metafields.custom.size_chart.value %}
-                    {% render 'size-chart-table', size_chart: size_chart %}
+                    {% render 'size-chart-table',
+                      size_chart: size_chart,
+                      footer_prefix: section.settings.size_chart_footer_prefix,
+                      contact_link_text: section.settings.size_chart_contact_link_text,
+                      contact_link_url: section.settings.size_chart_contact_link_url,
+                      footer_middle: section.settings.size_chart_footer_middle,
+                      model_link_text: section.settings.size_chart_model_link_text,
+                      model_link_url: section.settings.size_chart_model_link_url
+                    %}
                   {% elsif product.metafields.custom.sizing_table != blank %}
                     {{ product.metafields.custom.sizing_table }}
                   {% else %}
@@ -643,7 +659,53 @@
 {% schema %}
 {
   "name": "t:general.product",
-  "settings": [],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Size Chart Footer"
+    },
+    {
+      "type": "text",
+      "id": "size_chart_footer_prefix",
+      "label": "Text before contact link",
+      "default": "If you have any questions about sizing, please",
+      "info": "Text that appears before the contact link"
+    },
+    {
+      "type": "text",
+      "id": "size_chart_contact_link_text",
+      "label": "Contact link text",
+      "default": "contact us",
+      "info": "Text for the contact link"
+    },
+    {
+      "type": "url",
+      "id": "size_chart_contact_link_url",
+      "label": "Contact link URL",
+      "default": "/pages/contact-us",
+      "info": "URL for the contact link"
+    },
+    {
+      "type": "text",
+      "id": "size_chart_footer_middle",
+      "label": "Text between links",
+      "default": "before purchasing. Model details",
+      "info": "Text that appears between the two links"
+    },
+    {
+      "type": "text",
+      "id": "size_chart_model_link_text",
+      "label": "Model details link text",
+      "default": "here",
+      "info": "Text for the model details link"
+    },
+    {
+      "type": "url",
+      "id": "size_chart_model_link_url",
+      "label": "Model details link URL",
+      "info": "URL for the model details link (leave blank to show text without a link)"
+    }
+  ],
   "disabled_on": {
     "groups": ["header", "footer"]
   }
