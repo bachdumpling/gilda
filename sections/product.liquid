@@ -555,6 +555,10 @@
       this.stickyBar = document.getElementById('mobile-add-to-cart');
       if (!this.stickyBar) return;
 
+      // Only run on mobile (below md breakpoint: 768px)
+      this.isMobile = () => window.innerWidth < 768;
+      if (!this.isMobile()) return;
+
       this.originalPosition = null;
       this.isSticky = false;
       this.isHidden = false;
@@ -562,6 +566,9 @@
     }
 
     init() {
+      // Only initialize on mobile
+      if (!this.isMobile()) return;
+
       // Reset initial state
       this.isSticky = false;
       this.isHidden = false;
@@ -591,13 +598,18 @@
 
       // Update position on resize
       window.addEventListener('resize', () => {
+        if (!this.isMobile()) {
+          // If resized to desktop, clean up
+          this.stickyBar.classList.remove('is-sticky', 'is-hidden');
+          return;
+        }
         this.updateOriginalPosition();
         this.handleScroll();
       });
 
       // Handle back/forward navigation (bfcache restore)
       window.addEventListener('pageshow', (event) => {
-        if (event.persisted) {
+        if (event.persisted && this.isMobile()) {
           // Page was restored from bfcache - reset state completely
           this.isSticky = false;
           this.isHidden = false;
@@ -639,6 +651,7 @@
 
     handleScroll() {
       if (!this.stickyBar || this.originalPosition === null) return;
+      if (!this.isMobile()) return;
 
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
@@ -651,13 +664,14 @@
       // Check if we've scrolled to the footer
       let isAtFooter = false;
       if (footer) {
-        const footerTop = footer.getBoundingClientRect().top + scrollY;
-        const stickyBarBottom = scrollY + windowHeight;
-        // At footer if sticky bar would overlap with footer
-        isAtFooter = stickyBarBottom >= footerTop;
+        // Get footer position relative to viewport
+        const footerRect = footer.getBoundingClientRect();
+        // Footer is visible when its top is within the bottom portion of viewport
+        // Add 80px buffer to hide bar slightly before footer appears
+        isAtFooter = footerRect.top <= windowHeight - 80;
       } else {
         // Fallback: at footer when near bottom of page
-        isAtFooter = scrollY + windowHeight >= documentHeight - 50;
+        isAtFooter = scrollY + windowHeight >= documentHeight - 100;
       }
 
       // If at footer, hide the bar completely
