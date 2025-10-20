@@ -555,30 +555,18 @@
       this.stickyBar = document.getElementById('mobile-add-to-cart');
       if (!this.stickyBar) return;
 
-      // Only run on mobile (below md breakpoint: 768px)
-      this.isMobile = () => window.innerWidth < 768;
-      if (!this.isMobile()) return;
-
       this.originalPosition = null;
       this.isSticky = false;
-      this.footerIsVisible = false;
-      this.footer = null;
-      this.footerObserver = null;
+      this.isHidden = false;
       this.init();
     }
 
     init() {
-      // Only initialize on mobile
-      if (!this.isMobile()) return;
-
-      // Find footer element
-      this.footer = document.querySelector('[id*="shopify-section-footer"]');
-
-      // Set up Intersection Observer for footer
-      this.setupFooterObserver();
-
-      // Calculate original position
+      // Store original position
       this.updateOriginalPosition();
+
+      // Check initial scroll position (important for back/forward navigation)
+      this.handleScroll();
 
       // Handle scroll with optimized performance
       let ticking = false;
@@ -598,109 +586,78 @@
 
       // Update position on resize
       window.addEventListener('resize', () => {
-        if (!this.isMobile()) {
-          // If resized to desktop, clean up
-          this.cleanup();
-          return;
-        }
         this.updateOriginalPosition();
         this.handleScroll();
       });
 
       // Handle back/forward navigation (bfcache restore)
-      window.addEventListener('pageshow', () => {
-        if (this.isMobile()) {
-          // Re-setup observer and check state
-          this.setupFooterObserver();
+      window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+          // Page was restored from bfcache
           this.updateOriginalPosition();
-          requestAnimationFrame(() => this.handleScroll());
+          this.handleScroll();
         }
       });
-    }
-
-    setupFooterObserver() {
-      // Disconnect existing observer if any
-      if (this.footerObserver) {
-        this.footerObserver.disconnect();
-      }
-
-      // Find footer if not cached
-      if (!this.footer) {
-        this.footer = document.querySelector('[id*="shopify-section-footer"]');
-      }
-
-      if (!this.footer) return;
-
-      // Create observer with threshold to detect any part of footer visible
-      this.footerObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            // Footer is visible when it's intersecting
-            this.footerIsVisible = entry.isIntersecting;
-            
-            // Immediately update sticky bar state
-            requestAnimationFrame(() => this.handleScroll());
-          });
-        },
-        {
-          // Trigger as soon as any pixel of footer is visible
-          threshold: 0,
-          // Add bottom margin equal to sticky bar height to hide before overlap
-          rootMargin: '0px 0px -60px 0px',
-        }
-      );
-
-      // Start observing
-      this.footerObserver.observe(this.footer);
     }
 
     updateOriginalPosition() {
       if (!this.stickyBar) return;
 
-      // Get position without any transformations
+      // Temporarily remove sticky class to get true position
+      this.stickyBar.classList.remove('is-sticky');
       const rect = this.stickyBar.getBoundingClientRect();
       this.originalPosition = rect.top + window.scrollY;
+
+      // Restore sticky if it was sticky
+      if (this.isSticky) {
+        this.stickyBar.classList.add('is-sticky');
+      }
     }
 
     handleScroll() {
       if (!this.stickyBar || this.originalPosition === null) return;
-      if (!this.isMobile()) return;
 
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       const barHeight = this.stickyBar.offsetHeight;
+      const documentHeight = document.documentElement.scrollHeight;
 
-      // PRIORITY: If footer is visible (via Intersection Observer), hide bar
-      if (this.footerIsVisible) {
-        this.stickyBar.classList.remove('is-sticky');
-        this.stickyBar.classList.add('is-hidden');
-        this.isSticky = false;
-        return;
-      }
-
-      // Check if bar should be sticky (scrolled past its original position)
+      // Check if the bar would be below the viewport
       const barBottomPosition = this.originalPosition + barHeight;
       const shouldBeSticky = scrollY + windowHeight > barBottomPosition;
+
+      // Get footer element (assuming it's rendered via sections 'footer-group')
+      const footer = document.querySelector('[id*="shopify-section-footer"]');
+
+      // Check if we've scrolled to the footer
+      let shouldHide = false;
+      if (footer) {
+        const footerTop = footer.getBoundingClientRect().top + scrollY;
+        const stickyBarBottom = scrollY + windowHeight;
+        // Hide if sticky bar would overlap with footer
+        shouldHide = stickyBarBottom >= footerTop;
+      } else {
+        // Fallback: hide when near bottom of page
+        shouldHide = scrollY + windowHeight >= documentHeight - 50;
+      }
 
       // Update sticky state
       if (shouldBeSticky && !this.isSticky) {
         this.stickyBar.classList.add('is-sticky');
-        this.stickyBar.classList.remove('is-hidden');
         this.isSticky = true;
       } else if (!shouldBeSticky && this.isSticky) {
-        this.stickyBar.classList.remove('is-sticky', 'is-hidden');
+        this.stickyBar.classList.remove('is-sticky');
         this.isSticky = false;
       }
-    }
 
-    cleanup() {
-      // Disconnect observer
-      if (this.footerObserver) {
-        this.footerObserver.disconnect();
-        this.footerObserver = null;
+      // Update hidden state
+      if (shouldHide && !this.isHidden) {
+        this.stickyBar.classList.add('is-hidden');
+        this.isHidden = true;
+      } else if (!shouldHide && this.isHidden) {
+        this.stickyBar.classList.remove('is-hidden');
+        this.isHidden = false;
       }
-      // Remove classes
-      this.stickyBar.classList.remove('is-sticky', 'is-hidden');
     }
   }
 
