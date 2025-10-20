@@ -562,10 +562,13 @@
     }
 
     init() {
+      // Scroll to top when page loads or is restored from cache
+      this.scrollToTop();
+
       // Store original position
       this.updateOriginalPosition();
 
-      // Check initial scroll position (important for back/forward navigation)
+      // Check initial scroll position
       this.handleScroll();
 
       // Handle scroll with optimized performance
@@ -593,11 +596,22 @@
       // Handle back/forward navigation (bfcache restore)
       window.addEventListener('pageshow', (event) => {
         if (event.persisted) {
-          // Page was restored from bfcache
+          // Page was restored from bfcache - scroll to top
+          this.scrollToTop();
           this.updateOriginalPosition();
           this.handleScroll();
         }
       });
+    }
+
+    scrollToTop() {
+      // Scroll to top smoothly on mobile devices
+      if (window.innerWidth < 768) {
+        window.scrollTo({
+          top: 0,
+          behavior: 'instant',
+        });
+      }
     }
 
     updateOriginalPosition() {
@@ -626,16 +640,18 @@
       const barBottomPosition = this.originalPosition + barHeight;
       const shouldBeSticky = scrollY + windowHeight > barBottomPosition;
 
-      // Get footer element (assuming it's rendered via sections 'footer-group')
-      const footer = document.querySelector('[id*="shopify-section-footer"]');
+      // Get footer element - try multiple selectors for reliability
+      const footer =
+        document.querySelector('[id*="shopify-section-footer"]') ||
+        document.querySelector('footer') ||
+        document.getElementById('footer');
 
-      // Check if we've scrolled to the footer
+      // Check if footer is visible in viewport
       let shouldHide = false;
       if (footer) {
-        const footerTop = footer.getBoundingClientRect().top + scrollY;
-        const stickyBarBottom = scrollY + windowHeight;
-        // Hide if sticky bar would overlap with footer
-        shouldHide = stickyBarBottom >= footerTop;
+        const footerRect = footer.getBoundingClientRect();
+        // Hide if any part of the footer is visible in the viewport
+        shouldHide = footerRect.top < windowHeight;
       } else {
         // Fallback: hide when near bottom of page
         shouldHide = scrollY + windowHeight >= documentHeight - 50;
