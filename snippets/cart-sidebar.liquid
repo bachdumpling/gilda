@@ -144,7 +144,7 @@
           <p class="text-lg font-sans">{{ 'cart.empty' | t | default: 'Your cart is empty' }}</p>
           <button
             type="button"
-            class="text-center block w-full py-4 px-3 text-base uppercase font-medium border border-black cursor-pointer hover:bg-black hover:text-white transition-all duration-300"
+            class="text-center block w-full py-4 px-3 text-base uppercase font-medium border border-black cursor-pointer hover:bg-black hover:text-white active:bg-black active:text-white transition-all duration-150"
             data-cart-close
           >
             {{ 'cart.continue_shopping' | t | default: 'Continue shopping' }}
@@ -174,7 +174,7 @@
         <div class="flex flex-col gap-3 px-6 pt-6 pb-8">
           <a
             href="/checkout"
-            class="text-center block w-full py-4 px-3 text-base uppercase font-medium border border-black cursor-pointer hover:bg-black hover:text-white transition-all duration-300"
+            class="text-center block w-full py-4 px-3 text-base uppercase font-medium border border-black cursor-pointer hover:bg-black hover:text-white active:bg-black active:text-white transition-all duration-150"
           >
             {{ 'cart.checkout' | t }} • {{ cart.total_price | money }}
           </a>

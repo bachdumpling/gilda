@@ -877,6 +877,11 @@
       color: var(--color-white);
     }
   }
+  .active\:opacity-50 {
+    &:active {
+      opacity: 50%;
+    }
+  }
   .disabled\:cursor-not-allowed {
     &:disabled {
       cursor: not-allowed;
