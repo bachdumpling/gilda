@@ -83,6 +83,15 @@
     color: var(--color-foreground);
   }
 
+  /* Prevent scrolling when cart is open (especially important for mobile) */
+  body.cart-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+
   html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
     overflow: hidden;
   }

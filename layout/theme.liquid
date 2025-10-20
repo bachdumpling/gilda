@@ -34,6 +34,7 @@
           this.overlay = document.querySelector('[data-cart-overlay]');
           this.openButton = document.querySelector('[data-cart-open]');
           this.form = document.getElementById('cart-form');
+          this.scrollPosition = 0;
 
           this.init();
         }
@@ -77,9 +78,15 @@
 
         open() {
           if (this.sidebar && this.overlay) {
+            // Save current scroll position
+            this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
             this.overlay.classList.remove('hidden');
             this.sidebar.classList.remove('translate-x-full');
-            document.body.style.overflow = 'hidden';
+
+            // Prevent body scroll and maintain scroll position
+            document.body.style.top = `-${this.scrollPosition}px`;
+            document.body.classList.add('cart-open');
 
             // Focus management
             setTimeout(() => {
@@ -95,7 +102,11 @@
             setTimeout(() => {
               this.overlay.classList.add('hidden');
             }, 300);
-            document.body.style.overflow = '';
+
+            // Restore body scroll and scroll position
+            document.body.classList.remove('cart-open');
+            document.body.style.top = '';
+            window.scrollTo(0, this.scrollPosition);
 
             // Return focus to cart button without scrolling
             if (this.openButton) {

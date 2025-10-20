@@ -175,7 +175,7 @@
 
           <button
             type="submit"
-            class="cursor-pointer w-full pt-6 pb-6 text-sm font-mono uppercase hover:bg-black hover:text-white disabled:hover:bg-transparent disabled:hover:text-black transition-all duration-300 text-center disabled:opacity-50 disabled:cursor-not-allowed"
+            class="cursor-pointer w-full pt-6 pb-6 text-sm font-mono uppercase hover:bg-black hover:text-white active:bg-black active:text-white disabled:hover:bg-transparent disabled:hover:text-black disabled:active:bg-transparent disabled:active:text-black transition-all duration-150 text-center disabled:opacity-50 disabled:cursor-not-allowed"
             {% if current_variant == blank or current_variant.available == false %}
               disabled
             {% endif %}
@@ -390,7 +390,7 @@
 
               <button
                 type="submit"
-                class="cursor-pointer w-full py-5 px-3 text-base font-mono uppercase border-b border-black hover:bg-black hover:text-white disabled:hover:bg-transparent disabled:hover:text-black transition-all duration-300 text-center disabled:opacity-50 disabled:cursor-not-allowed"
+                class="cursor-pointer w-full py-5 px-3 text-base font-mono uppercase border-b border-black hover:bg-black hover:text-white active:bg-black active:text-white disabled:hover:bg-transparent disabled:hover:text-black disabled:active:bg-transparent disabled:active:text-black transition-all duration-150 text-center disabled:opacity-50 disabled:cursor-not-allowed"
                 {% if current_variant == blank or current_variant.available == false %}
                   disabled
                 {% endif %}
@@ -442,6 +442,13 @@
   .variant-option-mobile:disabled:hover,
   .variant-option-desktop:disabled:hover {
     border-color: transparent;
+  }
+
+  /* Add to Cart Button - Loading State */
+  button[type='submit'].is-adding-to-cart {
+    background-color: black !important;
+    color: white !important;
+    opacity: 1 !important;
   }
 
   /* Tab Buttons */

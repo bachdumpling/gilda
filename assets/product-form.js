@@ -30,6 +30,8 @@ class ProductForm {
       return;
     }
 
+    // Add immediate visual feedback - button turns black
+    this.submitButton.classList.add("is-adding-to-cart");
     this.submitButton.setAttribute("disabled", "disabled");
     this.loadingSpinner?.classList.remove("hidden");
 
@@ -66,6 +68,8 @@ class ProductForm {
         console.error("Error adding to cart:", error);
       })
       .finally(() => {
+        // Remove visual feedback classes
+        this.submitButton.classList.remove("is-adding-to-cart");
         this.submitButton.removeAttribute("disabled");
         this.loadingSpinner?.classList.add("hidden");
       });
