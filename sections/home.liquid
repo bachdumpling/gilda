@@ -59,6 +59,10 @@
 {% unless request.design_mode %}
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      // Only enable hover effects on desktop (min-width: 640px)
+      const isDesktop = window.matchMedia('(min-width: 640px)').matches;
+      if (!isDesktop) return;
+
       const productCards = document.querySelectorAll('.product-card-wrapper');
 
       productCards.forEach(function (card) {
@@ -114,12 +118,15 @@
     opacity: 0;
   }
 
-  .product-card-wrapper:hover .product-image-primary {
-    opacity: 0;
-  }
+  /* Only enable hover on desktop */
+  @media (min-width: 640px) {
+    .product-card-wrapper:hover .product-image-primary {
+      opacity: 0;
+    }
 
-  .product-card-wrapper:hover .product-image-secondary {
-    opacity: 1;
+    .product-card-wrapper:hover .product-image-secondary {
+      opacity: 1;
+    }
   }
 
   /* Disable individual hover on product-code within card */
