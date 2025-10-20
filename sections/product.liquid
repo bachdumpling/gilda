@@ -578,13 +578,8 @@
       // Cache footer reference
       this.footer = document.querySelector('[id*="shopify-section-footer"]');
 
-      // Use multiple RAF to ensure DOM is fully settled, especially for bfcache restores
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          this.updateOriginalPosition();
-          this.handleScroll();
-        });
-      });
+      // Initial check after DOM is ready
+      this.scheduleCheck();
 
       // Handle scroll with optimized performance
       let ticking = false;
@@ -616,33 +611,68 @@
 
       // Handle back/forward navigation (bfcache restore)
       window.addEventListener('pageshow', (event) => {
-        if (event.persisted && this.isMobile()) {
-          // Page was restored from bfcache - reset state completely
-          this.isSticky = false;
-          this.isHidden = false;
-          this.stickyBar.classList.remove('is-sticky', 'is-hidden');
+        if (!this.isMobile()) return;
 
-          // Re-cache footer reference
-          this.footer = document.querySelector('[id*="shopify-section-footer"]');
+        // Reset state on page show
+        this.isSticky = false;
+        this.isHidden = false;
+        this.stickyBar.classList.remove('is-sticky', 'is-hidden');
 
-          // Use multiple RAF to ensure proper state after bfcache restore
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              this.updateOriginalPosition();
-              this.handleScroll();
-            });
-          });
-        }
+        // Re-cache footer reference
+        this.footer = document.querySelector('[id*="shopify-section-footer"]');
+
+        // Schedule checks to handle scroll restoration
+        this.scheduleCheck();
       });
 
-      // Handle initial page load with scroll position (e.g., from browser restore or anchor)
+      // Handle full page load (includes images, styles, etc.)
       window.addEventListener('load', () => {
+        if (!this.isMobile()) return;
+
         this.footer = document.querySelector('[id*="shopify-section-footer"]');
+        this.scheduleCheck();
+      });
+
+      // Additional check after a short delay to catch late scroll restorations
+      setTimeout(() => {
+        if (this.isMobile()) {
+          this.updateOriginalPosition();
+          this.handleScroll();
+        }
+      }, 100);
+    }
+
+    // Schedule multiple checks to catch scroll restoration at different timings
+    scheduleCheck() {
+      // Immediate check
+      requestAnimationFrame(() => {
+        this.updateOriginalPosition();
+        this.handleScroll();
+      });
+
+      // Double RAF for layout settling
+      requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           this.updateOriginalPosition();
           this.handleScroll();
         });
       });
+
+      // Additional check after a short delay for slow scroll restoration
+      setTimeout(() => {
+        if (this.isMobile()) {
+          this.updateOriginalPosition();
+          this.handleScroll();
+        }
+      }, 50);
+
+      // Final check to ensure we caught scroll restoration
+      setTimeout(() => {
+        if (this.isMobile()) {
+          this.updateOriginalPosition();
+          this.handleScroll();
+        }
+      }, 200);
     }
 
     updateOriginalPosition() {
@@ -684,33 +714,31 @@
         this.footer = document.querySelector('[id*="shopify-section-footer"]');
       }
 
-      // Check if footer is visible in viewport
+      // Check if footer is visible in viewport - PRIORITY CHECK
       let isAtFooter = false;
       if (this.footer) {
         const footerRect = this.footer.getBoundingClientRect();
         const footerTop = footerRect.top;
         // Hide if any part of the footer is visible in the viewport
-        // This accounts for the sticky bar height to prevent overlap
-        isAtFooter = footerTop < windowHeight - barHeight;
+        // Add small buffer to hide slightly before overlap
+        isAtFooter = footerTop <= windowHeight - barHeight + 10;
       } else {
         // Fallback: hide when very close to bottom of page
         isAtFooter = scrollY + windowHeight >= documentHeight - barHeight - 20;
       }
 
-      // If at footer, hide the bar completely
+      // PRIORITY: If footer is visible, immediately hide everything and return
       if (isAtFooter) {
-        if (this.isSticky) {
-          this.stickyBar.classList.remove('is-sticky');
-          this.isSticky = false;
-        }
-        if (!this.isHidden) {
-          this.stickyBar.classList.add('is-hidden');
-          this.isHidden = true;
-        }
+        // Remove both sticky and hidden classes, then add only hidden
+        // This ensures clean state transitions
+        this.stickyBar.classList.remove('is-sticky');
+        this.stickyBar.classList.add('is-hidden');
+        this.isSticky = false;
+        this.isHidden = true;
         return;
       }
 
-      // Check if the bar would be below the viewport
+      // Only check for sticky state if footer is NOT visible
       const barBottomPosition = this.originalPosition + barHeight;
       const shouldBeSticky = scrollY + windowHeight > barBottomPosition;
 
@@ -722,11 +750,13 @@
         this.isHidden = false;
       } else if (!shouldBeSticky && this.isSticky) {
         this.stickyBar.classList.remove('is-sticky');
+        this.stickyBar.classList.remove('is-hidden');
         this.isSticky = false;
+        this.isHidden = false;
       }
 
-      // Ensure bar is not hidden when it should be visible
-      if (this.isHidden && !isAtFooter) {
+      // Ensure bar is visible when scrolled but footer not reached
+      if (this.isHidden && !isAtFooter && shouldBeSticky) {
         this.stickyBar.classList.remove('is-hidden');
         this.isHidden = false;
       }
