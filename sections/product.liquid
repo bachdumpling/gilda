@@ -565,6 +565,9 @@
       // Store original position
       this.updateOriginalPosition();
 
+      // Check initial scroll position (important for back/forward navigation)
+      this.handleScroll();
+
       // Handle scroll with optimized performance
       let ticking = false;
       window.addEventListener(
@@ -585,6 +588,15 @@
       window.addEventListener('resize', () => {
         this.updateOriginalPosition();
         this.handleScroll();
+      });
+
+      // Handle back/forward navigation (bfcache restore)
+      window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+          // Page was restored from bfcache
+          this.updateOriginalPosition();
+          this.handleScroll();
+        }
       });
     }
 
