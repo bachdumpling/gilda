@@ -562,11 +562,16 @@
     }
 
     init() {
-      // Store original position
-      this.updateOriginalPosition();
+      // Reset initial state
+      this.isSticky = false;
+      this.isHidden = false;
+      this.stickyBar.classList.remove('is-sticky', 'is-hidden');
 
-      // Check initial scroll position (important for back/forward navigation)
-      this.handleScroll();
+      // Store original position and check scroll after DOM is settled
+      requestAnimationFrame(() => {
+        this.updateOriginalPosition();
+        this.handleScroll();
+      });
 
       // Handle scroll with optimized performance
       let ticking = false;
@@ -593,9 +598,16 @@
       // Handle back/forward navigation (bfcache restore)
       window.addEventListener('pageshow', (event) => {
         if (event.persisted) {
-          // Page was restored from bfcache
-          this.updateOriginalPosition();
-          this.handleScroll();
+          // Page was restored from bfcache - reset state completely
+          this.isSticky = false;
+          this.isHidden = false;
+          this.stickyBar.classList.remove('is-sticky', 'is-hidden');
+
+          // Recalculate after DOM is settled
+          requestAnimationFrame(() => {
+            this.updateOriginalPosition();
+            this.handleScroll();
+          });
         }
       });
     }
@@ -603,14 +615,25 @@
     updateOriginalPosition() {
       if (!this.stickyBar) return;
 
-      // Temporarily remove sticky class to get true position
-      this.stickyBar.classList.remove('is-sticky');
+      // Save current state
+      const wasSticky = this.isSticky;
+      const wasHidden = this.isHidden;
+
+      // Temporarily remove all classes to get true position
+      this.stickyBar.classList.remove('is-sticky', 'is-hidden');
+
+      // Force layout recalculation
+      void this.stickyBar.offsetHeight;
+
       const rect = this.stickyBar.getBoundingClientRect();
       this.originalPosition = rect.top + window.scrollY;
 
-      // Restore sticky if it was sticky
-      if (this.isSticky) {
+      // Restore previous state
+      if (wasSticky) {
         this.stickyBar.classList.add('is-sticky');
+      }
+      if (wasHidden) {
+        this.stickyBar.classList.add('is-hidden');
       }
     }
 
