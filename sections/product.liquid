@@ -645,39 +645,51 @@
       const barHeight = this.stickyBar.offsetHeight;
       const documentHeight = document.documentElement.scrollHeight;
 
-      // Check if the bar would be below the viewport
-      const barBottomPosition = this.originalPosition + barHeight;
-      const shouldBeSticky = scrollY + windowHeight > barBottomPosition;
-
       // Get footer element (assuming it's rendered via sections 'footer-group')
       const footer = document.querySelector('[id*="shopify-section-footer"]');
 
       // Check if we've scrolled to the footer
-      let shouldHide = false;
+      let isAtFooter = false;
       if (footer) {
         const footerTop = footer.getBoundingClientRect().top + scrollY;
         const stickyBarBottom = scrollY + windowHeight;
-        // Hide if sticky bar would overlap with footer
-        shouldHide = stickyBarBottom >= footerTop;
+        // At footer if sticky bar would overlap with footer
+        isAtFooter = stickyBarBottom >= footerTop;
       } else {
-        // Fallback: hide when near bottom of page
-        shouldHide = scrollY + windowHeight >= documentHeight - 50;
+        // Fallback: at footer when near bottom of page
+        isAtFooter = scrollY + windowHeight >= documentHeight - 50;
       }
+
+      // If at footer, hide the bar completely
+      if (isAtFooter) {
+        if (this.isSticky) {
+          this.stickyBar.classList.remove('is-sticky');
+          this.isSticky = false;
+        }
+        if (!this.isHidden) {
+          this.stickyBar.classList.add('is-hidden');
+          this.isHidden = true;
+        }
+        return;
+      }
+
+      // Check if the bar would be below the viewport
+      const barBottomPosition = this.originalPosition + barHeight;
+      const shouldBeSticky = scrollY + windowHeight > barBottomPosition;
 
       // Update sticky state
       if (shouldBeSticky && !this.isSticky) {
         this.stickyBar.classList.add('is-sticky');
+        this.stickyBar.classList.remove('is-hidden');
         this.isSticky = true;
+        this.isHidden = false;
       } else if (!shouldBeSticky && this.isSticky) {
         this.stickyBar.classList.remove('is-sticky');
         this.isSticky = false;
       }
 
-      // Update hidden state
-      if (shouldHide && !this.isHidden) {
-        this.stickyBar.classList.add('is-hidden');
-        this.isHidden = true;
-      } else if (!shouldHide && this.isHidden) {
+      // Ensure bar is not hidden when it should be visible
+      if (this.isHidden && !isAtFooter) {
         this.stickyBar.classList.remove('is-hidden');
         this.isHidden = false;
       }
