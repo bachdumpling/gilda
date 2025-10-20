@@ -561,8 +561,9 @@
 
       this.originalPosition = null;
       this.isSticky = false;
-      this.isHidden = false;
+      this.footerIsVisible = false;
       this.footer = null;
+      this.footerObserver = null;
       this.init();
     }
 
@@ -570,16 +571,14 @@
       // Only initialize on mobile
       if (!this.isMobile()) return;
 
-      // Reset initial state
-      this.isSticky = false;
-      this.isHidden = false;
-      this.stickyBar.classList.remove('is-sticky', 'is-hidden');
-
-      // Cache footer reference
+      // Find footer element
       this.footer = document.querySelector('[id*="shopify-section-footer"]');
 
-      // Initial check after DOM is ready
-      this.scheduleCheck();
+      // Set up Intersection Observer for footer
+      this.setupFooterObserver();
+
+      // Calculate original position
+      this.updateOriginalPosition();
 
       // Handle scroll with optimized performance
       let ticking = false;
@@ -601,103 +600,66 @@
       window.addEventListener('resize', () => {
         if (!this.isMobile()) {
           // If resized to desktop, clean up
-          this.stickyBar.classList.remove('is-sticky', 'is-hidden');
+          this.cleanup();
           return;
         }
-        this.footer = document.querySelector('[id*="shopify-section-footer"]');
         this.updateOriginalPosition();
         this.handleScroll();
       });
 
       // Handle back/forward navigation (bfcache restore)
-      window.addEventListener('pageshow', (event) => {
-        if (!this.isMobile()) return;
-
-        // Reset state on page show
-        this.isSticky = false;
-        this.isHidden = false;
-        this.stickyBar.classList.remove('is-sticky', 'is-hidden');
-
-        // Re-cache footer reference
-        this.footer = document.querySelector('[id*="shopify-section-footer"]');
-
-        // Schedule checks to handle scroll restoration
-        this.scheduleCheck();
-      });
-
-      // Handle full page load (includes images, styles, etc.)
-      window.addEventListener('load', () => {
-        if (!this.isMobile()) return;
-
-        this.footer = document.querySelector('[id*="shopify-section-footer"]');
-        this.scheduleCheck();
-      });
-
-      // Additional check after a short delay to catch late scroll restorations
-      setTimeout(() => {
+      window.addEventListener('pageshow', () => {
         if (this.isMobile()) {
+          // Re-setup observer and check state
+          this.setupFooterObserver();
           this.updateOriginalPosition();
-          this.handleScroll();
+          requestAnimationFrame(() => this.handleScroll());
         }
-      }, 100);
+      });
     }
 
-    // Schedule multiple checks to catch scroll restoration at different timings
-    scheduleCheck() {
-      // Immediate check
-      requestAnimationFrame(() => {
-        this.updateOriginalPosition();
-        this.handleScroll();
-      });
+    setupFooterObserver() {
+      // Disconnect existing observer if any
+      if (this.footerObserver) {
+        this.footerObserver.disconnect();
+      }
 
-      // Double RAF for layout settling
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          this.updateOriginalPosition();
-          this.handleScroll();
-        });
-      });
+      // Find footer if not cached
+      if (!this.footer) {
+        this.footer = document.querySelector('[id*="shopify-section-footer"]');
+      }
 
-      // Additional check after a short delay for slow scroll restoration
-      setTimeout(() => {
-        if (this.isMobile()) {
-          this.updateOriginalPosition();
-          this.handleScroll();
+      if (!this.footer) return;
+
+      // Create observer with threshold to detect any part of footer visible
+      this.footerObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            // Footer is visible when it's intersecting
+            this.footerIsVisible = entry.isIntersecting;
+            
+            // Immediately update sticky bar state
+            requestAnimationFrame(() => this.handleScroll());
+          });
+        },
+        {
+          // Trigger as soon as any pixel of footer is visible
+          threshold: 0,
+          // Add bottom margin equal to sticky bar height to hide before overlap
+          rootMargin: '0px 0px -60px 0px',
         }
-      }, 50);
+      );
 
-      // Final check to ensure we caught scroll restoration
-      setTimeout(() => {
-        if (this.isMobile()) {
-          this.updateOriginalPosition();
-          this.handleScroll();
-        }
-      }, 200);
+      // Start observing
+      this.footerObserver.observe(this.footer);
     }
 
     updateOriginalPosition() {
       if (!this.stickyBar) return;
 
-      // Save current state
-      const wasSticky = this.isSticky;
-      const wasHidden = this.isHidden;
-
-      // Temporarily remove all classes to get true position
-      this.stickyBar.classList.remove('is-sticky', 'is-hidden');
-
-      // Force layout recalculation
-      void this.stickyBar.offsetHeight;
-
+      // Get position without any transformations
       const rect = this.stickyBar.getBoundingClientRect();
       this.originalPosition = rect.top + window.scrollY;
-
-      // Restore previous state
-      if (wasSticky) {
-        this.stickyBar.classList.add('is-sticky');
-      }
-      if (wasHidden) {
-        this.stickyBar.classList.add('is-hidden');
-      }
     }
 
     handleScroll() {
@@ -707,38 +669,16 @@
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       const barHeight = this.stickyBar.offsetHeight;
-      const documentHeight = document.documentElement.scrollHeight;
 
-      // Re-cache footer if not found (for dynamic content)
-      if (!this.footer) {
-        this.footer = document.querySelector('[id*="shopify-section-footer"]');
-      }
-
-      // Check if footer is visible in viewport - PRIORITY CHECK
-      let isAtFooter = false;
-      if (this.footer) {
-        const footerRect = this.footer.getBoundingClientRect();
-        const footerTop = footerRect.top;
-        // Hide if any part of the footer is visible in the viewport
-        // Add small buffer to hide slightly before overlap
-        isAtFooter = footerTop <= windowHeight - barHeight + 10;
-      } else {
-        // Fallback: hide when very close to bottom of page
-        isAtFooter = scrollY + windowHeight >= documentHeight - barHeight - 20;
-      }
-
-      // PRIORITY: If footer is visible, immediately hide everything and return
-      if (isAtFooter) {
-        // Remove both sticky and hidden classes, then add only hidden
-        // This ensures clean state transitions
+      // PRIORITY: If footer is visible (via Intersection Observer), hide bar
+      if (this.footerIsVisible) {
         this.stickyBar.classList.remove('is-sticky');
         this.stickyBar.classList.add('is-hidden');
         this.isSticky = false;
-        this.isHidden = true;
         return;
       }
 
-      // Only check for sticky state if footer is NOT visible
+      // Check if bar should be sticky (scrolled past its original position)
       const barBottomPosition = this.originalPosition + barHeight;
       const shouldBeSticky = scrollY + windowHeight > barBottomPosition;
 
@@ -747,19 +687,20 @@
         this.stickyBar.classList.add('is-sticky');
         this.stickyBar.classList.remove('is-hidden');
         this.isSticky = true;
-        this.isHidden = false;
       } else if (!shouldBeSticky && this.isSticky) {
-        this.stickyBar.classList.remove('is-sticky');
-        this.stickyBar.classList.remove('is-hidden');
+        this.stickyBar.classList.remove('is-sticky', 'is-hidden');
         this.isSticky = false;
-        this.isHidden = false;
       }
+    }
 
-      // Ensure bar is visible when scrolled but footer not reached
-      if (this.isHidden && !isAtFooter && shouldBeSticky) {
-        this.stickyBar.classList.remove('is-hidden');
-        this.isHidden = false;
+    cleanup() {
+      // Disconnect observer
+      if (this.footerObserver) {
+        this.footerObserver.disconnect();
+        this.footerObserver = null;
       }
+      // Remove classes
+      this.stickyBar.classList.remove('is-sticky', 'is-hidden');
     }
   }
 
