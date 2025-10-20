@@ -13,6 +13,7 @@
   @param {number} [width] - The highest resolution width of the image to be rendered
   @param {number} [height] - The highest resolution height of the image to be rendered
   @param {string} [crop] - The crop position of the image
+  @param {string} [loading] - The loading attribute (default: "eager")
 
   @example
   {% render 'image', image: product.featured_image %}
@@ -24,6 +25,7 @@
     width: 1200,
     height: 800,
     crop: 'center',
+    loading: 'eager'
   %}
 {% enddoc %}
 
@@ -37,6 +39,8 @@
   else
     assign wrapper = 'div'
   endif
+
+  assign loading = loading | default: 'eager'
 %}
 
 <{{ wrapper }}
@@ -45,7 +49,7 @@
     href="{{ url }}"
   {% endif %}
 >
-  {{ image | image_url: width: width, height: height, crop: crop | image_tag }}
+  {{ image | image_url: width: width, height: height, crop: crop | image_tag: loading: loading }}
 </{{ wrapper }}>
 
 {% stylesheet %}

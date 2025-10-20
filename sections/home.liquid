@@ -18,7 +18,7 @@
                 class="product-image product-image-primary"
                 src="{{ product.featured_image | image_url: width: 2000, height: 2000, crop: 'center' }}"
                 alt="{{ product.featured_image.alt | escape }}"
-                loading="lazy"
+                loading="eager"
                 width="2000"
                 height="2000"
               >
@@ -27,7 +27,7 @@
                   class="product-image product-image-secondary"
                   src="{{ second_image | image_url: width: 2000, height: 2000, crop: 'center' }}"
                   alt="{{ second_image.alt | escape }}"
-                  loading="lazy"
+                  loading="eager"
                   width="2000"
                   height="2000"
                 >
