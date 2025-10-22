@@ -175,7 +175,7 @@
         <a href="{{ contact_link_url }}" class="text-subtitle underline hover:no-underline transition-all">
           {{- contact_link_text -}}
         </a>
-        {%- if has_footer_middle or has_model_content %} {% endif -%}
+        {% if has_footer_middle or has_model_content %} {% endif %}
       {%- endif -%}
 
       {%- if has_footer_middle -%}
