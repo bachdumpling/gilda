@@ -125,7 +125,7 @@
 
             {% if field_value != blank %}
               <td class="py-3 w-16 text-center">
-                {{- field_value.value[forloop.index0] -}}
+                {{- field_value.value[forloop.parentloop.index0] -}}
                 {{- size_chart.unit -}}
               </td>
             {% endif %}

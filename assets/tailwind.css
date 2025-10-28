@@ -413,6 +413,9 @@
   .resize {
     resize: both;
   }
+  .grid-cols-\[1fr_auto_1fr\] {
+    grid-template-columns: 1fr auto 1fr;
+  }
   .flex-col {
     flex-direction: column;
   }
@@ -944,6 +947,11 @@
       flex-direction: column;
     }
   }
+  .sm\:justify-between {
+    @media (width >= 40rem) {
+      justify-content: space-between;
+    }
+  }
   .sm\:divide-y-0 {
     @media (width >= 40rem) {
       :where(& > :not(:last-child)) {
@@ -968,6 +976,11 @@
   .sm\:py-14 {
     @media (width >= 40rem) {
       padding-block: calc(var(--spacing) * 14);
+    }
+  }
+  .sm\:text-left {
+    @media (width >= 40rem) {
+      text-align: left;
     }
   }
   .md\:flex {
