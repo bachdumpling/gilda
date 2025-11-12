@@ -118,6 +118,56 @@
         "label": "Default meta description",
         "info": "Used when pages don't have their own description. Max 155 characters recommended.",
         "placeholder": "Describe your store..."
+      },
+      {
+        "type": "header",
+        "content": "Business location & contact"
+      },
+      {
+        "type": "text",
+        "id": "seo_business_city",
+        "label": "Primary city",
+        "info": "Primary business location (e.g., New York City, Tokyo)",
+        "placeholder": "New York City"
+      },
+      {
+        "type": "text",
+        "id": "seo_business_state",
+        "label": "State/Province",
+        "info": "State or province (e.g., NY, Tokyo)",
+        "placeholder": "NY"
+      },
+      {
+        "type": "text",
+        "id": "seo_business_country",
+        "label": "Country",
+        "info": "Country code (e.g., US, JP)",
+        "placeholder": "US"
+      },
+      {
+        "type": "url",
+        "id": "seo_business_website",
+        "label": "Website URL",
+        "info": "Full website URL (e.g., https://gildaclothing.com)"
+      },
+      {
+        "type": "text",
+        "id": "seo_business_email",
+        "label": "Business email",
+        "info": "Contact email address"
+      },
+      {
+        "type": "text",
+        "id": "seo_business_phone",
+        "label": "Business phone",
+        "info": "Contact phone number (include country code)"
+      },
+      {
+        "type": "text",
+        "id": "seo_additional_locations",
+        "label": "Additional locations",
+        "info": "Comma-separated list of additional locations (e.g., Japan, NYC)",
+        "placeholder": "Japan, NYC"
       }
     ]
   }

@@ -88,20 +88,25 @@
             document.body.style.top = `-${this.scrollPosition}px`;
             document.body.classList.add('cart-open');
 
-            // Focus management
+            // Focus management - match timeout to transition duration
+            const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+            const timeout = isDesktop ? 400 : 300;
             setTimeout(() => {
               const closeButton = this.sidebar.querySelector('[data-cart-close]');
               if (closeButton) closeButton.focus();
-            }, 300);
+            }, timeout);
           }
         }
 
         close() {
           if (this.sidebar && this.overlay) {
             this.sidebar.classList.add('translate-x-full');
+            // Match timeout to transition duration (400ms on desktop, 300ms on mobile)
+            const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+            const timeout = isDesktop ? 400 : 300;
             setTimeout(() => {
               this.overlay.classList.add('hidden');
-            }, 300);
+            }, timeout);
 
             // Restore body scroll and scroll position
             document.body.classList.remove('cart-open');

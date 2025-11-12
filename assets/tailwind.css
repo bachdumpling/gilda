@@ -40,6 +40,7 @@
     --font-weight-medium: 500;
     --tracking-wider: 0.05em;
     --leading-relaxed: 1.625;
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --blur-sm: 8px;
     --default-transition-duration: 150ms;
@@ -850,9 +851,17 @@
     --tw-duration: 200ms;
     transition-duration: 200ms;
   }
+  .duration-300 {
+    --tw-duration: 300ms;
+    transition-duration: 300ms;
+  }
   .ease-in-out {
     --tw-ease: var(--ease-in-out);
     transition-timing-function: var(--ease-in-out);
+  }
+  .ease-out {
+    --tw-ease: var(--ease-out);
+    transition-timing-function: var(--ease-out);
   }
   .\[-moz-appearance\:textfield\] {
     -moz-appearance: textfield;
@@ -1170,6 +1179,18 @@
     @media (width >= 48rem) {
       font-size: var(--text-sm);
       line-height: var(--tw-leading, var(--text-sm--line-height));
+    }
+  }
+  .md\:duration-400 {
+    @media (width >= 48rem) {
+      --tw-duration: 400ms;
+      transition-duration: 400ms;
+    }
+  }
+  .md\:ease-out {
+    @media (width >= 48rem) {
+      --tw-ease: var(--ease-out);
+      transition-timing-function: var(--ease-out);
     }
   }
   .lg\:p-8 {

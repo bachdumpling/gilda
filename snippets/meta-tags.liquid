@@ -9,6 +9,37 @@
   assign og_type = 'website'
   assign og_description = page_description | default: settings.seo_default_description | default: shop.description | default: seo_site_name
 
+  # Add location keywords to homepage title and description
+  if request.page_type == 'index'
+    assign additional_locations = settings.seo_additional_locations | default: ''
+    assign business_city = settings.seo_business_city | default: ''
+
+    # Enhance homepage title with location if available
+    if business_city != blank or additional_locations != blank
+      assign location_text = ''
+      if business_city != blank
+        assign location_text = business_city
+      endif
+      if additional_locations != blank
+        if location_text != blank
+          assign location_text = location_text | append: ', ' | append: additional_locations
+        else
+          assign location_text = additional_locations
+        endif
+      endif
+
+      # Add location to title if not already present
+      unless og_title contains location_text
+        assign og_title = og_title | append: ' - ' | append: location_text
+      endunless
+
+      # Enhance description with location keywords
+      unless og_description contains location_text
+        assign og_description = og_description | append: ' Located in ' | append: location_text | append: '.'
+      endunless
+    endif
+  endif
+
   if request.page_type == 'product'
     assign og_type = 'product'
   elsif request.page_type == 'article'
@@ -104,11 +135,37 @@
   >
 {%- endif -%}
 
+{%- liquid
+  # Build title with location keywords for homepage
+  assign title_text = page_title
+  if request.page_type == 'index'
+    assign additional_locations = settings.seo_additional_locations | default: ''
+    assign business_city = settings.seo_business_city | default: ''
+
+    if business_city != blank or additional_locations != blank
+      assign location_text = ''
+      if business_city != blank
+        assign location_text = business_city
+      endif
+      if additional_locations != blank
+        if location_text != blank
+          assign location_text = location_text | append: ', ' | append: additional_locations
+        else
+          assign location_text = additional_locations
+        endif
+      endif
+
+      unless title_text contains location_text
+        assign title_text = title_text | append: ' - ' | append: location_text
+      endunless
+    endif
+  endif
+-%}
 <title>
-  {{ page_title }}
+  {{ title_text }}
   {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
   {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
-  {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  {%- unless title_text contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
 </title>
 
 <link
@@ -116,9 +173,127 @@
   href="{{ canonical_url }}"
 >
 
-{% if page_description %}
-  <meta
-    name="description"
-    content="{{ page_description | escape }}"
-  >
-{% endif %}
+{%- comment -%} Always show meta description with fallback {%- endcomment -%}
+<meta
+  name="description"
+  content="{{ page_description | default: settings.seo_default_description | default: shop.description | default: seo_site_name | escape }}"
+>
+
+{%- comment -%} Organization structured data for local SEO {%- endcomment -%}
+{%- liquid
+  assign business_city = settings.seo_business_city | default: ''
+  assign business_state = settings.seo_business_state | default: ''
+  assign business_country = settings.seo_business_country | default: 'US'
+  assign business_website = settings.seo_business_website | default: request.origin
+  assign business_email = settings.seo_business_email | default: ''
+  assign business_phone = settings.seo_business_phone | default: ''
+-%}
+
+{%- if business_city != blank or business_website != blank -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "{{ shop.name | escape }}",
+      "url": "{{ business_website }}",
+      {%- if share_image -%}
+      "logo": "https:{{ share_image | image_url: width: 600 }}",
+      {%- endif -%}
+      {%- if business_email != blank -%}
+      "email": "{{ business_email | escape }}",
+      {%- endif -%}
+      {%- if business_phone != blank -%}
+      "telephone": "{{ business_phone | escape }}",
+      {%- endif -%}
+      {%- if business_city != blank -%}
+      "address": {
+        "@type": "PostalAddress",
+        {%- if business_city != blank -%}
+        "addressLocality": "{{ business_city | escape }}",
+        {%- endif -%}
+        {%- if business_state != blank -%}
+        "addressRegion": "{{ business_state | escape }}",
+        {%- endif -%}
+        "addressCountry": "{{ business_country | escape }}"
+      },
+      {%- endif -%}
+      {%- liquid
+        assign social_links = ''
+        if settings.social_instagram_link != blank
+          assign social_links = social_links | append: settings.social_instagram_link | append: '|'
+        endif
+        if settings.social_twitter_link != blank
+          assign social_links = social_links | append: settings.social_twitter_link | append: '|'
+        endif
+        if settings.social_facebook_link != blank
+          assign social_links = social_links | append: settings.social_facebook_link | append: '|'
+        endif
+        assign social_array = social_links | split: '|'
+        assign social_count = social_array.size | minus: 1
+      -%}
+      {%- if social_count > 0 -%}
+      "sameAs": [
+        {%- for i in (0..social_count) -%}
+          {%- if social_array[i] != blank -%}
+            "{{ social_array[i] | escape }}"{%- unless forloop.last -%},{%- endunless -%}
+          {%- endif -%}
+        {%- endfor -%}
+      ]
+      {%- endif -%}
+    }
+  </script>
+{%- endif -%}
+
+{%- comment -%} Breadcrumb structured data {%- endcomment -%}
+{%- if request.page_type == 'product' or request.page_type == 'collection' or request.page_type == 'article' -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "{{ request.origin }}"
+        }
+        {%- if request.page_type == 'product' -%}
+          {%- if product.collections.first -%}
+          ,{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{ product.collections.first.title | escape }}",
+            "item": "{{ request.origin }}{{ product.collections.first.url }}"
+          }
+          {%- endif -%}
+          ,{
+            "@type": "ListItem",
+            "position": {%- if product.collections.first -%}3{%- else -%}2{%- endif -%},
+            "name": "{{ product.title | escape }}",
+            "item": "{{ request.origin }}{{ product.url }}"
+          }
+        {%- elsif request.page_type == 'collection' -%}
+          ,{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{ collection.title | escape }}",
+            "item": "{{ request.origin }}{{ collection.url }}"
+          }
+        {%- elsif request.page_type == 'article' -%}
+          ,{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{ blog.title | escape }}",
+            "item": "{{ request.origin }}{{ blog.url }}"
+          }
+          ,{
+            "@type": "ListItem",
+            "position": 3,
+            "name": "{{ article.title | escape }}",
+            "item": "{{ request.origin }}{{ article.url }}"
+          }
+        {%- endif -%}
+      ]
+    }
+  </script>
+{%- endif -%}
