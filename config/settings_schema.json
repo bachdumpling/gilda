@@ -166,8 +166,8 @@
         "type": "text",
         "id": "seo_additional_locations",
         "label": "Additional locations",
-        "info": "Comma-separated list of additional locations (e.g., Japan, NYC)",
-        "placeholder": "Japan, NYC"
+        "info": "Optional: Comma-separated list of additional locations. Leave blank if store is NYC only.",
+        "placeholder": "Leave blank if NYC only"
       }
     ]
   }

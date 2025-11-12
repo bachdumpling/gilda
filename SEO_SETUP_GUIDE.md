@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide explains the SEO improvements made to help improve search rankings for "gilda clothing nyc" and "gilda clothing Japan" searches.
+This guide explains the SEO improvements made to help improve search rankings for "gilda clothing nyc" searches.
 
 ## ✅ What's Been Implemented
 
@@ -28,9 +28,9 @@ This guide explains the SEO improvements made to help improve search rankings fo
 
 ### 4. Location-Enhanced Homepage SEO
 
-- Homepage title automatically includes location keywords (NYC, Japan, etc.)
+- Homepage title automatically includes location keywords (NYC)
 - Homepage description automatically includes location information
-- Helps with searches like "gilda clothing nyc" and "gilda clothing Japan"
+- Helps with searches like "gilda clothing nyc"
 
 ### 5. Theme Settings for Business Information
 
@@ -38,11 +38,11 @@ New settings available in **Theme Settings > Favicon & SEO**:
 
 - Primary city (e.g., "New York City")
 - State/Province (e.g., "NY")
-- Country (e.g., "US" or "JP")
+- Country (e.g., "US")
 - Website URL
 - Business email
 - Business phone
-- Additional locations (comma-separated, e.g., "Japan, NYC")
+- Additional locations (optional, comma-separated - leave blank if only NYC)
 
 ## 🔧 Required Setup Steps
 
@@ -51,13 +51,13 @@ New settings available in **Theme Settings > Favicon & SEO**:
 1. Go to **Online Store > Themes > Customize > Theme settings > Favicon & SEO**
 2. Scroll to **"Business location & contact"** section
 3. Fill in the following:
-   - **Primary city**: `New York City` (or your primary location)
+   - **Primary city**: `New York City`
    - **State/Province**: `NY`
    - **Country**: `US`
    - **Website URL**: Your full website URL (e.g., `https://gildaclothing.com`)
    - **Business email**: Your contact email
    - **Business phone**: Your phone number (include country code)
-   - **Additional locations**: `Japan, NYC` (comma-separated list)
+   - **Additional locations**: Leave blank (store is NYC only)
 
 ### Step 2: Set Default Meta Description
 
@@ -66,8 +66,8 @@ In the same **Favicon & SEO** section:
 - **Default meta description**: Write a compelling 150-160 character description that includes:
   - Your brand name
   - What you sell (clothing)
-  - Location keywords (NYC, Japan)
-  - Example: "Gilda Clothing - Premium fashion from NYC and Japan. Discover our curated collection of contemporary clothing."
+  - Location keywords (NYC)
+  - Example: "Gilda Clothing - Premium fashion from NYC. Discover our curated collection of contemporary clothing."
 
 ### Step 3: Verify Social Media Links
 
@@ -105,17 +105,16 @@ After configuring, test your structured data:
 1. **Create Location-Specific Pages** (if not already done):
 
    - `/pages/gilda-clothing-nyc`
-   - `/pages/gilda-clothing-japan`
    - Include location keywords naturally in content
 
 2. **Product Descriptions**:
 
    - Include location keywords where natural
-   - Mention "NYC" or "Japan" in product descriptions when relevant
+   - Mention "NYC" in product descriptions when relevant
    - Use location tags for products
 
 3. **Blog Content**:
-   - Create blog posts about NYC fashion, Japan fashion, etc.
+   - Create blog posts about NYC fashion
    - Use location keywords naturally in blog titles and content
 
 ### Technical SEO (Already Handled)
@@ -144,18 +143,17 @@ After configuring, test your structured data:
    - Keep location information current
 
 3. **Backlinks**:
-   - Reach out to NYC and Japan fashion blogs
-   - Get featured in local fashion directories
-   - Partner with influencers in those locations
+   - Reach out to NYC fashion blogs
+   - Get featured in NYC local fashion directories
+   - Partner with NYC-based influencers
 
 ## 🎯 Expected Results
 
 After implementing these changes and waiting 2-4 weeks for Google to re-crawl:
 
 - Better visibility for "gilda clothing nyc" searches
-- Better visibility for "gilda clothing Japan" searches
 - Rich snippets in search results (breadcrumbs, organization info)
-- Improved local search rankings
+- Improved local NYC search rankings
 - Better understanding of your business by search engines
 
 ## ⚠️ Important Notes
