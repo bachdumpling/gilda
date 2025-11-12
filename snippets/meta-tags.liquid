@@ -190,48 +190,69 @@
 -%}
 
 {%- if business_city != blank or business_website != blank -%}
+  {%- liquid
+    # Count how many optional properties we'll include
+    assign has_logo = false
+    if share_image
+      assign has_logo = true
+    endif
+    assign has_email = false
+    if business_email != blank
+      assign has_email = true
+    endif
+    assign has_phone = false
+    if business_phone != blank
+      assign has_phone = true
+    endif
+    assign has_address = false
+    if business_city != blank
+      assign has_address = true
+    endif
+    assign social_links = ''
+    if settings.social_instagram_link != blank
+      assign social_links = social_links | append: settings.social_instagram_link | append: '|'
+    endif
+    if settings.social_twitter_link != blank
+      assign social_links = social_links | append: settings.social_twitter_link | append: '|'
+    endif
+    if settings.social_facebook_link != blank
+      assign social_links = social_links | append: settings.social_facebook_link | append: '|'
+    endif
+    assign social_array = social_links | split: '|'
+    assign social_count = social_array.size | minus: 1
+    assign has_social = false
+    if social_count > 0
+      assign has_social = true
+    endif
+  -%}
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "{{ shop.name | escape }}",
-      "url": "{{ business_website }}",
-      {%- if share_image -%}
-      "logo": "https:{{ share_image | image_url: width: 600 }}",
+      "url": "{{ business_website }}"{%- if has_logo or has_email or has_phone or has_address or has_social -%},{%- endif -%}
+      {%- if has_logo -%}
+      "logo": "https:{{ share_image | image_url: width: 600 }}"{%- if has_email or has_phone or has_address or has_social -%},{%- endif -%}
       {%- endif -%}
-      {%- if business_email != blank -%}
-      "email": "{{ business_email | escape }}",
+      {%- if has_email -%}
+      "email": "{{ business_email | escape }}"{%- if has_phone or has_address or has_social -%},{%- endif -%}
       {%- endif -%}
-      {%- if business_phone != blank -%}
-      "telephone": "{{ business_phone | escape }}",
+      {%- if has_phone -%}
+      "telephone": "{{ business_phone | escape }}"{%- if has_address or has_social -%},{%- endif -%}
       {%- endif -%}
-      {%- if business_city != blank -%}
+      {%- if has_address -%}
       "address": {
-        "@type": "PostalAddress",
+        "@type": "PostalAddress"{%- if business_city != blank or business_state != blank -%},{%- endif -%}
         {%- if business_city != blank -%}
-        "addressLocality": "{{ business_city | escape }}",
+        "addressLocality": "{{ business_city | escape }}"{%- if business_state != blank -%},{%- endif -%}
         {%- endif -%}
         {%- if business_state != blank -%}
         "addressRegion": "{{ business_state | escape }}",
         {%- endif -%}
         "addressCountry": "{{ business_country | escape }}"
-      },
+      }{%- if has_social -%},{%- endif -%}
       {%- endif -%}
-      {%- liquid
-        assign social_links = ''
-        if settings.social_instagram_link != blank
-          assign social_links = social_links | append: settings.social_instagram_link | append: '|'
-        endif
-        if settings.social_twitter_link != blank
-          assign social_links = social_links | append: settings.social_twitter_link | append: '|'
-        endif
-        if settings.social_facebook_link != blank
-          assign social_links = social_links | append: settings.social_facebook_link | append: '|'
-        endif
-        assign social_array = social_links | split: '|'
-        assign social_count = social_array.size | minus: 1
-      -%}
-      {%- if social_count > 0 -%}
+      {%- if has_social -%}
       "sameAs": [
         {%- for i in (0..social_count) -%}
           {%- if social_array[i] != blank -%}
