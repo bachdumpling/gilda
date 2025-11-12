@@ -4,7 +4,7 @@
 %}
 
 <section id="{{ section_id }}" class="{{ section_class }}">
-  <div class="grid md:grid-cols-2 border-y border-black overflow-hidden">
+  <div class="grid md:grid-cols-2 border-y border-black overflow-hidden min-h-[80vh]">
     {% comment %} Left side - Image {% endcomment %}
     <div class="order-2 md:order-1 overflow-hidden h-full">
       {% if section.settings.image != blank %}
