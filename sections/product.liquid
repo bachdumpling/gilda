@@ -451,6 +451,12 @@
     opacity: 1 !important;
   }
 
+  /* Fix mobile double-tap issue */
+  button[type='submit'] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   /* Tab Buttons */
   .tab-button[data-active='true'] {
     text-decoration: underline;

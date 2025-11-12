@@ -14,7 +14,47 @@ class ProductForm {
     }
 
     console.log(`Product form ${this.form.id} initialized`);
-    this.form.addEventListener("submit", this.onSubmitHandler.bind(this));
+
+    // Bind submit handler
+    const submitHandler = this.onSubmitHandler.bind(this);
+    this.form.addEventListener("submit", submitHandler);
+
+    // Fix mobile double-tap issue by handling button click directly
+    // This ensures the first tap triggers the form submission immediately
+    if (this.submitButton) {
+      this.submitButton.addEventListener(
+        "click",
+        (e) => {
+          // Only proceed if button is enabled
+          if (this.submitButton.getAttribute("disabled") === "disabled") {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
+
+          // Check if variant is selected before proceeding
+          const variantInput = this.form.querySelector('input[name="id"]');
+          if (!variantInput || !variantInput.value) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
+
+          // Prevent default form submission to avoid double-tap
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Call submit handler directly with a synthetic event
+          const syntheticEvent = {
+            preventDefault: () => {},
+            target: this.form,
+            currentTarget: this.form,
+          };
+          submitHandler(syntheticEvent);
+        },
+        { passive: false }
+      );
+    }
   }
 
   onSubmitHandler(evt) {
