@@ -126,7 +126,11 @@
             {% if field_value != blank %}
               <td class="py-3 w-16 text-center">
                 {{- field_value.value[forloop.parentloop.index0] -}}
-                {{- size_chart.unit -}}
+                {%- if size_chart.unit == 'in' -%}
+                  "
+                {%- else -%}
+                  {{- size_chart.unit -}}
+                {%- endif -%}
               </td>
             {% endif %}
           {% endfor %}

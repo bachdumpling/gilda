@@ -16,7 +16,7 @@
             {{ section.settings.image | image_url: width: 2000, height: 2000 }} 2000w
           "
           alt="{{ section.settings.image.alt | escape }}"
-          loading="eager"
+          loading="lazy"
           width="100%"
           height="100%"
           class="w-full min-h-full object-cover"

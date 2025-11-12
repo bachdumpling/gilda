@@ -93,7 +93,7 @@
         </div>
 
         <div class="tab-panel hidden" data-tab-content="materials">
-          <div class="text-sm font-sans text-subtitle leading-relaxed prose prose-sm max-w-none">
+          <div class="text-sm font-sans text-subtitle leading-relaxed prose prose-sm max-w-none materials-content">
             {% if product.metafields.custom.materials != blank %}
               {{ product.metafields.custom.materials | metafield_tag }}
             {% else %}
@@ -208,7 +208,7 @@
             "
             sizes="100vw"
             alt="{{ image.alt | escape }}"
-            loading="eager"
+            loading="lazy"
             width="{{ image.width }}"
             height="{{ image.height }}"
             class="max-w-full max-h-full object-cover"
@@ -246,7 +246,11 @@
               "
               sizes="(min-width: 1280px) 66vw, 50vw"
               alt="{{ image.alt | escape }}"
-              loading="eager"
+              {% if forloop.first %}
+                loading="eager"
+              {% else %}
+                loading="lazy"
+              {% endif %}
               width="{{ image.width }}"
               height="{{ image.height }}"
               class="max-w-full max-h-full object-cover"
@@ -311,7 +315,7 @@
               </div>
 
               <div class="tab-panel hidden" data-tab-content="materials">
-                <div class="text-xs md:text-base font-sans text-subtitle leading-relaxed prose prose-sm max-w-none">
+                <div class="text-xs md:text-base font-sans text-subtitle leading-relaxed prose prose-sm max-w-none materials-content">
                   {% if product.metafields.custom.materials != blank %}
                     {{ product.metafields.custom.materials | metafield_tag }}
                   {% else %}
@@ -469,6 +473,31 @@
 
   .tab-panel[data-active='true'] {
     display: block;
+  }
+
+  /* Materials Content - Ensure bullets display */
+  .materials-content ul {
+    list-style-type: disc;
+    list-style-position: outside;
+    padding-left: 1.5em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  .materials-content ul li {
+    margin-bottom: 0.5em;
+  }
+
+  .materials-content ol {
+    list-style-type: decimal;
+    list-style-position: outside;
+    padding-left: 1.5em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  .materials-content ol li {
+    margin-bottom: 0.5em;
   }
 
   /* Size Chart */
