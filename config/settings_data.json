@@ -10,6 +10,12 @@
 {
   "current": {
     "favicon": "shopify://shop_images/Gilda-Monogram.svg",
+    "seo_default_description": "GILDA is a clothing brand based in NYC. Our products are designed for movement, cut from primarily natural fibers. Made in Japan.",
+    "seo_business_city": "New York City",
+    "seo_business_state": "NY",
+    "seo_business_country": "US",
+    "seo_business_website": "https://gildaclothing.com",
+    "seo_business_email": "info@gildaclothing.com",
     "content_for_index": []
   }
 }
