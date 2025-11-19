@@ -4,6 +4,9 @@
 %}
 
 <section id="{{ section_id }}" class="{{ section_class }}">
+  <h1 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border-width:0;">
+    {{ page.title | default: 'About' }}
+  </h1>
   <div class="grid md:grid-cols-2 border-y border-black overflow-hidden min-h-[80vh]">
     {% comment %} Left side - Image {% endcomment %}
     <div class="order-2 md:order-1 overflow-hidden h-full">

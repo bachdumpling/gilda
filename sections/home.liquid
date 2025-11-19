@@ -4,6 +4,9 @@
 %}
 
 <section class="home-grid w-full">
+  <h1 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border-width:0;">
+    {{ shop.name }}
+  </h1>
   <div class="product-grid border-y border-black divide-y divide-black sm:divide-y-0 sm:grid sm:grid-cols-2">
     {% for product in chosen_collection.products limit: 4 %}
       {% liquid
